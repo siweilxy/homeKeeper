@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(logUtil)
+project(common)
 
 macro(source_group_by_dir source_files)
     set(sgbd_cur_dir ${CMAKE_CURRENT_SOURCE_DIR})
@@ -25,6 +25,7 @@ source_group(all_files)
 include_directories($ENV{HOME}/github/homeKeeper/include)
 include_directories($ENV{HOME}/github/homeKeeper/3rdparty/include/)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
-add_library(logUtil SHARED ${all_files})
+add_library(logUtil SHARED log.cpp)
 target_link_libraries(logUtil  pthread glog)
+add_library(common SHARED worker.cpp)
 

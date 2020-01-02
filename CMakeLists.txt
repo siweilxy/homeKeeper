@@ -6,7 +6,7 @@ SET(LIBRARY_OUTPUT_PATH $ENV{HOME}/github/homeKeeper/lib)
 
 add_subdirectory(homeKeeper)
 add_subdirectory(common)
-add_subdirectory(bus)
+add_subdirectory(frame)
 
 
 
