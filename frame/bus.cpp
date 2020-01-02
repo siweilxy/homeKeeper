@@ -20,8 +20,11 @@ void bus()
 
 int main()
 {
-    log::getInstance().init();
-    LOG(INFO)<<"bus启动";
+    int ret = log::getInstance().init();
+    if(ret != 0)
+    {
+        printf("log init error");
+    }    LOG(INFO)<<"bus启动";
     processFunc f = bus;
     worker w(f,f,f);
 

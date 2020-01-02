@@ -27,5 +27,6 @@ include_directories($ENV{HOME}/github/homeKeeper/3rdparty/include/)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 add_library(logUtil SHARED log.cpp)
 target_link_libraries(logUtil  pthread glog)
-add_library(common SHARED worker.cpp)
+add_library(common SHARED worker.cpp common.cpp)
+target_link_libraries(common  pthread glog)
 

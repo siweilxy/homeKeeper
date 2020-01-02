@@ -16,6 +16,7 @@ int keeper::start()
     if(ret != 0)
     {
         printf("log init error");
+        return -1;
     }
     return 0;
 }

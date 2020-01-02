@@ -14,8 +14,10 @@ public:
     log();
     ~log();
     int init();
+    void setLevel(char* msg);
     static log& getInstance();
-
+private:
+    int flag = 0;
 };
 
 #endif /* COMMON_LOG_H_ */

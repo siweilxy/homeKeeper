@@ -1,5 +1,7 @@
 basepath=$(pwd)
 echo $basepath
+export cfg_path=$HOME/github/homeKeeper/etc/work.ubb
+export BIN_PATH=$HOME/github/homeKeeper/bin
 export PATH=$PATH:$HOME/github/homeKeeper/bin
 export BIN_PATH=$HOME/github/homeKeeper/bin
 export PUBSUB_LOG_PATH=$HOME/github/homeKeeper/log/

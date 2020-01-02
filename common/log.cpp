@@ -29,8 +29,37 @@ log& log::getInstance()
     return instance;
 }
 
+void log::setLevel(char* msg)
+{
+    if (strcmp(msg, "INFO") == 0)
+    {
+        FLAGS_stderrthreshold = 0;
+        LOG(INFO)<<"INFO";
+    } else if (strcmp(msg, "WARN") == 0)
+    {
+        FLAGS_stderrthreshold = 1;
+        LOG(WARNING)<<"WARN";
+    } else if (strcmp(msg, "ERROR") == 0)
+    {
+        FLAGS_stderrthreshold = 2;
+        LOG(ERROR)<<"ERROR";
+    } else if (strcmp(msg, "FATAL") == 0)
+    {
+        FLAGS_stderrthreshold = 3;
+        LOG(FATAL)<<"INFO";
+    } else
+    {
+        LOG(ERROR)<<"错误消息:"<<msg;
+    }
+}
+
 int log::init()
 {
+    if(flag == 1)
+    {
+        LOG(ERROR)<<"log had inited";
+        return 0;
+    }
     char* name = nullptr;
     char* plevel = nullptr;
     int level = 0;
@@ -55,18 +84,15 @@ int log::init()
     FLAGS_stderrthreshold = level;
     FLAGS_logbufsecs = 0; //立即写入
     std::string info_log = name;
-    google::SetLogDestination(google::INFO,
-            (info_log + "info-").c_str());
-    google::SetLogDestination(google::WARNING,
-            (info_log + "warn-").c_str());
-    google::SetLogDestination(google::ERROR,
-            (info_log + "error-").c_str());
-    google::SetLogDestination(google::FATAL,
-            (info_log + "fatal-").c_str());
+    google::SetLogDestination(google::INFO, (info_log + "info-").c_str());
+    google::SetLogDestination(google::WARNING, (info_log + "warn-").c_str());
+    google::SetLogDestination(google::ERROR, (info_log + "error-").c_str());
+    google::SetLogDestination(google::FATAL, (info_log + "fatal-").c_str());
 
     LOG(INFO)<< "INFO log path is "<<(info_log + "info");
     LOG(WARNING)<< "WARNING log path is "<<(info_log + "warn");
     LOG(ERROR)<< "ERROR log path is "<<(info_log + "error");
+    flag = 1;
     return 0;
 }
 

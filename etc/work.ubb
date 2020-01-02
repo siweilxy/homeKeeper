@@ -1,13 +1,11 @@
 {
-        "workerNo":3,
+        "workerNo":2,
 	"worker": 
         [{
-		"file": "ultimate_bus",
+		"file": "bus",
 		"number": "1"
 	},
-         {      "file":"ultimate_slave",
+         {      "file":"slave",
                 "number":"1"
-       },{      "file":"ultimate_test1",
-                "number":"1"
-         }]
+       }]
 }

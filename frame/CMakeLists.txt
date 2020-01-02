@@ -32,9 +32,15 @@ source_group(all_files)
 include_directories($ENV{HOME}/github/homeKeeper/include/)
 include_directories($ENV{HOME}/github/homeKeeper/3rdparty/include/)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
-add_executable(bus ${all_files})
+add_executable(bus bus.cpp)
+add_executable(master master.cpp)
+add_executable(slave slave.cpp)
+add_executable(tools tools.cpp)
 
-target_link_libraries(bus logUtil common)
+target_link_libraries(bus common logUtil)
+target_link_libraries(master common logUtil)
+target_link_libraries(slave common logUtil)
+target_link_libraries(tools  common logUtil)
 
 
 
