@@ -1,4 +1,9 @@
+#include "pubsub_msg.pb.h"
+#include "keeper.h"
+
 int main()
 {
-  return 0;
+    keeper kp;
+    kp.start();
+    return 0;
 }
