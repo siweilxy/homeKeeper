@@ -20,11 +20,17 @@ char logbuf[512]={0};
 
 int main(int argc, char* argv[])
 {
+    if(argc < 3)
+    {
+        printf("argc < 3,like this : tools msgType destName msg");
+        return 0;
+    }
     int ret = log::getInstance().init();
     if(ret != 0)
     {
         printf("log init error");
     }
+
     for (int i = 0; i < argc; i++)
     {
         snprintf(logbuf,sizeof(logbuf),"argc[%d] : %s", i, argv[i]);

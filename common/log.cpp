@@ -80,10 +80,16 @@ int log::init()
         level = atoi(plevel);
     }
 
-    google::InitGoogleLogging(name);
     FLAGS_stderrthreshold = level;
     FLAGS_logbufsecs = 0; //立即写入
+
+    FLAGS_logtostderr = false;  //是否打印到控制台
+    FLAGS_alsologtostderr = false;  //打印到日志同时是否打印到控制台
+    FLAGS_colorlogtostderr = true; //标准输出带颜色
+    FLAGS_stderrthreshold = 3;
+
     std::string info_log = name;
+    google::InitGoogleLogging(name);
     google::SetLogDestination(google::INFO, (info_log + "info-").c_str());
     google::SetLogDestination(google::WARNING, (info_log + "warn-").c_str());
     google::SetLogDestination(google::ERROR, (info_log + "error-").c_str());
@@ -92,6 +98,7 @@ int log::init()
     LOG(INFO)<< "INFO log path is "<<(info_log + "info");
     LOG(WARNING)<< "WARNING log path is "<<(info_log + "warn");
     LOG(ERROR)<< "ERROR log path is "<<(info_log + "error");
+
     flag = 1;
     return 0;
 }

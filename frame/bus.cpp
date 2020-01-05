@@ -24,7 +24,8 @@ int main()
     if(ret != 0)
     {
         printf("log init error");
-    }    LOG(INFO)<<"bus启动";
+    }
+    LOG(INFO)<<"bus启动";
     processFunc f = bus;
     worker w(f,f,f);
 

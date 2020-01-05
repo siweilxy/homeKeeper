@@ -103,6 +103,7 @@ int runWorkers(json j)
         if (pid == 0)
         {
             runWorker(file, number);
+            LOG(INFO)<<"work exit";
             exit(0);
         } else
         {
@@ -123,22 +124,26 @@ int initParams()
     if (cfgPath == nullptr)
     {
         LOG(ERROR)<<"cfgPath is nullptr";
+        printf("cfgPath is nullptr\n");
         return -1;
     }
+    printf("cfgPath is %s\n",cfgPath);
     LOG(INFO)<<"cfgPath is "<<cfgPath;
 
     binPath = getenv("BIN_PATH");
     if (binPath == nullptr)
     {
         LOG(ERROR)<<"binPath is nullptr";
+        printf("binPath is nullptr\n");
         return -1;
     }
+    printf("binPath is %s\n",binPath);
     LOG(INFO)<<"binPath is "<<binPath;
 
     return 0;
 }
 
-void cleanSource()
+void cleanSources()
 {
     LOG(INFO)<<__FUNCTION__<<" 开始";
     int status = 0;
@@ -169,9 +174,39 @@ void cleanSource()
     LOG(INFO)<<__FUNCTION__<<" 结束";
 }
 
+void cleanSource(std::string file)
+{
+    LOG(INFO)<<__FUNCTION__<<" 开始";
+    int status = 0;
+    pthread_mutex_lock(&scanMutex);
+    for (auto pid : pids)
+    {
+        if(pid.second.file == file)
+        {
+            int ret = kill(pid.first, 9);
+            if (ret == -1)
+            {
+                memset(logbuf,0,sizeof(logbuf));
+                snprintf(logbuf,sizeof(logbuf),"kill %d ret is %d,errno is %d:%s", pid.first, ret, errno,
+                        strerror(errno));
+                LOG(ERROR)<<logbuf;
+            } else
+            {
+                ret = waitpid(pid.first, &status, 0);
+                memset(logbuf,0,sizeof(logbuf));
+                snprintf(logbuf,sizeof(logbuf),"file is %s pid is %d,ret is %d,status is %d",
+                        pid.second.file.c_str(), pid.first, ret, status);
+                LOG(INFO)<<logbuf;
+            }
+        }
+    }
+    pthread_mutex_unlock(&scanMutex);
+
+    LOG(INFO)<<__FUNCTION__<<" 结束";
+}
+
 int main()
 {
-
     std::string result;
     int ret = 0;
     int len = 0;
@@ -269,6 +304,10 @@ int main()
                     case ul_process_success:
                     {
                         break;
+                    }case ul_end_one:
+                    {
+                        cleanSource(msg->msg);
+                        break;
                     }
                     default:
                     {
@@ -281,6 +320,6 @@ int main()
     }
 }
 
-    cleanSource();
+    cleanSources();
     return 0;
 }

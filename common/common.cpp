@@ -22,7 +22,7 @@ int getfile(const std::string& path, std::string& result)
     std::ifstream in(path);
     if (!in.is_open())
     {
-        LOG(ERROR)<<"Error opening file:"<<path;
+       // LOG(ERROR)<<"Error opening file:"<<path;
         return -1;
     }
     while (!in.eof())
@@ -31,7 +31,7 @@ int getfile(const std::string& path, std::string& result)
         result = result + buffer;
     }
 
-    LOG(INFO)<<"result is "<<result.c_str();
+    //LOG(INFO)<<"result is "<<result.c_str();
     return 0;
 }
 

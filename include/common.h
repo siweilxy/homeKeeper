@@ -11,10 +11,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "json.hpp"
 #include <iostream>
 #include <fstream>
 #include <netinet/in.h>
+#include "json.hpp"
 
 #define FIFO_NAME "entry"
 
@@ -26,7 +26,7 @@ typedef struct fd_s
 
 enum msgType
 {
-    ul_log = 0, ul_end, ul_process_success, ul_other
+    ul_log = 0, ul_end, ul_process_success, ul_other,ul_end_one
 };
 
 typedef struct internal_msg_s
@@ -39,31 +39,16 @@ typedef struct internal_msg_s
     msgType type;
 } internal_msg_t;
 
-namespace PUBSUB
+typedef struct heartBeatMsg_s
 {
-enum pubsubMsgType
-{
-    HEATBEAT2SERVER = 0,
-    HEATBEAT2CLENT
-};
-
-//typedef struct pubusb_msg_s
-//{
-//    char remoteIP[255];
-//    int length;
-//    int type;
-//    int magic;
-//    char msg[0];
-//} pubsub_msg_t;
-
-typedef struct session_s
-{
-    int uid;
-    int port;
-    std::string remoteIp;
-    sockaddr_in remote;
-} session_t;
-}
+    char srcId[512];
+    char destId[512];
+    char srcIP[512];
+    char destIP[512];
+    uint64_t srcPort;
+    uint64_t destPort;
+    msgType type;
+} heartBeatMsg_t;
 
 int getfile(const std::string& path, std::string& result);
 
