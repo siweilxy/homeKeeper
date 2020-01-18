@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
+#include <boost/asio.hpp>
 
 #include "EmailSender.hpp"
 
@@ -23,11 +24,11 @@ int main()
 {
     EmailSender sendMail;
     sendMail.SetSmtpServer(USERNAME, PASSWORD, SMTPSERVER);
-   sendMail.SetSendName( MAILFROM );
-   sendMail.SetSendMail( MAILFROM );
-   sendMail.AddRecvMail( RECIPIENT );
-   sendMail.SetSubject( "mail send test" );
-   sendMail.SetBodyContent( "this is a test!" );
-   //sendMail.AddAttachment("/home/siwei/github/homeKeeper/build/Makefile");
-   sendMail.SendMail();
+    sendMail.SetSendName( MAILFROM);
+    sendMail.SetSendMail( MAILFROM);
+    sendMail.AddRecvMail( RECIPIENT);
+    sendMail.SetSubject("mail send test");
+    sendMail.SetBodyContent("this is a test!");
+    //sendMail.AddAttachment("/home/siwei/github/homeKeeper/build/Makefile");
+    sendMail.SendMail();
 }
