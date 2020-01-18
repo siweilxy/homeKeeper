@@ -17,7 +17,7 @@
  * 有一个map，对应自我实现的消息处理，任务名称可以配置，支持热更新，使用tcp链接;
  * */
 
-typedef void (*processFunc)(void*);
+typedef void (*processFunc)();
 
 class node
 {
