@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 project(homeKeeper)
 
-SET(EXECUTABLE_OUTPUT_PATH $ENV{HOME}/github/homeKeeper/bin)
-SET(LIBRARY_OUTPUT_PATH $ENV{HOME}/github/homeKeeper/lib)
+SET(EXECUTABLE_OUTPUT_PATH $ENV{HOME}/work/github/homeKeeper/bin)
+SET(LIBRARY_OUTPUT_PATH $ENV{HOME}/work/github/homeKeeper/lib)
 
 macro(source_group_by_dir source_files)
     set(sgbd_cur_dir ${CMAKE_CURRENT_SOURCE_DIR})
@@ -26,12 +26,12 @@ FILE(GLOB_RECURSE all_files
         )
 
 
-link_directories("$ENV{HOME}/github/homeKeeper/lib/")
+link_directories("$ENV{HOME}/work/github/homeKeeper/lib/")
 
 source_group(all_files)
-include_directories($ENV{HOME}/github/homeKeeper/include/)
-#include_directories($ENV{HOME}/github/homeKeeper/include/)
-include_directories($ENV{HOME}/github/homeKeeper/3rdparty/include/)
+include_directories($ENV{HOME}/work/github/homeKeeper/include/)
+#include_directories($ENV{HOME}/work/github/homeKeeper/include/)
+include_directories($ENV{HOME}/work/github/homeKeeper/3rdparty/include/)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 add_executable(homeKeeper ${all_files})
 

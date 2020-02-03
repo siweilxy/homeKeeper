@@ -26,12 +26,12 @@ FILE(GLOB_RECURSE all_files
         )
 
 
-link_directories("$ENV{HOME}/github/homeKeeper/lib/")
+link_directories("$ENV{HOME}/work/github/homeKeeper/lib/")
 
 source_group(all_files)
-include_directories($ENV{HOME}/github/homeKeeper/include/)
-#include_directories($ENV{HOME}/github/homeKeeper/include/)
-include_directories($ENV{HOME}/github/homeKeeper/3rdparty/include/)
+include_directories($ENV{HOME}/work/github/homeKeeper/include/)
+#include_directories($ENV{HOME}/work/github/homeKeeper/include/)
+include_directories($ENV{HOME}/work/github/homeKeeper/3rdparty/include/)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 add_executable(mailServer ${all_files})
 
