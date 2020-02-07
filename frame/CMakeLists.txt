@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 project(bus)
 
-SET(EXECUTABLE_OUTPUT_PATH $ENV{HOME}/github/homeKeeper/bin)
-SET(LIBRARY_OUTPUT_PATH $ENV{HOME}/github/homeKeeper/lib)
+SET(EXECUTABLE_OUTPUT_PATH $ENV{HOME}/work/github/homeKeeper/bin)
+SET(LIBRARY_OUTPUT_PATH $ENV{HOME}/work/github/homeKeeper/lib)
 
 macro(source_group_by_dir source_files)
     set(sgbd_cur_dir ${CMAKE_CURRENT_SOURCE_DIR})

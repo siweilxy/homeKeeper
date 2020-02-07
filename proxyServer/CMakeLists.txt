@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(mailServer)
+project(proxyServer)
 
 SET(EXECUTABLE_OUTPUT_PATH $ENV{HOME}/work/github/homeKeeper/bin)
 SET(LIBRARY_OUTPUT_PATH $ENV{HOME}/work/github/homeKeeper/lib)
@@ -22,7 +22,6 @@ add_definitions("-g")
 
 FILE(GLOB_RECURSE all_files
         *.cpp
-        *.cc
         )
 
 
@@ -33,9 +32,9 @@ include_directories($ENV{HOME}/work/github/homeKeeper/include/)
 #include_directories($ENV{HOME}/work/github/homeKeeper/include/)
 include_directories($ENV{HOME}/work/github/homeKeeper/3rdparty/include/)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
-add_executable(mailServer ${all_files})
+add_executable(proxyServer ${all_files})
 
-target_link_libraries(mailServer protobuf logUtil curl)
+target_link_libraries(proxyServer logUtil curl)
 
 
 

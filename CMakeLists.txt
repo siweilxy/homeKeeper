@@ -8,6 +8,7 @@ add_subdirectory(homeKeeper)
 add_subdirectory(common)
 add_subdirectory(frame)
 add_subdirectory(mailServer)
+add_subdirectory(proxyServer)
 
 
 
