@@ -99,6 +99,7 @@ public:
             /* Set username and password */
             curl_easy_setopt(curl, CURLOPT_USERNAME, m_strUserName.c_str());
             curl_easy_setopt(curl, CURLOPT_PASSWORD, m_strPassword.c_str());
+            //curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
             std::string tmp = "smtp://";
             tmp += m_strServerName;
             // 注意不能直接传入tmp，应该带上.c_str()，否则会导致下面的
@@ -162,7 +163,7 @@ public:
             /* Since the traffic will be encrypted, it is very useful to turn on debug
              * information within libcurl to see what is happening during the
              * transfer */
-            curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+            //curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 
             int nTimes = 0;
             /* Send the message */
