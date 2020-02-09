@@ -9,6 +9,7 @@
 #define INCLUDE_TCPSERVER_HPP_
 
 #include "log.h"
+#include "tcpClient.hpp"
 #include <fcntl.h>
 #include <errno.h>
 #include <sys/epoll.h>
@@ -77,6 +78,13 @@ private:
                     LOG(INFO)<<"connected client is "<<clnt_sock;
                 }else
                 {
+                    tcpClient client("0.0.0.0",21);
+                    std::string message;
+                    client.connectToServer(message);
+
+                    write(ep_events[i].data.fd,message.c_str(),message.length());
+                    LOG(INFO)<<"message write success";
+
                     while(1)
                     {
                         str_len = read(ep_events[i].data.fd,buf,BUF_SIZE);

@@ -32,9 +32,12 @@ include_directories($ENV{HOME}/work/github/homeKeeper/include/)
 #include_directories($ENV{HOME}/work/github/homeKeeper/include/)
 include_directories($ENV{HOME}/work/github/homeKeeper/3rdparty/include/)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
-add_executable(proxyServer ${all_files})
+add_executable(proxyServer proxyServer.cpp)
+add_executable(testClient testClient.cpp)
+
 
 target_link_libraries(proxyServer logUtil curl)
+target_link_libraries(testClient logUtil curl)
 
 
 

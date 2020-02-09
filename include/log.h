@@ -18,7 +18,7 @@ class log
 public:
     log();
     ~log();
-    int init(int stderrFlag = 1);
+    int init(int stderrFlag = 0);
     void setLevel(char* msg);
     static log& getInstance();
 private:
