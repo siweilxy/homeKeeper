@@ -5,6 +5,10 @@ sudo apt-get -o Acquire::http::proxy="http://127.0.0.1:45441"  update
 sudo apt-get -o Acquire::http::proxy="http://127.0.0.1:45441" -y  install   cuda
 
 
+sudo apt-add-repository ppa:wireshark-dev/stable
+sudo apt-get -o Acquire::http::proxy="http://127.0.0.1:45441"  update
+sudo apt-get -o Acquire::http::proxy="http://127.0.0.1:45441"  install wireshark
+
 git config --global http.proxy "http://127.0.0.1:45441"
 git config --global https.proxy "https://127.0.0.1:45441"
 git config --global http.sslVerify false

@@ -83,14 +83,18 @@ int log::init(int stderrFlag)
     FLAGS_stderrthreshold = level;
     FLAGS_logbufsecs = 0; //立即写入
 
+    FLAGS_logtostderr = false;  //是否打印到控制台
+    FLAGS_alsologtostderr = false;  //打印到日志同时是否打印到控制台
+
     if(stderrFlag == 1)
     {
-        FLAGS_logtostderr = false;  //是否打印到控制台
-        FLAGS_alsologtostderr = false;  //打印到日志同时是否打印到控制台
+        FLAGS_stderrthreshold = 3;
+    }else
+    {
+        FLAGS_stderrthreshold = 0;
     }
 
     FLAGS_colorlogtostderr = true; //标准输出带颜色
-    FLAGS_stderrthreshold = 3;
 
     std::string info_log = name;
     google::InitGoogleLogging(name);

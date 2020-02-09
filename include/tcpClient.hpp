@@ -100,10 +100,10 @@ public:
             }
         }
 
-        for(int i = 0;i<recv_len;i++)
-        {
-            LOG(INFO)<<(int)message[i];
-        }
+//        for(int i = 0;i<recv_len;i++)
+//        {
+//            LOG(INFO)<<(int)message[i];
+//        }
 
         messageOut = message;
 
