@@ -16,7 +16,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <string.h>
-
+#include <map>
 #define EPOLL_SIZE 50
 #define BUF_SIZE 1
 class tcpServer
@@ -32,10 +32,17 @@ private:
     struct epoll_event *ep_events;
     struct epoll_event event;
     int epfd,event_cnt;
+    std::map<int,tcpClient*>clients;
     void startTcpServer ()
     {
         ENTER
         serv_sock = socket(PF_INET,SOCK_STREAM,0);
+
+        int option;
+        int optlen = sizeof(option);
+        option = 1;
+        setsockopt(serv_sock,SOL_SOCKET,SO_REUSEADDR,(void*)&option,optlen);
+
         memset(&serv_adr,0,sizeof(serv_adr));
         serv_adr.sin_family = AF_INET;
         serv_adr.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -44,11 +51,13 @@ private:
         if(bind(serv_sock,(struct sockaddr*)&serv_adr,sizeof(serv_adr)) == -1)
         {
             LOG(ERROR)<<"bind error:"<<strerror(errno);
+            return;
         }
 
         if(listen(serv_sock,5) == -1)
         {
             LOG(ERROR)<<"listen error:"<<strerror(errno);
+            return;
         }
 
         epfd = epoll_create(EPOLL_SIZE);
@@ -59,18 +68,23 @@ private:
         epoll_ctl(epfd,EPOLL_CTL_ADD,serv_sock,&event);
         while(1)
         {
+            LOG(INFO)<<"before epoll_wait";
             event_cnt = epoll_wait(epfd,ep_events,EPOLL_SIZE,-1);
+            LOG(INFO)<<"after epoll_wait, cnt is "<< event_cnt;
             if(event_cnt == -1)
             {
                 LOG(ERROR)<<"epoll_wait error:"<<strerror(errno);
                 break;
             }
-            for(i = 0;i<event_cnt;i++)
+            for(i = 0;i<=event_cnt;i++)
             {
+                LOG(INFO)<<"i is "<<i;
                 if(ep_events[i].data.fd == serv_sock)
                 {
                     adr_sz = sizeof(clnt_adr);
+                    LOG(INFO)<<"before accept";
                     clnt_sock=accept(serv_sock,(struct sockaddr*)&clnt_adr,&adr_sz);
+                    LOG(INFO)<<"after accept";
                     setNonBlockingMode(clnt_sock);
                     event.events = EPOLLIN|EPOLLET;
                     event.data.fd=clnt_sock;
@@ -78,12 +92,27 @@ private:
                     LOG(INFO)<<"connected client is "<<clnt_sock;
                 }else
                 {
-                    tcpClient client("0.0.0.0",21);
-                    std::string message;
-                    client.connectToServer(message);
+                    LOG(INFO)<<"==========================start============================";
+                    LOG(INFO)<<"get mgs from ftp";
 
-                    write(ep_events[i].data.fd,message.c_str(),message.length());
-                    LOG(INFO)<<"message write success";
+                    std::string message;
+
+                    auto iter = clients.find(ep_events[i].data.fd);
+                    if(iter == clients.end())
+                    {
+                        tcpClient * client = new tcpClient("0.0.0.0",21);
+                        clients[ep_events[i].data.fd] = client;
+                    }
+
+                    iter = clients.find(ep_events[i].data.fd);
+                    iter->second->getMsg(message);
+                    for(int i = 0;i<message.length();i++)
+                    {
+                        LOG(INFO)<<(int)message[i];
+                    }
+
+                    write(ep_events[i].data.fd,message.c_str(),message.length() - 1);
+                    LOG(INFO)<<"message write success:"<<message<<"len is "<<message.length() - 1;
 
                     while(1)
                     {
@@ -91,6 +120,9 @@ private:
                         if(str_len==0)
                         {
                             epoll_ctl(epfd,EPOLL_CTL_DEL,ep_events[i].data.fd,NULL);
+                            iter = clients.find(ep_events[i].data.fd);
+                            delete iter->second;
+                            clients.erase(ep_events[i].data.fd);
                             close(ep_events[i].data.fd);
                             LOG(INFO)<<"closed client "<<ep_events[i].data.fd;
                             break;
@@ -106,6 +138,7 @@ private:
                             LOG(INFO)<<"read is :"<<buf;
                         }
                     }
+                    LOG(INFO)<<"==========================end============================";
                 }
             }
         }

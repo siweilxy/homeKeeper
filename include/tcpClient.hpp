@@ -26,8 +26,15 @@ private:
     struct sockaddr_in serv_adr;
 
 public:
+    ~tcpClient()
+    {
+        LOG(INFO)<<"~tcpClient";
+        close(sock);
+    }
+
     tcpClient (std::string ip, int port) : ip (ip), port (port)
     {
+        ENTER
         int ret = 0;
         int flag = 0;
         std::cout << "flag is " << flag << std::endl;
@@ -36,10 +43,14 @@ public:
         {
             printf ("log init error");
         }
+
+        connectToServer ();
+        EXIT
     }
 
-    int connectToServer (std::string& messageOut)
+    int connectToServer ()
     {
+        ENTER
         sock = socket (PF_INET, SOCK_STREAM, 0);
         if (sock == -1)
         {
@@ -54,8 +65,23 @@ public:
                 == -1)
         {
             LOG(ERROR) << "connect error " << strerror (errno);
+            return -1;
         }
+        EXIT
+        return 0;
+    }
 
+    int sendMsg(std::string messageIn)
+    {
+        int len = 0;
+        len = write(sock,messageIn.c_str(),messageIn.length());
+        LOG(INFO)<<"write len is "<<len<<" message len is "<<messageIn.length();
+        return 0;
+    }
+
+    int getMsg(std::string& messageOut)
+    {
+        ENTER
         recv_len = 0;
         while (1)
         {
@@ -63,22 +89,26 @@ public:
             if (recv_cnt == -1)
             {
                 LOG(ERROR) << "read error:" << strerror (errno);
+                return -1;
             }
 
-            LOG(INFO) << "message is " << message;
             recv_len += recv_cnt;
-            LOG(INFO)<<(int)message[recv_len - 2]<<" "<<(int)message[recv_len - 1];
             if(message[recv_len - 2] == 13&&message[recv_len - 1] == 10)
             {
-                LOG(INFO) << "message is " << message;
+                LOG(INFO) << "message is " << message<<"len is "<<recv_len - 1;
                 break;
             }
         }
+
+        for(int i = 0;i<recv_len;i++)
+        {
+            LOG(INFO)<<(int)message[i];
+        }
+
         messageOut = message;
 
         //str_len = write(sock,message,strlen(message));
-
-        close (sock);
+        EXIT
         return 0;
     }
 
