@@ -9,8 +9,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
-#include <boost/asio.hpp>
-
+#include "log.h"
 #include "EmailSender.hpp"
 #include "curl.hpp"
 
@@ -26,17 +25,24 @@ main ()
 {
     std::string resOld="old";
     std::string resNew="new";
+    int ret = 0;
+    ret = log::getInstance ().init (0);
+    if (ret != 0)
+    {
+        printf ("log init error");
+    }
+
     while (1)
     {
         sleep(3);
         resNew = curlUtil ("icanhazip.com");
         if (resNew == resOld)
         {
-            std::cout << "resNew == resOld" << std::endl;
+            LOG(INFO)<<"resNew == resOld";
         }
         else
         {
-            std::cout << "resNew != resOld" <<" resNew is "<<resNew <<" resOld is "<<resOld<< std::endl;
+            LOG(INFO) << "resNew != resOld" <<" resNew is "<<resNew <<" resOld is "<<resOld;
 
             EmailSender sendMail;
             sendMail.SetSmtpServer (USERNAME, PASSWORD, SMTPSERVER);
