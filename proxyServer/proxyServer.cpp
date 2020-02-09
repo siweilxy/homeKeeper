@@ -10,10 +10,21 @@
 
 int main()
 {
-    int outPort = 19870;
-    int inPort = 21;
+    int outPort = 21;
+    int inPort = 19870;
     char* outPortStr = nullptr;
     char* inPortStr = nullptr;
+    char* stderrFlagStr = nullptr;
+    int stderrFlag = 0;
+
+    stderrFlagStr =getenv("LOG_FLAG");
+    if (stderrFlagStr == nullptr)
+    {
+        printf("LOG_FLAG 没有设置,使用默认值 0\n");
+    }else
+    {
+        outPort = atoi(stderrFlagStr);
+    }
 
     outPortStr = getenv("OUT_PORT");
     if (outPortStr == nullptr)
@@ -33,6 +44,6 @@ int main()
         inPort = atoi(inPortStr);
     }
     printf("inPort is %d,outPort is %d\n",inPort,outPort);
-    tcpServer server;
+    tcpServer server(inPort,outPort,stderrFlag);
     return 0;
 }
