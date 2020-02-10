@@ -38,7 +38,7 @@ main ()
         resNew = curlUtil ("icanhazip.com");
         if (resNew == resOld)
         {
-            LOG(INFO)<<"resNew == resOld";
+            //LOG(INFO)<<"resNew == resOld";
         }
         else
         {
