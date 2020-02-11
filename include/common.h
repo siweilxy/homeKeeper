@@ -18,6 +18,9 @@
 
 #define FIFO_NAME "entry"
 
+#define SUCCESS 0
+#define FAILED 1
+
 typedef struct fd_s
 {
     int fd;

@@ -9,9 +9,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
+#include <mysql/mysql.h>
+
+#include "file.hpp"
 #include "log.h"
 #include "EmailSender.hpp"
 #include "curl.hpp"
+#include "tblEmailInfo.hpp"
 
 #define USERNAME "siweilxy@163.com"
 #define PASSWORD "sd982597"
@@ -23,9 +27,19 @@
 int
 main ()
 {
+    log::getInstance().init(0);
+    tblEmailInfo emailInfo;
+    emailInfo.init();
+    return 0;
+
+    int ret = 0;
     std::string resOld="old";
     std::string resNew="new";
-    int ret = 0;
+    std::string userName=USERNAME;
+    std::string passowrd = PASSWORD;
+    std::string smtpServer = SMTPSERVER;
+    std::string recipient = RECIPIENT;
+    std::string mailFrom = MAILFROM;
     ret = log::getInstance ().init (0);
     if (ret != 0)
     {
