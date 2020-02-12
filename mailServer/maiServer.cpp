@@ -27,20 +27,7 @@
 int main ()
 {
     log::getInstance ().init (0);
-    tblEmailInfo emailInfo;
-    int ret = emailInfo.init ();
-    if(ret != SUCCESS)
-    {
-        LOG(ERROR)<<"emailInfo.init () failed";
-        return 0;
-    }
-
-    auto res = emailInfo.getRes();
-    for(auto iter:res)
-    {
-        LOG(INFO)<<iter.mailFrom;
-    }
-    return 0;
+    int ret = 0;
     std::string resOld = "old";
     std::string resNew = "new";
     std::string userName = USERNAME;
@@ -67,15 +54,27 @@ int main ()
             LOG(INFO) << "resNew != resOld" << " resNew is " << resNew
                     << " resOld is " << resOld;
 
-            EmailSender sendMail;
-            sendMail.SetSmtpServer (USERNAME, PASSWORD, SMTPSERVER);
-            sendMail.SetSendName ( MAILFROM);
-            sendMail.SetSendMail ( MAILFROM);
-            sendMail.AddRecvMail ( RECIPIENT);
-            sendMail.SetSubject ("ip changed");
-            sendMail.SetBodyContent (resNew);
-            //sendMail.AddAttachment("/home/siwei/github/homeKeeper/build/Makefile");
-            sendMail.SendMail ();
+            tblEmailInfo emailInfo;
+            ret = emailInfo.init ();
+            if(ret != SUCCESS)
+            {
+                LOG(ERROR)<<"emailInfo.init () failed";
+                return 0;
+            }
+
+            auto res = emailInfo.getRes();
+            for(auto iter:res)
+            {
+                EmailSender sendMail;
+                sendMail.SetSmtpServer (iter.userName, iter.passwd, iter.smtpServer);
+                sendMail.SetSendName ( iter.mailFrom);
+                sendMail.SetSendMail ( iter.mailFrom);
+                sendMail.AddRecvMail ( iter.recipient);
+                sendMail.SetSubject ("ip changed");
+                sendMail.SetBodyContent (resNew);
+                //sendMail.AddAttachment("/home/siwei/github/homeKeeper/build/Makefile");
+                sendMail.SendMail ();
+            }
             resOld = resNew;
         }
     }
