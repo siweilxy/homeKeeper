@@ -1,0 +1,7 @@
+{
+  "ip":"192.168.31.105",
+  "port":"3306",
+  "dateBase":"homekeeper",
+  "user":"root",
+  "passwd":"root"
+}

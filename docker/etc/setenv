@@ -1,0 +1,17 @@
+basepath=$(pwd)
+
+echo $basepath
+export cfg_path=$HOME/work/github/homeKeeper/etc/work.ubb
+export BIN_PATH=$HOME/work/github/homeKeeper/bin
+export PATH=$PATH:$HOME/work/github/homeKeeper/bin
+export BIN_PATH=$HOME/work/github/homeKeeper/bin
+export PUBSUB_LOG_PATH=$HOME/work/github/homeKeeper/log/
+export LOG_LEVEL=0
+export LD_LIBRARY_PATH=$HOME/work/github/homeKeeper/lib:$HOME/github/homeKeeper/3rdparty/lib
+export OUT_PORT=21
+export IN_PORT=19870
+export CONFIG_FILE=$HOME/work/github/homeKeeper/etc/work.prj
+#0 INFO
+#1 WARNING
+#2 ERROR
+#3 FATAL
