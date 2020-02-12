@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
-#include <mysql/mysql.h>
+#include <vector>
 
 #include "file.hpp"
 #include "log.h"
@@ -24,18 +24,26 @@
 #define RECIPIENT "<251826184@qq.com>"
 #define MAILFROM "<siweilxy@163.com>"
 
-int
-main ()
+int main ()
 {
-    log::getInstance().init(0);
+    log::getInstance ().init (0);
     tblEmailInfo emailInfo;
-    emailInfo.init();
-    return 0;
+    int ret = emailInfo.init ();
+    if(ret != SUCCESS)
+    {
+        LOG(ERROR)<<"emailInfo.init () failed";
+        return 0;
+    }
 
-    int ret = 0;
-    std::string resOld="old";
-    std::string resNew="new";
-    std::string userName=USERNAME;
+    auto res = emailInfo.getRes();
+    for(auto iter:res)
+    {
+        LOG(INFO)<<iter.mailFrom;
+    }
+    return 0;
+    std::string resOld = "old";
+    std::string resNew = "new";
+    std::string userName = USERNAME;
     std::string passowrd = PASSWORD;
     std::string smtpServer = SMTPSERVER;
     std::string recipient = RECIPIENT;
@@ -48,7 +56,7 @@ main ()
 
     while (1)
     {
-        sleep(3);
+        sleep (3);
         resNew = curlUtil ("icanhazip.com");
         if (resNew == resOld)
         {
@@ -56,7 +64,8 @@ main ()
         }
         else
         {
-            LOG(INFO) << "resNew != resOld" <<" resNew is "<<resNew <<" resOld is "<<resOld;
+            LOG(INFO) << "resNew != resOld" << " resNew is " << resNew
+                    << " resOld is " << resOld;
 
             EmailSender sendMail;
             sendMail.SetSmtpServer (USERNAME, PASSWORD, SMTPSERVER);

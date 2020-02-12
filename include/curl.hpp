@@ -16,8 +16,7 @@ std::string result;
 char *res_buf = NULL;
 int shift = 0;
 
-size_t
-copy_data (void *ptr, size_t size, size_t nmemb, void *stream)
+size_t copy_data (void *ptr, size_t size, size_t nmemb, void *stream)
 {
     int res_size;
 
@@ -26,12 +25,11 @@ copy_data (void *ptr, size_t size, size_t nmemb, void *stream)
     memcpy (res_buf, ptr, res_size);
     shift += res_size;
     result = res_buf;
-    free(res_buf);
+    free (res_buf);
     return size * nmemb;
 }
 
-std::string
-curlUtil (std::string url)
+std::string curlUtil (std::string url)
 {
     CURL *curl;
     CURLcode res;

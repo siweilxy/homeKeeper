@@ -21,6 +21,15 @@
 #define SUCCESS 0
 #define FAILED 1
 
+typedef struct emailInfo_s
+{
+    std::string userName;
+    std::string passwd;
+    std::string smtpServer;
+    std::string recipient;
+    std::string mailFrom;
+} emailInfo_t;
+
 typedef struct fd_s
 {
     int fd;

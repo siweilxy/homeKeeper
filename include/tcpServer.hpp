@@ -98,12 +98,11 @@ private:
 
                     socklen_t len = sizeof(clnt_adr);
                     if (getpeername (clnt_sock, (struct sockaddr*) &clnt_adr,
-                                      &len) == 0)
+                                     &len) == 0)
                     {
                         LOG(INFO) << "对方IP："
                                 << inet_ntoa (clnt_adr.sin_addr);
-                        LOG(INFO) << "对方PORT："
-                                << ntohs (clnt_adr.sin_port);
+                        LOG(INFO) << "对方PORT：" << ntohs (clnt_adr.sin_port);
                     }
 
                     setNonBlockingMode (clnt_sock);
@@ -202,7 +201,7 @@ private:
 //                            clients[clnt_sock] = client;
                         }
                         iter = clients.find (clnt_sock);
-                        iter->second->sendMsg(buf);
+                        iter->second->sendMsg (buf);
                     }
                     LOG(INFO)
                             << "==========================end============================";
@@ -221,8 +220,8 @@ private:
     }
 
 public:
-    tcpServer (int inPort = 19870, int outPort = 21, int stderrFlag = 0) : inPort (
-            inPort), outPort (outPort)
+    tcpServer (int inPort = 19870, int outPort = 21, int stderrFlag = 0) :
+            inPort (inPort), outPort (outPort)
     {
         int ret = 0;
 
