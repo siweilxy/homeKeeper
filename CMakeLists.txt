@@ -9,6 +9,7 @@ add_subdirectory(common)
 add_subdirectory(frame)
 add_subdirectory(mailServer)
 add_subdirectory(proxyServer)
+add_subdirectory(sqlGenerate)
 
 
 
