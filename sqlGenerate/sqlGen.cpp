@@ -133,17 +133,17 @@ int main (int argc, char **argv)
             memset(buf,0,sizeof(buf));
             snprintf(buf,sizeof(buf),"    params[%d].buffer_type = MYSQL_TYPE_STRING;\n",i);
             fileCode = fileCode + buf;
-            std::cout<<"fileCode is "<<fileCode<<std::endl;
+            //std::cout<<"fileCode is "<<fileCode<<std::endl;
 
             memset(buf,0,sizeof(buf));
             snprintf(buf,sizeof(buf),"    params[%d].buffer = %s.%s;\n",i,structName.c_str(),fieldInfo[i].name.c_str());
             fileCode = fileCode + buf;
-            std::cout<<"fileCode is "<<fileCode<<std::endl;
+            //std::cout<<"fileCode is "<<fileCode<<std::endl;
 
             memset(buf,0,sizeof(buf));
             snprintf(buf,sizeof(buf),"    params[%d].buffer_length = sizeof(%s.%s);\n",i,structName.c_str(),fieldInfo[i].name.c_str());
             fileCode = fileCode + buf +"\n";
-            std::cout<<"fileCode is "<<fileCode<<std::endl;
+            //std::cout<<"fileCode is "<<fileCode<<std::endl;
         }
     }
     file f("./code.c");

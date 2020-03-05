@@ -42,7 +42,7 @@ public:
     int write(std::string fileInfo)
     {
         int ret = 0;
-        std::cout<<"fileInfo is "<<fileInfo<<std::endl;
+        //std::cout<<"fileInfo is "<<fileInfo<<std::endl;
         ret = fwrite(fileInfo.c_str(),fileInfo.length(),1,fp);
         return ret;
     }
