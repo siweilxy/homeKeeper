@@ -11,6 +11,7 @@
 #include <mysql/mysql.h>
 #include <iostream>
 #include <string.h>
+#include "file.hpp"
 typedef struct field_s
 {
     std::string name;
@@ -40,7 +41,7 @@ int getTypeAndLength(std::string res,field_t&field)
 
 int main (int argc, char **argv)
 {
-    std::string ip, port, dbUser, passwd, dbName, tableName, sql;
+    std::string ip, port, dbUser, passwd, dbName, tableName, sql,fileCode,genSql,structName;
     int ret = 0;
     std::vector<field_t>fieldInfo;
 
@@ -49,9 +50,9 @@ int main (int argc, char **argv)
     MYSQL_FIELD *field; /*字段结构指针*/
     MYSQL_ROW result_row; /*按行返回的查询信息*/
     int row, column; /*查询返回的行数和列数*/
-    if (argc < 7)
+    if (argc < 8)
     {
-        printf ("argv error sqlGen ip port dbUser passwd dbName\n");
+        printf ("argv error sqlGen ip port dbUser passwd dbName tableName structName\n");
         return 0;
     }
     ip = argv[1];
@@ -60,9 +61,10 @@ int main (int argc, char **argv)
     passwd = argv[4];
     dbName = argv[5];
     tableName = argv[6];
+    structName = argv[7];
     sql = "desc " + tableName;
-    printf ("ip:%s, port:%s,dbUser:%s,passwd:%s,dbName:%s\n", ip.c_str (),
-            port.c_str (), dbUser.c_str (), passwd.c_str (), dbName.c_str ());
+    printf ("ip:%s, port:%s,dbUser:%s,passwd:%s,dbName:%s,tableName:%s,structName:%s\n", ip.c_str (),
+            port.c_str (), dbUser.c_str (), passwd.c_str (), dbName.c_str (),tableName.c_str(),structName.c_str());
 
     conn = mysql_init (NULL);
 
@@ -102,13 +104,49 @@ int main (int argc, char **argv)
             //printf ("%10s ", result_row[j]);
         }
     }
+    genSql = "select ";
+    int p=0;
     for(auto info :fieldInfo)
     {
-        std::cout<<"name:"<<info.name<<std::endl;
-        std::cout<<"type:"<<info.type<<std::endl;
-        std::cout<<"length:"<<info.length<<std::endl;
+        p++;
+        std::cout<<"name:"<<info.name;
+        std::cout<<"; type:"<<info.type;
+        std::cout<<"; length:"<<info.length<<std::endl;
+        if(fieldInfo.size() == p)
+        {
+            genSql=genSql + info.name + " ";
+        }else
+        {
+            genSql=genSql + info.name + ", ";
+        }
     }
+    genSql = genSql + " from "+ tableName;
+    std::cout<<"genSql is "<<genSql<<std::endl;
 
+    fileCode = fileCode + "    memset(params, 0, sizeof(params));\n";
+    char buf[512]={0};
+    std::string buffer_type,buffer,buffer_length;
+    for(int i = 0;i<=p;i++)
+    {
+        if(fieldInfo[i].type == "varchar")
+        {
+            memset(buf,0,sizeof(buf));
+            snprintf(buf,sizeof(buf),"    params[%d].buffer_type = MYSQL_TYPE_STRING;\n",i);
+            fileCode = fileCode + buf;
+            std::cout<<"fileCode is "<<fileCode<<std::endl;
 
+            memset(buf,0,sizeof(buf));
+            snprintf(buf,sizeof(buf),"    params[%d].buffer = %s.%s;\n",i,structName.c_str(),fieldInfo[i].name.c_str());
+            fileCode = fileCode + buf;
+            std::cout<<"fileCode is "<<fileCode<<std::endl;
+
+            memset(buf,0,sizeof(buf));
+            snprintf(buf,sizeof(buf),"    params[%d].buffer_length = sizeof(%s.%s);\n",i,structName.c_str(),fieldInfo[i].name.c_str());
+            fileCode = fileCode + buf +"\n";
+            std::cout<<"fileCode is "<<fileCode<<std::endl;
+        }
+    }
+    file f("./code.c");
+    f.write(fileCode);
     return 0;
 }

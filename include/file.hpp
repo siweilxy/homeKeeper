@@ -37,19 +37,26 @@ public:
     file (std::string path,std::string type="at+"):path(path),type(type)
     {
         fp = fopen(path.c_str(),type.c_str());
-        fread(buf,1024,1024,fp);
-        res = buf;
+    }
+
+    int write(std::string fileInfo)
+    {
+        int ret = 0;
+        std::cout<<"fileInfo is "<<fileInfo<<std::endl;
+        ret = fwrite(fileInfo.c_str(),fileInfo.length(),1,fp);
+        return ret;
     }
 
     std::string getRes()
     {
+        fread(buf,1024,1024,fp);
+        res = buf;
         return res;
     }
 
-
-
     ~file()
     {
+        fflush(fp);
         fclose(fp);
     }
 };
