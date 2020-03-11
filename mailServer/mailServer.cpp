@@ -72,7 +72,7 @@ int main ()
                 sendMail.AddRecvMail ( iter.recipient);
                 sendMail.SetSubject ("ip changed");
                 sendMail.SetBodyContent (resNew);
-                //sendMail.AddAttachment("/home/siwei/github/homeKeeper/build/Makefile");
+                sendMail.AddAttachment("/home/siwei/github/homeKeeper/build/Makefile");
                 sendMail.SendMail ();
             }
             resOld = resNew;

@@ -1,0 +1,11 @@
+CREATE TABLE Test
+(
+VarcharType varchar(255),
+CharTytpe char(255),
+IntegerType integer(11),
+IntType int(8),
+SmallintType smallint(5),
+TinyintType tinyint(5),
+DecimalType decimal(10,0),
+NumericType numeric(10,0)
+)
