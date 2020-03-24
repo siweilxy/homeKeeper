@@ -25,7 +25,7 @@
 #include "tblEmailInfo.hpp"
 
 #define USERNAME "siweilxy@163.com"
-#define PASSWORD "sd982597"
+#define PASSWORD "HGIENKTKTIOBXVCV"
 #define SMTPSERVER "smtp.163.com"
 #define SMTPPORT ":25"
 #define RECIPIENT "<251826184@qq.com>"
@@ -49,6 +49,7 @@ int main ()
     }
 
     resNew = curlUtil ("icanhazip.com");
+    printf(" resNew is %s\n",resNew.c_str());
 
     EmailSender sendMail;
     sendMail.SetSmtpServer (USERNAME, PASSWORD, SMTPSERVER);
@@ -57,7 +58,7 @@ int main ()
     sendMail.AddRecvMail (RECIPIENT);
     sendMail.SetSubject ("ip changed");
     sendMail.SetBodyContent (resNew);
-    sendMail.AddAttachment ("/home/siwei/work/github/homeKeeper/CMakeLists.txt");
+    //sendMail.AddAttachment ("/home/siwei/work/github/homeKeeper/CMakeLists.txt");
     sendMail.SendMail ();
 
     return 0;

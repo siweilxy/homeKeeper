@@ -47,6 +47,20 @@ std::string curlUtil (std::string url)
             curl_easy_cleanup (curl);
         }
     }
-    return result;
+    int position = 0;
+    printf("result is %s\n",result.c_str());
+    for(int i = 0;i<result.size();i++)
+    {
+        if(result[i]<'0'||result[i]>'9')
+        {
+            if(result[i] != '.')
+            {
+                position = i;
+                break;
+            }
+        }
+    }
+
+    return result.substr(0,position);
 }
 
