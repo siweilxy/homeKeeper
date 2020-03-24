@@ -22,6 +22,7 @@ size_t copy_data (void *ptr, size_t size, size_t nmemb, void *stream)
 
     res_size = size * nmemb;
     res_buf = (char*) malloc (res_size);
+    memset(res_buf,0,res_size);
     memcpy (res_buf, ptr, res_size);
     shift += res_size;
     result = res_buf;

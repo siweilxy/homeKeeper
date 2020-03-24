@@ -18,7 +18,7 @@
 #include "tblEmailInfo.hpp"
 
 #define USERNAME "siweilxy@163.com"
-#define PASSWORD "sd982597"
+#define PASSWORD "HGIENKTKTIOBXVCV"
 #define SMTPSERVER "smtp.163.com"
 #define SMTPPORT ":25"
 #define RECIPIENT "<251826184@qq.com>"
