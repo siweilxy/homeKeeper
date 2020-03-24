@@ -48,7 +48,7 @@ std::string curlUtil (std::string url)
         }
     }
     int position = 0;
-    printf("result is %s\n",result.c_str());
+    //printf("result is %s\n",result.c_str());
     for(int i = 0;i<result.size();i++)
     {
         if(result[i]<'0'||result[i]>'9')
