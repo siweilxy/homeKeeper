@@ -25,7 +25,6 @@ FILE(GLOB_RECURSE all_files
         *.cc
         )
 
-
 link_directories("$ENV{HOME}/work/github/homeKeeper/lib/")
 
 source_group(all_files)
@@ -36,8 +35,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 add_executable(mailServer mailServer.cpp)
 add_executable(mailTest mailTest.cpp)
 
-target_link_libraries(mailServer logUtil curl mysqlclient)
-target_link_libraries(mailTest logUtil curl mysqlclient)
+target_link_libraries(mailServer logUtil curl mysqlclient mimetic)
+target_link_libraries(mailTest logUtil curl mysqlclient mimetic)
 
 
 

@@ -58,7 +58,7 @@ int main ()
     sendMail.AddRecvMail (RECIPIENT);
     sendMail.SetSubject ("ip changed");
     sendMail.SetBodyContent (resNew);
-    //sendMail.AddAttachment ("/home/siwei/work/github/homeKeeper/CMakeLists.txt");
+    sendMail.AddAttachment ("/home/siwei/work/github/homeKeeper/CMakeLists.txt");
     sendMail.SendMail ();
 
     return 0;
