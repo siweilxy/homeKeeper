@@ -87,7 +87,6 @@ static void* startFunc (void *para)
     free (para);
     auto func = threadPool::getFun (index);
     func(nullptr);
-
     return nullptr;
 }
 
