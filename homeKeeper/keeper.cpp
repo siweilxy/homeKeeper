@@ -22,7 +22,14 @@ int keeper::start()
     }
     threadPool pool;
 
-    pool.setFunction(test);
+    LOG(INFO) << "funcArray.size() is " << funcArray.size();
+
+
+    for(int i = 0;i<funcArray.size();i++)
+    {
+        pool.setFunction(funcArray[i]);
+    }
+
     pool.start();
     return 0;
 }

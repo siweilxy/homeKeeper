@@ -17,6 +17,11 @@
 static void* startFunc (void *para);
 static std::vector<std::function<void* (void*)>> funcs;
 
+typedef struct para_s
+{
+    int i;
+} para_t;
+
 class threadPool
 {
 public:
@@ -50,15 +55,18 @@ public:
 
         for (int i = 0; i < funcs.size (); i++)
         {
+            para_t* p = (para_t*)malloc(sizeof(para_t));
+            p->i = i;
             pthread_t t;
-            int index = i;
-            pthread_create (&t, NULL, startFunc, (void*) &index);
+            pthread_create (&t, NULL, startFunc, (void*) p);
+            threads.push_back(&t);
             LOG(WARNING) << "pthread_create end i is "<<i;
         }
-        while(1)
+        LOG(WARNING) << "pthread_join ";
+        for(auto p:threads)
         {
-            sleep(1);
-        };
+            pthread_join(*p,nullptr);
+        }
     }
 
     ~threadPool ()
@@ -73,7 +81,9 @@ private:
 
 static void* startFunc (void *para)
 {
-    int index = *(int*)para;
+    int index = ((para_t*)para)->i;
+    free (para);
+    LOG(WARNING) << "index is "<<index<<"para is "<<para;
     auto func = threadPool::getFun (index);
     func(nullptr);
 

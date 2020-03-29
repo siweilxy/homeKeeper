@@ -21,5 +21,16 @@ void* test(void* para)
     return nullptr;
 }
 
+void* getIp(void* para)
+{
+    while(1)
+    {
+        sleep(1);
+        LOG(INFO)<<"getIp";
+    }
+    return nullptr;
+}
+
+std::vector<std::function<void* (void*)>> funcArray = {test,getIp};
 
 #endif /* HOMEKEEPER_WORKFUNCTIONS_HPP_ */
