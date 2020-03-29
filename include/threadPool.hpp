@@ -57,9 +57,9 @@ public:
         {
             para_t* p = (para_t*)malloc(sizeof(para_t));
             p->i = i;
-            pthread_t t;
-            pthread_create (&t, NULL, startFunc, (void*) p);
-            threads.push_back(&t);
+            pthread_t *t = (pthread_t*)malloc(sizeof(pthread_t));
+            pthread_create (t, NULL, startFunc, (void*) p);
+            threads.push_back(t);
             LOG(WARNING) << "pthread_create end i is "<<i;
         }
         for(auto p:threads)
@@ -70,7 +70,10 @@ public:
 
     ~threadPool ()
     {
-
+        for(auto p:threads)
+        {
+            free(p);
+        }
     }
 
 private:
