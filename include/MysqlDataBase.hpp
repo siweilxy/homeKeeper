@@ -14,6 +14,7 @@
 #include "json.hpp"
 #include "common.h"
 #include "log.h"
+#include "file.hpp"
 
 using json = nlohmann::json;
 
