@@ -62,7 +62,6 @@ public:
             threads.push_back(&t);
             LOG(WARNING) << "pthread_create end i is "<<i;
         }
-        LOG(WARNING) << "pthread_join ";
         for(auto p:threads)
         {
             pthread_join(*p,nullptr);
@@ -83,7 +82,6 @@ static void* startFunc (void *para)
 {
     int index = ((para_t*)para)->i;
     free (para);
-    LOG(WARNING) << "index is "<<index<<"para is "<<para;
     auto func = threadPool::getFun (index);
     func(nullptr);
 
