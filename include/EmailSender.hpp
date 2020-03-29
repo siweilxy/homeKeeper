@@ -288,7 +288,7 @@ private:
             pt = NULL;
         }
         m_strMessage<<head;
-        std::cout<<head<<std::endl;
+        //std::cout<<head<<std::endl;
     }
 
     //获取文件类型

@@ -8,6 +8,8 @@
 #include "keeper.h"
 #include "log.h"
 #include <stdio.h>
+#include "threadPool.hpp"
+#include "workFunctions.hpp"
 
 int keeper::start()
 {
@@ -18,6 +20,10 @@ int keeper::start()
         printf("log init error");
         return -1;
     }
+    threadPool pool;
+
+    pool.setFunction(test);
+    pool.start();
     return 0;
 }
 

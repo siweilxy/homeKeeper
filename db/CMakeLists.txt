@@ -1,8 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(homeKeeper)
-
-SET(EXECUTABLE_OUTPUT_PATH $ENV{HOME}/work/github/homeKeeper/bin)
-SET(LIBRARY_OUTPUT_PATH $ENV{HOME}/work/github/homeKeeper/lib)
+project(db)
 
 macro(source_group_by_dir source_files)
     set(sgbd_cur_dir ${CMAKE_CURRENT_SOURCE_DIR})
@@ -22,22 +19,12 @@ add_definitions("-g")
 
 FILE(GLOB_RECURSE all_files
         *.cpp
-        *.cc
-        *.hpp
         )
 
-
-link_directories("$ENV{HOME}/work/github/homeKeeper/lib/")
-
 source_group(all_files)
-include_directories($ENV{HOME}/work/github/homeKeeper/include/)
-#include_directories($ENV{HOME}/work/github/homeKeeper/include/)
+include_directories($ENV{HOME}/work/github/homeKeeper/include)
 include_directories($ENV{HOME}/work/github/homeKeeper/3rdparty/include/)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
-add_executable(homeKeeper ${all_files})
-
-target_link_libraries(homeKeeper protobuf logUtil)
-
-
-
+add_library(db SHARED $(all_files))
+target_link_libraries(db)
 
