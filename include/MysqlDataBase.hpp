@@ -10,6 +10,7 @@
 
 #include <string>
 #include <mysql/mysql.h>
+#include <map>
 
 #include "json.hpp"
 #include "common.h"
@@ -27,7 +28,9 @@ private:
     std::string dateBase;
     std::string user;
     std::string passwd;
-    std::string sql;
+    MYSQL *conn = nullptr;
+    std::map<std::string,sql_stmt_t> sqlStmts;
+
     virtual int getResFromDb() = 0;
     int initDb ()
     {
@@ -43,12 +46,10 @@ private:
             return FAILED;
         }
 
-        stmt = mysql_stmt_init (conn);
-
-        ret = mysql_stmt_prepare (stmt, sql.c_str (), strlen (sql.c_str ()));
-        if (ret != SUCCESS)
+        if(setAllSql() != SUCCESS)
         {
-            LOG(ERROR) << "mysql_stmt_prepare error  " << mysql_error (conn)<<" sql is "<<sql;
+            LOG(ERROR) << "setAllSql error";
+            return FAILED;
         }
 
         if(sqlBind() != SUCCESS)
@@ -60,14 +61,26 @@ private:
         return SUCCESS;
     }
 public:
-    MYSQL *conn = nullptr;
-    MYSQL_STMT *stmt = nullptr; //创建MYSQL_STMT句柄
+    MYSQL* getConn()
+    {
+        return conn;
+    }
+    std::map<std::string,sql_stmt_t>& getStmt()
+    {
+        return sqlStmts;
+    }
+
     virtual int sqlBind () = 0;
+    virtual int setAllSql() = 0;
     virtual ~MysqlDataBase ()
     {
-        if(stmt != nullptr)
+        for(auto iter:sqlStmts)
         {
-            mysql_stmt_close(stmt);
+            LOG(ERROR) << "iter: "<<iter.first;
+            if(iter.second.flag == 0)
+            {
+                mysql_stmt_close(iter.second.stmt);
+            }
         }
 
         if(conn != nullptr)
@@ -76,9 +89,13 @@ public:
         }
     };
 
-    void setSql(std::string sql)
+    void setSql(std::string id,std::string sql)
     {
-        this->sql = sql;
+        sql_stmt_t stmt;
+        stmt.sql = sql;
+        stmt.stmt = nullptr;
+        sqlStmts[id] = stmt;
+        stmt.flag = 0;
     }
 
     int init ()
@@ -103,7 +120,7 @@ public:
         passwd = js["passwd"];
         LOG(INFO) << "ip is " << ip << " port is " << port
                 << " dateBase is " << dateBase << " user is " << user
-                << " passwd is " << passwd<< " sql is "<<sql;
+                << " passwd is " << passwd;
 
         ret = initDb ();
         if (ret != SUCCESS)

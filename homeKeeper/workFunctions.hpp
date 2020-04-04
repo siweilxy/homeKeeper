@@ -66,7 +66,7 @@ void* sendEmail (void *para)
     if(ret != SUCCESS)
     {
         LOG(ERROR)<<"emailInfo.init () failed";
-        return 0;
+        return nullptr;
     }
     while (1)
     {

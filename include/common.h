@@ -15,6 +15,7 @@
 #include <fstream>
 #include <netinet/in.h>
 #include "json.hpp"
+#include <mysql/mysql.h>
 
 #define FIFO_NAME "entry"
 
@@ -29,6 +30,23 @@ typedef struct emailInfo_s
     std::string recipient;
     std::string mailFrom;
 } emailInfo_t;
+
+typedef struct sql_stmt_s
+{
+    std::string sql;
+    MYSQL_STMT *stmt;
+    int flag;
+} sql_stmt_t;
+
+
+typedef struct ipInfo_s
+{
+    int rec_id;
+    std::string ip;
+    std::string crt_ts;
+    std::string upd_ts;
+    std::string send_flag;
+} ipInfo_t;
 
 typedef struct fd_s
 {

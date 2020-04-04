@@ -87,6 +87,7 @@ static void* startFunc (void *para)
     free (para);
     auto func = threadPool::getFun (index);
     func(nullptr);
+    LOG(WARNING) << "index fun ended";
     return nullptr;
 }
 

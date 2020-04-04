@@ -16,6 +16,7 @@ class tblEmailInfo : public MysqlDataBase
 private:
     std::string sqlForSelect =
             "select username,passwd,smtpServer,recipient,mailfrom from emailInfo";
+    std::string select = "select";
     std::vector<emailInfo_t> emailInfos;
     MYSQL_BIND params[5];
     char userName[100];
@@ -30,7 +31,8 @@ private:
         int ret = 0;
         while (1)
         {
-            ret = mysql_stmt_fetch (stmt);
+            auto stmts = getStmt();
+            ret = mysql_stmt_fetch (stmts[select].stmt);
             if (ret == 0)
             {
                 emailInfo_t emailInfo;
@@ -48,10 +50,9 @@ private:
             }
             else
             {
-                LOG(ERROR) << "FETCH ERROR " << mysql_error (conn);
+                LOG(ERROR) << "FETCH ERROR " << mysql_error (getConn());
                 return FAILED;
             }
-
         }
         EXIT
         return SUCCESS;
@@ -63,6 +64,22 @@ public:
         ENTER
         int ret = 0;
         memset(params, 0, sizeof(params));
+
+        MYSQL_STMT *siwei = nullptr;
+
+        for(auto& iter:getStmt())
+        {
+            siwei = mysql_stmt_init (getConn());
+            iter.second.stmt = mysql_stmt_init (getConn());
+            ret = mysql_stmt_prepare (iter.second.stmt, iter.second.sql.c_str (), strlen (iter.second.sql.c_str ()));
+            if (ret != SUCCESS)
+            {
+                LOG(ERROR) << "mysql_stmt_prepare error  " << mysql_stmt_error (iter.second.stmt);
+                iter.second.flag = 1;
+                return FAILED;
+            }
+        }
+
         params[0].buffer_type = MYSQL_TYPE_STRING;
         params[0].buffer = userName;
         params[0].buffer_length = sizeof(userName);
@@ -83,22 +100,29 @@ public:
         params[4].buffer = mailFrom;
         params[4].buffer_length = sizeof(mailFrom);
 
-        ret = mysql_stmt_bind_result (stmt, params); //用于将结果集中的列与数据缓冲和长度缓冲关联（绑定）起来
+        auto sql_stmt = getStmt();
+        ret = mysql_stmt_bind_result (sql_stmt[select].stmt, params); //用于将结果集中的列与数据缓冲和长度缓冲关联（绑定）起来
         if(ret != SUCCESS)
         {
-            LOG(ERROR)<<"mysql_stmt_bind_result error: "<<ret;
+            sql_stmt[select].flag = 1;
+            LOG(ERROR)<<"mysql_stmt_bind_result error: "<<mysql_stmt_error(sql_stmt[select].stmt)<<" id is "<<this->select;
+            return FAILED;
         }
 
-        ret = mysql_stmt_execute (stmt);           //执行与语句句柄相关的预处理
+        ret = mysql_stmt_execute (sql_stmt[select].stmt);           //执行与语句句柄相关的预处理
         if(ret != SUCCESS)
         {
+            sql_stmt[select].flag = 1;
             LOG(ERROR)<<"mysql_stmt_execute error: "<<ret;
+            return FAILED;
         }
 
-        ret = mysql_stmt_store_result (stmt);      //以便后续的mysql_stmt_fetch()调用能返回缓冲数据
+        ret = mysql_stmt_store_result (sql_stmt[select].stmt);      //以便后续的mysql_stmt_fetch()调用能返回缓冲数据
         if(ret != SUCCESS)
         {
+            sql_stmt[select].flag = 1;
             LOG(ERROR)<<"mysql_stmt_store_result error: "<<ret;
+            return FAILED;
         }
 
         EXIT
@@ -117,9 +141,14 @@ public:
         return emailInfos;
     }
 
+    int setAllSql() override
+    {
+        setSql (select,sqlForSelect);
+        return SUCCESS;
+    }
+
     tblEmailInfo ()
     {
-        setSql (sqlForSelect);
     }
 };
 
