@@ -26,7 +26,7 @@ private:
     std::string sqlForInsert =
             "insert into ipInfo (ip,crt_ts,upd_ts,send_flag) values (?,now(),now(),0)";
     std::string sqlForUpdate=
-            "update ipInfo set send_flag=1 where ip=?";
+            "update ipInfo set send_flag=1,upd_ts=now() where ip=?";
 
     MYSQL_BIND params_select[3];
     MYSQL_BIND params_insert[1];

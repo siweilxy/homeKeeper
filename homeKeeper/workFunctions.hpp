@@ -72,6 +72,7 @@ void* sendEmail (void *para)
         tblIpInfo ipInfo;
         ipInfo.init();
         auto info = ipInfo.getRes();
+        bool ret = true;
         if(info.empty())
         {
             continue;
@@ -92,11 +93,15 @@ void* sendEmail (void *para)
                     sendMail.SetSubject ("ip changed");
                     sendMail.SetBodyContent (info[0].ip);
                     //sendMail.AddAttachment("/home/siwei/github/homeKeeper/build/Makefile");
-                    sendMail.SendMail ();
+                    ret = sendMail.SendMail ()&ret;
                 }
 
-                ipInfo.updateToDb(info[0].ip);
-                LOG(WARNING) << "update " << info[0].ip<<" send_flag to 1";
+                if(ret)
+                {
+                    ipInfo.updateToDb(info[0].ip);
+                    LOG(WARNING) << "update " << info[0].ip<<" send_flag to 1";
+                }
+
             }
         }
     }
