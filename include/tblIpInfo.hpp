@@ -22,7 +22,7 @@ private:
     std::vector<ipInfo_t> ipInfos;
 
     std::string sqlForSelect =
-            "select rec_id,ip，send_flag from ipInfo where rec_id=(select max(rec_id) from ipInfo) for update";
+            "select rec_id,ip,send_flag from ipInfo where rec_id=(select max(rec_id) from ipInfo) for update";
     std::string sqlForInsert =
             "insert into ipInfo (ip,crt_ts,upd_ts,send_flag) values (?,now(),now(),0)";
     std::string sqlForUpdate=
@@ -33,32 +33,106 @@ private:
     MYSQL_BIND params_update[1];
 
     int rec_id = 0;
-    char ip[100];
+    char ip[100] = {0};
     char send_flag[1];
-    char ip_insert[100];
-    char ip_update[100];
+    char ip_insert[100]={0};
+    char ip_update[100]={0};
 
-    int insertToDb(std::string ip)
+    int setAllSql() override
     {
-        ip_insert = ip.c_str();
-        auto ret = mysql_stmt_execute(getStmt()[insert].stmt);
-        if(ret != SUCCESS)
-        {
-            LOG(ERROR)<<"mysql_stmt_execute error: "<<ret;
-            return FAILED;
-        }
+        setSql (select,sqlForSelect);
+        setSql (update,sqlForUpdate);
+        setSql (insert,sqlForInsert);
         return SUCCESS;
     }
 
+    int sqlBind () override
+    {
+        ENTER
+        int ret = 0;
+        memset(params_select, 0, sizeof(params_select));
+        memset(params_insert, 0, sizeof(params_insert));
+        memset(params_update, 0, sizeof(params_update));
+
+        for(auto& iter:getStmt())
+        {
+            iter.second.stmt = mysql_stmt_init (getConn());
+            ret = mysql_stmt_prepare (iter.second.stmt, iter.second.sql.c_str (), strlen (iter.second.sql.c_str ()));
+            if (ret != SUCCESS)
+            {
+                LOG(ERROR) << "mysql_stmt_prepare error  " << mysql_stmt_error (iter.second.stmt);
+                iter.second.flag = 1;
+                return FAILED;
+            }
+        }
+
+        auto selectStmt= getStmt()[select].stmt;
+        auto insertStmt= getStmt()[insert].stmt;
+        auto updateStmt= getStmt()[update].stmt;
+
+
+        params_select[0].buffer_type = MYSQL_TYPE_LONG;
+        params_select[0].buffer = &rec_id;
+        params_select[0].buffer_length = sizeof(rec_id);
+
+        params_select[1].buffer_type = MYSQL_TYPE_STRING;
+        params_select[1].buffer = ip;
+        params_select[1].buffer_length = sizeof(ip);
+
+        params_select[2].buffer_type = MYSQL_TYPE_STRING;
+        params_select[2].buffer = send_flag;
+        params_select[2].buffer_length = sizeof(send_flag);
+
+        params_insert[0].buffer_type = MYSQL_TYPE_STRING;
+        params_insert[0].buffer = ip_insert;
+        params_insert[0].buffer_length = sizeof(ip_insert);
+
+        params_update[0].buffer_type = MYSQL_TYPE_STRING;
+        params_update[0].buffer = ip_update;
+        params_update[0].buffer_length = sizeof(ip_update);
+
+        ret = mysql_stmt_bind_result (selectStmt, params_select); //用于将结果集中的列与数据缓冲和长度缓冲关联（绑定）起来
+        if(ret != SUCCESS)
+        {
+            LOG(ERROR)<<"mysql_stmt_bind_result error: "<<mysql_stmt_error(selectStmt);
+            return FAILED;
+        }
+
+        ret = mysql_stmt_bind_param(insertStmt, params_insert);
+        if(ret != SUCCESS)
+        {
+            LOG(ERROR)<<"mysql_stmt_bind_param error: "<<mysql_stmt_error(insertStmt);
+            return FAILED;
+        }
+
+        ret = mysql_stmt_bind_param(updateStmt, params_update);
+        if(ret != SUCCESS)
+        {
+            LOG(ERROR)<<"mysql_stmt_bind_param error: "<<mysql_stmt_error(updateStmt);
+            return FAILED;
+        }
+
+        EXIT
+        return SUCCESS;
+    }
+
+public:
     int updateToDb(std::string ip)
     {
-        ip_update = ip.c_str();
+        snprintf(ip_update,sizeof(ip_update),"%s",ip.c_str());
         auto ret = mysql_stmt_execute(getStmt()[update].stmt);
         if(ret != SUCCESS)
         {
-            LOG(ERROR)<<"mysql_stmt_execute error: "<<ret;
+            LOG(ERROR)<<"mysql_stmt_execute error: "<<mysql_stmt_error(getStmt()[update].stmt);
             return FAILED;
         }
+        ret = mysql_commit(getConn());
+        if(ret != SUCCESS)
+        {
+            LOG(ERROR)<<"mysql_commit error: "<<mysql_stmt_error(getStmt()[update].stmt);
+            return FAILED;
+        }
+
         return SUCCESS;
     }
 
@@ -99,7 +173,7 @@ private:
             }
             else
             {
-                LOG(ERROR) << "FETCH ERROR " << mysql_error (conn);
+                LOG(ERROR) << "FETCH ERROR " << mysql_stmt_error (stmt);
                 return FAILED;
             }
 
@@ -108,65 +182,20 @@ private:
         return SUCCESS;
     }
 
-public:
-    int sqlBind () override
+    int insertToDb(std::string ip)
     {
-        ENTER
-        int ret = 0;
-        auto selectStmt= getStmt()[select].stmt;
-        auto insertStmt= getStmt()[insert].stmt;
-        auto updateStmt= getStmt()[update].stmt;
-
-        memset(params_select, 0, sizeof(params_select));
-        memset(params_insert, 0, sizeof(params_insert));
-        memset(params_update, 0, sizeof(params_update));
-
-        params_select[0].buffer_type = MYSQL_TYPE_LONG;
-        params_select[0].buffer = &rec_id;
-        params_select[0].buffer_length = sizeof(rec_id);
-
-        params_select[1].buffer_type = MYSQL_TYPE_STRING;
-        params_select[1].buffer = ip;
-        params_select[1].buffer_length = sizeof(ip);
-
-        params_select[2].buffer_type = MYSQL_TYPE_STRING;
-        params_select[2].buffer = send_flag;
-        params_select[2].buffer_length = sizeof(send_flag);
-
-        params_insert[0].buffer_type = MYSQL_TYPE_STRING;
-        params_insert[0].buffer = ip_insert;
-        params_insert[0].buffer_length = sizeof(ip_insert);
-
-        params_update[0].buffer_type = MYSQL_TYPE_STRING;
-        params_update[0].buffer = ip_update;
-        params_update[0].buffer_length = sizeof(ip_update);
-
-        ret = mysql_stmt_bind_result (selectStmt, params_select); //用于将结果集中的列与数据缓冲和长度缓冲关联（绑定）起来
+        snprintf(ip_insert,sizeof(ip_insert),"%s",ip.c_str());
+        auto ret = mysql_stmt_execute(getStmt()[insert].stmt);
         if(ret != SUCCESS)
         {
-            LOG(ERROR)<<"mysql_stmt_bind_result error: "<<ret;
+            LOG(ERROR)<<"mysql_stmt_execute error: "<<mysql_stmt_error(getStmt()[insert].stmt);
+            LOG(ERROR)<<"ip is "<<ip.c_str();
             return FAILED;
         }
-
-        ret = mysql_stmt_bind_param(insertStmt, params_insert);
-        if(ret != SUCCESS)
-        {
-            LOG(ERROR)<<"mysql_stmt_bind_param error: "<<ret;
-            return FAILED;
-        }
-
-        ret = mysql_stmt_bind_param(updateStmt, params_update);
-        if(ret != SUCCESS)
-        {
-            LOG(ERROR)<<"mysql_stmt_bind_param error: "<<ret;
-            return FAILED;
-        }
-
-        EXIT
         return SUCCESS;
     }
 
-    std::vector<ipInfos> getRes ()
+    std::vector<ipInfo_t> getRes ()
     {
         ENTER
         int ret = getResFromDb();
@@ -176,15 +205,6 @@ public:
         }
         EXIT
         return ipInfos;
-    }
-
-
-    int setAllSql() override
-    {
-        setSql (select,sqlForSelect);
-        setSql (update,sqlForUpdate);
-        setSql (insert,sqlForInsert);
-        return SUCCESS;
     }
 
     tblIpInfo ()

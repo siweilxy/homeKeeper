@@ -65,11 +65,8 @@ public:
         int ret = 0;
         memset(params, 0, sizeof(params));
 
-        MYSQL_STMT *siwei = nullptr;
-
         for(auto& iter:getStmt())
         {
-            siwei = mysql_stmt_init (getConn());
             iter.second.stmt = mysql_stmt_init (getConn());
             ret = mysql_stmt_prepare (iter.second.stmt, iter.second.sql.c_str (), strlen (iter.second.sql.c_str ()));
             if (ret != SUCCESS)

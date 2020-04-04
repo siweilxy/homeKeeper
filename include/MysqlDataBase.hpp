@@ -16,6 +16,7 @@
 #include "common.h"
 #include "log.h"
 #include "file.hpp"
+#include <iconv.h>
 
 using json = nlohmann::json;
 
@@ -61,6 +62,37 @@ private:
         return SUCCESS;
     }
 public:
+
+    int code_convert(char *from_charset,char *to_charset,char *inbuf,size_t inlen,char *outbuf,size_t outlen)
+    {
+        iconv_t cd;
+        int rc;
+        char **pin = &inbuf;
+        char **pout = &outbuf;
+
+        cd = iconv_open(to_charset,from_charset);
+        if (cd==0) return -1;
+        memset(outbuf,0,outlen);
+        if (iconv(cd,pin,&inlen,pout,&outlen)==-1) return -1;
+        iconv_close(cd);
+        return 0;
+    }
+
+    /*UNICODE码转为GB2312码*/
+    int u2g(char *inbuf,size_t inlen,char *outbuf,size_t outlen)
+    {
+        char utf8[]="utf-8";
+        char gb[]="gb2312";
+        return code_convert(utf8,gb,inbuf,inlen,outbuf,outlen);
+    }
+    /*GB2312码转为UNICODE码*/
+    int g2u(char *inbuf,size_t inlen,char *outbuf,size_t outlen)
+    {
+        char utf8[]="utf-8";
+        char gb[]="gb2312";
+        return code_convert(gb,utf8,inbuf,inlen,outbuf,outlen);
+    }
+
     MYSQL* getConn()
     {
         return conn;
@@ -76,7 +108,6 @@ public:
     {
         for(auto iter:sqlStmts)
         {
-            LOG(ERROR) << "iter: "<<iter.first;
             if(iter.second.flag == 0)
             {
                 mysql_stmt_close(iter.second.stmt);

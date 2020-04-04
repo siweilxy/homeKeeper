@@ -60,7 +60,6 @@ std::string curlUtil (std::string url)
             }
         }
     }
-
     return result.substr(0,position);
 }
 
