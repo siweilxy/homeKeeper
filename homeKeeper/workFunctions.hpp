@@ -14,7 +14,7 @@
 #include "tblEmailInfo.hpp"
 #include "file.hpp"
 #include "tblIpInfo.hpp"
-#include <sys/prctl.h>
+#include <map>
 
 #define USERNAME "siweilxy@163.com"
 #define PASSWORD "HGIENKTKTIOBXVCV"
@@ -41,7 +41,6 @@ void* test (void *para)
 
 void* getIp (void *para)
 {
-    prctl(PR_SET_NAME, "getIp");
     std::string resNew = "new";
     while (1)
     {
@@ -61,7 +60,6 @@ void* getIp (void *para)
 
 void* sendEmail (void *para)
 {
-    prctl(PR_SET_NAME, "sendEmail");
     tblEmailInfo emailInfo;
     int ret = emailInfo.init ();
     if(ret != SUCCESS)
@@ -111,6 +109,6 @@ void* sendEmail (void *para)
     return nullptr;
 }
 
-std::vector<std::function<void* (void*)>> funcArray = { getIp ,sendEmail};
+std::map<std::string,std::function<void* (void*)>> funcMap = {{"getIp",getIp} ,{"sendEmail",sendEmail}};
 
 #endif /* HOMEKEEPER_WORKFUNCTIONS_HPP_ */

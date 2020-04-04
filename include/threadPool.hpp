@@ -13,13 +13,15 @@
 #include <vector>
 #include "log.h"
 #include <functional>
+#include <map>
+#include <sys/prctl.h>
 
 static void* startFunc (void *para);
-static std::vector<std::function<void* (void*)>> funcs;
+static std::map<std::string,std::function<void* (void*)>> funcs;
 
 typedef struct para_s
 {
-    int i;
+    std::string name;
 } para_t;
 
 class threadPool
@@ -31,12 +33,12 @@ public:
         LOG(INFO) << "threadNO is " << threadNo;
     }
 
-    static void setFunction (std::function<void* (void*)> func)
+    static void setFunction (std::string name,std::function<void* (void*)> func)
     {
-        funcs.push_back (func);
+        funcs[name]=func;
     }
 
-    static std::function<void* (void*)> getFun (int i)
+    static std::function<void* (void*)> getFun (std::string i)
     {
         return funcs[i];
     }
@@ -53,14 +55,14 @@ public:
             return;
         }
 
-        for (int i = 0; i < funcs.size (); i++)
+        for (auto iter:funcs)
         {
-            para_t* p = (para_t*)malloc(sizeof(para_t));
-            p->i = i;
+            para_t* p = new para_t;;
+            p->name =iter.first ;
             pthread_t *t = (pthread_t*)malloc(sizeof(pthread_t));
             pthread_create (t, NULL, startFunc, (void*) p);
             threads.push_back(t);
-            LOG(WARNING) << "pthread_create end i is "<<i;
+            LOG(WARNING) << "pthread_create end name is "<<p->name;
         }
         for(auto p:threads)
         {
@@ -83,9 +85,11 @@ private:
 
 static void* startFunc (void *para)
 {
-    int index = ((para_t*)para)->i;
-    free (para);
-    auto func = threadPool::getFun (index);
+    std::string name = ((para_t*)para)->name;
+    prctl(PR_SET_NAME, name.c_str());
+    LOG(ERROR) << "prctl name is "<<name;
+    delete (para_t*)para;
+    auto func = threadPool::getFun (name);
     func(nullptr);
     LOG(WARNING) << "index fun ended";
     return nullptr;
