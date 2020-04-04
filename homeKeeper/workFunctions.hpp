@@ -14,6 +14,7 @@
 #include "tblEmailInfo.hpp"
 #include "file.hpp"
 #include "tblIpInfo.hpp"
+#include <sys/prctl.h>
 
 #define USERNAME "siweilxy@163.com"
 #define PASSWORD "HGIENKTKTIOBXVCV"
@@ -40,6 +41,7 @@ void* test (void *para)
 
 void* getIp (void *para)
 {
+    prctl(PR_SET_NAME, "getIp");
     std::string resNew = "new";
     while (1)
     {
@@ -59,6 +61,7 @@ void* getIp (void *para)
 
 void* sendEmail (void *para)
 {
+    prctl(PR_SET_NAME, "sendEmail");
     tblEmailInfo emailInfo;
     int ret = emailInfo.init ();
     if(ret != SUCCESS)
