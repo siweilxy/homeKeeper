@@ -105,7 +105,8 @@ int log::init(int stderrFlag)
     LOG(INFO)<< "INFO log path is "<<(info_log + "info");
     LOG(WARNING)<< "WARNING log path is "<<(info_log + "warn");
     LOG(ERROR)<< "ERROR log path is "<<(info_log + "error");
-
+    FLAGS_minloglevel = level;
+    //google::SetStderrLogging(google::FATAL);
     flag = 1;
     return 0;
 }
