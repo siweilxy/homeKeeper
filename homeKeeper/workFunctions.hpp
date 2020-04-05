@@ -42,12 +42,18 @@ void* test (void *para)
 void* getIp (void *para)
 {
     std::string resNew = "new";
+    int ret = 0;
     while (1)
     {
         sleep (2);
         resNew = curlUtil ("icanhazip.com");
         tblIpInfo ipInfo;
-        ipInfo.init();
+        ret = ipInfo.init();
+        if(ret != SUCCESS)
+        {
+            LOG(ERROR)<<"init failed";
+            continue;
+        }
         auto info = ipInfo.getRes();
         if(info.empty() || info[0].ip != resNew)
         {
@@ -71,9 +77,14 @@ void* sendEmail (void *para)
     {
         sleep (5);
         tblIpInfo ipInfo;
-        ipInfo.init();
+        ret = ipInfo.init();
+        if(ret != SUCCESS)
+        {
+            LOG(ERROR)<<"emailInfo.init () failed";
+            continue;
+        }
         auto info = ipInfo.getRes();
-        bool ret = true;
+        bool result = true;
         if(info.empty())
         {
             continue;
@@ -94,12 +105,12 @@ void* sendEmail (void *para)
                     sendMail.SetSubject ("ip changed");
                     sendMail.SetBodyContent (info[0].ip);
                     //sendMail.AddAttachment("/home/siwei/github/homeKeeper/build/Makefile");
-                    ret = sendMail.SendMail ()&ret;
+                    result = sendMail.SendMail() & result;
                 }
 
-                if(ret)
+                if(result)
                 {
-                    ipInfo.updateToDb(info[0].ip);
+                    ipInfo.updateToDb(info[0].rec_id);
                     LOG(WARNING) << "update " << info[0].ip<<" send_flag to 1";
                 }
 

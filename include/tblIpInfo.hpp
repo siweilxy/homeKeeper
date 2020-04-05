@@ -26,7 +26,7 @@ private:
     std::string sqlForInsert =
             "insert into ipInfo (ip,crt_ts,upd_ts,send_flag) values (?,now(),now(),0)";
     std::string sqlForUpdate=
-            "update ipInfo set send_flag=1,upd_ts=now() where ip=?";
+            "update ipInfo set send_flag=1,upd_ts=now() where rec_id=?";
 
     MYSQL_BIND params_select[3];
     MYSQL_BIND params_insert[1];
@@ -36,7 +36,7 @@ private:
     char ip[100] = {0};
     char send_flag[1];
     char ip_insert[100]={0};
-    char ip_update[100]={0};
+    int rec_id_update = 0;
 
     int setAllSql() override
     {
@@ -87,9 +87,9 @@ private:
         params_insert[0].buffer = ip_insert;
         params_insert[0].buffer_length = sizeof(ip_insert);
 
-        params_update[0].buffer_type = MYSQL_TYPE_STRING;
-        params_update[0].buffer = ip_update;
-        params_update[0].buffer_length = sizeof(ip_update);
+        params_update[0].buffer_type = MYSQL_TYPE_LONG;
+        params_update[0].buffer = &rec_id_update;
+        params_update[0].buffer_length = sizeof(rec_id_update);
 
         ret = mysql_stmt_bind_result (selectStmt, params_select); //用于将结果集中的列与数据缓冲和长度缓冲关联（绑定）起来
         if(ret != SUCCESS)
@@ -117,9 +117,9 @@ private:
     }
 
 public:
-    int updateToDb(std::string ip)
+    int updateToDb(int rec_id)
     {
-        snprintf(ip_update,sizeof(ip_update),"%s",ip.c_str());
+        rec_id_update = rec_id;
         auto ret = mysql_stmt_execute(getStmt()[update].stmt);
         if(ret != SUCCESS)
         {
