@@ -195,16 +195,18 @@ public:
         return SUCCESS;
     }
 
-    std::vector<ipInfo_t> getRes ()
+    int getRes (std::vector<ipInfo_t>& res)
     {
         ENTER
         int ret = getResFromDb();
         if(ret != SUCCESS)
         {
             LOG(ERROR)<<"getResFromDb ERROR: "<<ret;
+            return FAILED;
         }
         EXIT
-        return ipInfos;
+        res = std::move(ipInfos);
+        return SUCCESS;
     }
 
     tblIpInfo ()

@@ -29,36 +29,37 @@ std::string smtpServer = SMTPSERVER;
 std::string recipient = RECIPIENT;
 std::string mailFrom = MAILFROM;
 
-void* test (void *para)
-{
-    while (1)
-    {
-        sleep (1);
-        LOG(INFO) << "test";
-    }
-    return nullptr;
-}
-
 void* getIp (void *para)
 {
     std::string resNew = "new";
     int ret = 0;
+    std::vector<ipInfo_t> infos;
     while (1)
     {
-        sleep (2);
-        resNew = curlUtil ("icanhazip.com");
         tblIpInfo ipInfo;
-        ret = ipInfo.init();
-        if(ret != SUCCESS)
+        ret = ipInfo.init ();
+        if (ret != SUCCESS)
         {
-            LOG(ERROR)<<"init failed";
+            LOG(ERROR) << "init failed";
             continue;
         }
-        auto info = ipInfo.getRes();
-        if(info.empty() || info[0].ip != resNew)
+        while (1)
         {
-            ipInfo.insertToDb(resNew);
-            LOG(WARNING)<<"ip insert:"<<resNew<<"!";
+            sleep (2);
+            resNew = curlUtil ("icanhazip.com");
+            infos.clear ();
+            auto ret = ipInfo.getRes (infos);
+            if (ret != SUCCESS)
+            {
+                LOG(ERROR) << "ipInfo.getRes failed";
+                break;
+            }
+
+            if (infos.empty () || infos[0].ip != resNew)
+            {
+                ipInfo.insertToDb (resNew);
+                LOG(WARNING) << "ip insert:" << resNew << "!";
+            }
         }
     }
     return nullptr;
@@ -66,60 +67,68 @@ void* getIp (void *para)
 
 void* sendEmail (void *para)
 {
-    tblEmailInfo emailInfo;
-    int ret = emailInfo.init ();
-    if(ret != SUCCESS)
-    {
-        LOG(ERROR)<<"emailInfo.init () failed";
-        return nullptr;
-    }
+    std::vector<ipInfo_t> infos;
+
     while (1)
     {
-        sleep (5);
-        tblIpInfo ipInfo;
-        ret = ipInfo.init();
-        if(ret != SUCCESS)
+        tblEmailInfo emailInfo;
+        int ret = emailInfo.init ();
+        if (ret != SUCCESS)
         {
-            LOG(ERROR)<<"emailInfo.init () failed";
+            LOG(ERROR) << "emailInfo.init () failed";
             continue;
         }
-        auto info = ipInfo.getRes();
-        bool result = true;
-        if(info.empty())
-        {
-            continue;
-        }else
-        {
-            if(info[0].send_flag == "0")
-            {
-                LOG(INFO) << "ip is " << info[0].ip;
 
-                auto res = emailInfo.getRes();
-                for(auto iter:res)
+        tblIpInfo ipInfo;
+        ret = ipInfo.init ();
+        if (ret != SUCCESS)
+        {
+            LOG(ERROR) << "ipInfo.init () failed";
+            continue;
+        }
+
+        while (1)
+        {
+            sleep (5);
+            infos.clear ();
+            auto ret = ipInfo.getRes (infos);
+            bool result = true;
+            if (infos.empty ())
+            {
+                continue;
+            }
+            else if (infos[0].send_flag == "0")
+            {
+                LOG(INFO) << "ip is " << infos[0].ip;
+
+                auto res = emailInfo.getRes ();
+                for (auto iter : res)
                 {
                     EmailSender sendMail;
-                    sendMail.SetSmtpServer (iter.userName, iter.passwd, iter.smtpServer);
-                    sendMail.SetSendName ( iter.mailFrom);
-                    sendMail.SetSendMail ( iter.mailFrom);
-                    sendMail.AddRecvMail ( iter.recipient);
+                    sendMail.SetSmtpServer (iter.userName, iter.passwd,
+                                            iter.smtpServer);
+                    sendMail.SetSendName (iter.mailFrom);
+                    sendMail.SetSendMail (iter.mailFrom);
+                    sendMail.AddRecvMail (iter.recipient);
                     sendMail.SetSubject ("ip changed");
-                    sendMail.SetBodyContent (info[0].ip);
+                    sendMail.SetBodyContent (infos[0].ip);
                     //sendMail.AddAttachment("/home/siwei/github/homeKeeper/build/Makefile");
-                    result = sendMail.SendMail() & result;
+                    result = sendMail.SendMail () & result;
                 }
 
-                if(result)
+                if (result)
                 {
-                    ipInfo.updateToDb(info[0].rec_id);
-                    LOG(WARNING) << "update " << info[0].ip<<" send_flag to 1";
+                    ipInfo.updateToDb (infos[0].rec_id);
+                    LOG(WARNING) << "update " << infos[0].ip
+                            << " send_flag to 1";
                 }
-
             }
         }
     }
     return nullptr;
 }
 
-std::map<std::string,std::function<void* (void*)>> funcMap = {{"getIp",getIp} ,{"sendEmail",sendEmail}};
+std::map<std::string, std::function<void* (void*)>> funcMap = {
+        { "getIp", getIp }, { "sendEmail", sendEmail } };
 
 #endif /* HOMEKEEPER_WORKFUNCTIONS_HPP_ */
