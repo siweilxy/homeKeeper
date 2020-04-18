@@ -38,6 +38,11 @@ private:
         ENTER
         int ret = 0;
         conn = mysql_init (NULL);
+        if(conn == nullptr)
+        {
+            LOG(ERROR) << "mysql_init ERROR:" << mysql_error (conn);
+            return FAILED;
+        }
 
         if (mysql_real_connect (conn, ip.c_str (), user.c_str (),
                                 passwd.c_str (), dateBase.c_str (), atoi(port.c_str()), NULL,
