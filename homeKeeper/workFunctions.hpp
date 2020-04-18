@@ -52,7 +52,7 @@ void* getIp (void *para)
             if (ret != SUCCESS)
             {
                 LOG(ERROR) << "ipInfo.getRes failed";
-                break;
+                continue;
             }
 
             if (infos.empty () || infos[0].ip != resNew)
