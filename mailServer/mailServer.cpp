@@ -44,15 +44,8 @@ int main ()
     while (1)
     {
         sleep (3);
-        resNew = curlUtil ("icanhazip.com");
-        if (resNew == resOld)
-        {
-            //LOG(INFO)<<"resNew == resOld";
-        }
-        else
-        {
-            LOG(INFO) << "resNew != resOld" << " resNew is " << resNew
-                    << ", resOld is " << resOld <<".";
+
+
 
             tblEmailInfo emailInfo;
             ret = emailInfo.init ();
@@ -76,7 +69,7 @@ int main ()
                 sendMail.SendMail ();
             }
             resOld = resNew;
-        }
+
     }
     return 0;
 
