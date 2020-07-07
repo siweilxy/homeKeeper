@@ -62,6 +62,7 @@ std::string curlUtil (std::string url)
             }
         }
     }
+    curl_easy_cleanup (curl);
     return result.substr(0,position);
 }
 

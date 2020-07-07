@@ -33,7 +33,7 @@ include_directories($ENV{HOME}/work/github/homeKeeper/3rdparty/include/)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 add_library(raft SHARED ${all_files})
 add_executable(testRaft raft.cpp)
-target_link_libraries(testRaft raft)
+target_link_libraries(testRaft logUtil raft)
 
 
 

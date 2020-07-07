@@ -1,0 +1,320 @@
+raft_log.c:    if (me->count < me->size)
+raft_log.c:    temp = (raft_entry_t*)__raft_calloc(1, sizeof(raft_entry_t) * me->size * 2);
+raft_log.c:    for (i = 0, j = me->front; i < me->count; i++, j++)
+raft_log.c:        if (j == me->size)
+raft_log.c:        memcpy(&temp[i], &me->entries[j], sizeof(raft_entry_t));
+raft_log.c:    __raft_free(me->entries);
+raft_log.c:    me->size *= 2;
+raft_log.c:    me->entries = temp;
+raft_log.c:    me->front = 0;
+raft_log.c:    me->back = me->count;
+raft_log.c:    me->base = idx;
+raft_log.c:    me->size = initial_size;
+raft_log.c:    me->entries = (raft_entry_t*)__raft_calloc(1, sizeof(raft_entry_t) * me->size);
+raft_log.c:    if (!me->entries) {
+raft_log.c:    me->raft = raft;
+raft_log.c:    me->cb = funcs;
+raft_log.c:    me->count = 0;
+raft_log.c:    me->back = 0;
+raft_log.c:    me->front = 0;
+raft_log.c:    me->base = 0;
+raft_log.c:    if (!me->count || !me->cb || !me->cb->log_clear)
+raft_log.c:    for (i = me->base; i <= me->base + me->count; i++)
+raft_log.c:        me->cb->log_clear(me->raft, raft_get_udata(me->raft),
+raft_log.c:                          &me->entries[(me->front + i - me->base) % me->size], i);
+raft_log.c:    raft_index_t idx = me->base + me->count + 1;
+raft_log.c:    memcpy(&me->entries[me->back], ety, sizeof(raft_entry_t));
+raft_log.c:    if (me->cb && me->cb->log_offer)
+raft_log.c:        void* ud = raft_get_udata(me->raft);
+raft_log.c:        e = me->cb->log_offer(me->raft, ud, &me->entries[me->back], idx);
+raft_log.c:        raft_offer_log(me->raft, &me->entries[me->back], idx);
+raft_log.c:    me->count++;
+raft_log.c:    me->back++;
+raft_log.c:    me->back = me->back % me->size;
+raft_log.c:    if (me->base + me->count < idx || idx <= me->base)
+raft_log.c:    i = (me->front + idx - me->base) % me->size;
+raft_log.c:    if (i < me->back)
+raft_log.c:        logs_till_end_of_log = me->back - i;
+raft_log.c:        logs_till_end_of_log = me->size - i;
+raft_log.c:    return &me->entries[i];
+raft_log.c:    if (me->base + me->count < idx || idx <= me->base)
+raft_log.c:    i = (me->front + idx - me->base) % me->size;
+raft_log.c:    return &me->entries[i];
+raft_log.c:    if (idx < me->base)
+raft_log.c:        idx = me->base;
+raft_log.c:    for (; idx <= me->base + me->count && me->count;)
+raft_log.c:        raft_index_t idx_tmp = me->base + me->count;
+raft_log.c:        raft_index_t back = mod(me->back - 1, me->size);
+raft_log.c:        if (me->cb && me->cb->log_pop)
+raft_log.c:            int e = me->cb->log_pop(me->raft, raft_get_udata(me->raft),
+raft_log.c:                                    &me->entries[back], idx_tmp);
+raft_log.c:        raft_pop_log(me->raft, &me->entries[back], idx_tmp);
+raft_log.c:        me->back = back;
+raft_log.c:        me->count--;
+raft_log.c:    raft_index_t idx = me->base + 1;
+raft_log.c:    if (0 == me->count)
+raft_log.c:    const void *elem = &me->entries[me->front];
+raft_log.c:    if (me->cb && me->cb->log_poll)
+raft_log.c:        int e = me->cb->log_poll(me->raft, raft_get_udata(me->raft),
+raft_log.c:                                 &me->entries[me->front], idx);
+raft_log.c:    me->front++;
+raft_log.c:    me->front = me->front % me->size;
+raft_log.c:    me->count--;
+raft_log.c:    me->base++;
+raft_log.c:    if (0 == me->count)
+raft_log.c:    if (0 == me->back)
+raft_log.c:        return &me->entries[me->size - 1];
+raft_log.c:        return &me->entries[me->back - 1];
+raft_log.c:    me->front = 0;
+raft_log.c:    me->back = 0;
+raft_log.c:    me->count = 0;
+raft_log.c:    __raft_free(me->entries);
+raft_log.c:    return log_count(me_) + me->base;
+raft_node.c:    me->udata = udata;
+raft_node.c:    me->next_idx = 1;
+raft_node.c:    me->match_idx = 0;
+raft_node.c:    me->id = id;
+raft_node.c:    me->flags = RAFT_NODE_VOTING;
+raft_node.c:    return me->next_idx;
+raft_node.c:    me->next_idx = nextIdx < 1 ? 1 : nextIdx;
+raft_node.c:    return me->match_idx;
+raft_node.c:    me->match_idx = matchIdx;
+raft_node.c:    return me->udata;
+raft_node.c:    me->udata = udata;
+raft_node.c:        me->flags |= RAFT_NODE_VOTED_FOR_ME;
+raft_node.c:        me->flags &= ~RAFT_NODE_VOTED_FOR_ME;
+raft_node.c:    return (me->flags & RAFT_NODE_VOTED_FOR_ME) != 0;
+raft_node.c:        me->flags |= RAFT_NODE_VOTING;
+raft_node.c:        me->flags &= ~RAFT_NODE_VOTING;
+raft_node.c:    return (me->flags & RAFT_NODE_VOTING) != 0;
+raft_node.c:    return (me->flags & RAFT_NODE_HAS_SUFFICIENT_LOG) != 0;
+raft_node.c:    me->flags |= RAFT_NODE_HAS_SUFFICIENT_LOG;
+raft_node.c:        me->flags |= RAFT_NODE_INACTIVE;
+raft_node.c:        me->flags &= ~RAFT_NODE_INACTIVE;
+raft_node.c:    return (me->flags & RAFT_NODE_INACTIVE) == 0;
+raft_node.c:        me->flags |= RAFT_NODE_VOTING_COMMITTED;
+raft_node.c:        me->flags &= ~RAFT_NODE_VOTING_COMMITTED;
+raft_node.c:    return (me->flags & RAFT_NODE_VOTING_COMMITTED) != 0;
+raft_node.c:    return me->id;
+raft_node.c:        me->flags |= RAFT_NODE_ADDITION_COMMITTED;
+raft_node.c:        me->flags &= ~RAFT_NODE_ADDITION_COMMITTED;
+raft_node.c:    return (me->flags & RAFT_NODE_ADDITION_COMMITTED) != 0;
+raft_server.c:    if (me->cb.log == NULL) return;
+raft_server.c:    me->cb.log(me_, node, me->udata, buf);
+raft_server.c:    me->election_timeout_rand = me->election_timeout + rand() % me->election_timeout;
+raft_server.c:    __log(me_, NULL, "randomize election timeout to %d", me->election_timeout_rand);
+raft_server.c:    me->current_term = 0;
+raft_server.c:    me->voted_for = -1;
+raft_server.c:    me->timeout_elapsed = 0;
+raft_server.c:    me->request_timeout = 200;
+raft_server.c:    me->election_timeout = 1000;
+raft_server.c:    me->log = log_new();//自己的日志初始化
+raft_server.c:    if (!me->log) {
+raft_server.c:    me->voting_cfg_change_log_idx = -1;
+raft_server.c:    me->current_leader = NULL;
+raft_server.c:    me->snapshot_in_progress = 0;
+raft_server.c:    memcpy(&me->cb, funcs, sizeof(raft_cbs_t));
+raft_server.c:    me->udata = udata;
+raft_server.c:    log_set_callbacks(me->log, &me->cb, me_);
+raft_server.c:    log_free(me->log);
+raft_server.c:    if (me->nodes)
+raft_server.c:        __raft_free(me->nodes);
+raft_server.c:    me->current_term = 0;
+raft_server.c:    me->voted_for = -1;
+raft_server.c:    me->timeout_elapsed = 0;
+raft_server.c:    me->voting_cfg_change_log_idx = -1;
+raft_server.c:    me->current_leader = NULL;
+raft_server.c:    me->commit_idx = 0;
+raft_server.c:    me->last_applied_idx = 0;
+raft_server.c:    me->num_nodes = 0;
+raft_server.c:    me->node = NULL;
+raft_server.c:    log_clear_entries(me->log);
+raft_server.c:    log_clear(me->log);
+raft_server.c:    if (idx <= me->voting_cfg_change_log_idx)
+raft_server.c:        me->voting_cfg_change_log_idx = -1;
+raft_server.c:    return log_delete(me->log, idx);
+raft_server.c:          me->election_timeout_rand, me->timeout_elapsed, me->current_term,
+raft_server.c:    me->timeout_elapsed = 0;
+raft_server.c:    for (i = 0; i < me->num_nodes; i++)
+raft_server.c:        raft_node_t* node = me->nodes[i];
+raft_server.c:        if (me->node == node || !raft_node_is_active(node))
+raft_server.c:    for (i = 0; i < me->num_nodes; i++)
+raft_server.c:        raft_node_vote_for_me(me->nodes[i], 0);
+raft_server.c:    raft_vote(me_, me->node);
+raft_server.c:    me->current_leader = NULL;
+raft_server.c:    me->timeout_elapsed = 0;
+raft_server.c:    for (i = 0; i < me->num_nodes; i++)
+raft_server.c:        raft_node_t* node = me->nodes[i];
+raft_server.c:        if (me->node != node &&
+raft_server.c:    me->timeout_elapsed = 0;
+raft_server.c:    me->timeout_elapsed += msec_since_last_period;
+raft_server.c:    if (me->state == RAFT_STATE_LEADER)
+raft_server.c:        if (me->request_timeout <= me->timeout_elapsed)
+raft_server.c:    else if (me->election_timeout_rand <= me->timeout_elapsed &&
+raft_server.c:    if (me->last_applied_idx < raft_get_commit_idx(me_) &&
+raft_server.c:    return log_get_at_idx(me->log, etyidx);
+raft_server.c:    if (me->current_term < r->term)
+raft_server.c:        me->current_leader = NULL;
+raft_server.c:    else if (me->current_term != r->term)
+raft_server.c:        me->cb.node_has_sufficient_logs &&
+raft_server.c:        int e = me->cb.node_has_sufficient_logs(me_, me->udata, node);
+raft_server.c:        if (raft_get_commit_idx(me_) < point && ety->term == me->current_term)
+raft_server.c:            for (i = 0; i < me->num_nodes; i++)
+raft_server.c:                raft_node_t* node = me->nodes[i];
+raft_server.c:                if (me->node != node &&
+raft_server.c:    if (raft_is_candidate(me_) && me->current_term == ae->term)
+raft_server.c:    else if (me->current_term < ae->term)
+raft_server.c:    else if (ae->term < me->current_term)
+raft_server.c:              ae->term, me->current_term);
+raft_server.c:    me->current_leader = node;
+raft_server.c:    me->timeout_elapsed = 0;
+raft_server.c:        if (ae->prev_log_idx == me->snapshot_last_idx)
+raft_server.c:            if (me->snapshot_last_term != ae->prev_log_term)
+raft_server.c:    r->term = me->current_term;
+raft_server.c:    else if (!ety && me->snapshot_last_idx == current_idx)
+raft_server.c:        ety_term = me->snapshot_last_term;
+raft_server.c:    if (me->current_leader && me->current_leader != node &&
+raft_server.c:            (me->timeout_elapsed < me->election_timeout)) {
+raft_server.c:        me->current_leader = NULL;
+raft_server.c:        me->current_leader = NULL;
+raft_server.c:        me->timeout_elapsed = 0;
+raft_server.c:        me->current_leader = NULL;
+raft_server.c:          me->current_term,
+raft_server.c:                me->connected == RAFT_NODE_STATUS_DISCONNECTING)
+raft_server.c:          me->current_term, ety->id, raft_get_current_idx(me_) + 1);
+raft_server.c:    ety->term = me->current_term;
+raft_server.c:    for (i = 0; i < me->num_nodes; i++)
+raft_server.c:        raft_node_t* node = me->nodes[i];
+raft_server.c:        if (me->node == node ||
+raft_server.c:    r->term = me->current_term;
+raft_server.c:        me->voting_cfg_change_log_idx = raft_get_current_idx(me_);
+raft_server.c:    assert(node != me->node);
+raft_server.c:    rv.term = me->current_term;
+raft_server.c:    if (me->cb.send_requestvote)
+raft_server.c:        e = me->cb.send_requestvote(me_, me->udata, node, &rv);
+raft_server.c:        me->voting_cfg_change_log_idx = raft_get_current_idx(me_);
+raft_server.c:    return log_append_entry(me->log, ety);
+raft_server.c:    if (me->last_applied_idx == raft_get_commit_idx(me_))
+raft_server.c:    raft_index_t log_idx = me->last_applied_idx + 1;
+raft_server.c:    me->last_applied_idx++;
+raft_server.c:    if (me->cb.applylog)
+raft_server.c:        int e = me->cb.applylog(me_, me->udata, ety, me->last_applied_idx);
+raft_server.c:    if (log_idx == me->voting_cfg_change_log_idx)
+raft_server.c:        me->voting_cfg_change_log_idx = -1;
+raft_server.c:    raft_node_id_t node_id = me->cb.log_get_node_id(me_, raft_get_udata(me_), ety, log_idx);
+raft_server.c:                me->connected = RAFT_NODE_STATUS_CONNECTED;
+raft_server.c:    return log_get_from_idx(me->log, idx, n_etys);
+raft_server.c:    assert(node != me->node);
+raft_server.c:    if (!(me->cb.send_appendentries))
+raft_server.c:    ae.term = me->current_term;
+raft_server.c:    if (0 < me->snapshot_last_idx && next_idx < me->snapshot_last_idx)
+raft_server.c:        if (me->cb.send_snapshot)
+raft_server.c:            me->cb.send_snapshot(me_, me->udata, node);
+raft_server.c:            ae.prev_log_idx = me->snapshot_last_idx;
+raft_server.c:            ae.prev_log_term = me->snapshot_last_term;
+raft_server.c:    return me->cb.send_appendentries(me_, me->udata, node, &ae);
+raft_server.c:    me->timeout_elapsed = 0;
+raft_server.c:    for (i = 0; i < me->num_nodes; i++)
+raft_server.c:        if (me->node == me->nodes[i] || !raft_node_is_active(me->nodes[i]))
+raft_server.c:        e = raft_send_appendentries(me_, me->nodes[i]);
+raft_server.c:    void* p = __raft_realloc(me->nodes, sizeof(void*) * (me->num_nodes + 1));
+raft_server.c:    me->num_nodes++;
+raft_server.c:    me->nodes = p;
+raft_server.c:    me->nodes[me->num_nodes - 1] = node;
+raft_server.c:        me->node = me->nodes[me->num_nodes - 1];
+raft_server.c:    node = me->nodes[me->num_nodes - 1];
+raft_server.c:    if (me->cb.notify_membership_event)
+raft_server.c:        me->cb.notify_membership_event(me_, raft_get_udata(me_), node, ety, RAFT_MEMBERSHIP_ADD);
+raft_server.c:    if (me->cb.notify_membership_event)
+raft_server.c:        me->cb.notify_membership_event(me_, raft_get_udata(me_), node, NULL, RAFT_MEMBERSHIP_REMOVE);
+raft_server.c:    for (i = 0; i < me->num_nodes; i++)
+raft_server.c:        if (me->nodes[i] == node)
+raft_server.c:    memmove(&me->nodes[i], &me->nodes[i + 1], sizeof(*me->nodes) * (me->num_nodes - i - 1));
+raft_server.c:    me->num_nodes--;
+raft_server.c:    for (i = 0, votes = 0; i < me->num_nodes; i++)
+raft_server.c:        if (me->node != me->nodes[i] &&
+raft_server.c:            raft_node_is_active(me->nodes[i]) &&
+raft_server.c:            raft_node_is_voting(me->nodes[i]) &&
+raft_server.c:            raft_node_has_vote_for_me(me->nodes[i]))
+raft_server.c:    if (me->voted_for == raft_get_nodeid(me_))
+raft_server.c:    if (me->cb.persist_vote) {
+raft_server.c:        int e = me->cb.persist_vote(me_, me->udata, nodeid);
+raft_server.c:    me->voted_for = nodeid;
+raft_server.c:    raft_node_id_t node_id = me->cb.log_get_node_id(me_, raft_get_udata(me_), ety, idx);
+raft_server.c:    raft_node_id_t node_id = me->cb.log_get_node_id(me_, raft_get_udata(me_), ety, idx);
+raft_server.c:    int e = log_poll(me->log, (void*)ety);
+raft_server.c:    if (me->snapshot_last_idx == 0)
+raft_server.c:    return me->snapshot_last_idx;
+raft_server.c:    return raft_get_commit_idx(me_) - log_get_base(me->log);
+raft_server.c:    me->snapshot_in_progress = 1;
+raft_server.c:    me->snapshot_flags = flags;
+raft_server.c:        me->snapshot_last_idx,
+raft_server.c:        me->snapshot_last_term,
+raft_server.c:    if (!me->snapshot_in_progress)
+raft_server.c:    me->snapshot_last_idx = me->saved_snapshot_last_idx;
+raft_server.c:    me->snapshot_last_term = me->saved_snapshot_last_term;
+raft_server.c:    me->snapshot_in_progress = 0;
+raft_server.c:    if (!me->snapshot_in_progress || me->snapshot_last_idx == 0)
+raft_server.c:    assert(me->snapshot_last_idx == raft_get_commit_idx(me_));
+raft_server.c:    me->snapshot_in_progress = 0;
+raft_server.c:        log_get_base(me->log),
+raft_server.c:    for (i = 0; i < me->num_nodes; i++)
+raft_server.c:        raft_node_t* node = me->nodes[i];
+raft_server.c:        if (me->node == node || !raft_node_is_active(node))
+raft_server.c:        if (0 < me->snapshot_last_idx && next_idx < me->snapshot_last_idx)
+raft_server.c:            if (me->cb.send_snapshot)
+raft_server.c:                me->cb.send_snapshot(me_, me->udata, node);
+raft_server.c:    if (last_included_index < me->last_applied_idx)
+raft_server.c:    if (last_included_term == me->snapshot_last_term && last_included_index == me->snapshot_last_idx)
+raft_server.c:    me->current_term = last_included_term;
+raft_server.c:    me->voted_for = -1;
+raft_server.c:    me->current_leader = NULL;
+raft_server.c:    log_load_from_snapshot(me->log, last_included_index, last_included_term);
+raft_server.c:    me->last_applied_idx = last_included_index;
+raft_server.c:    raft_set_snapshot_metadata(me_, last_included_term, me->last_applied_idx);
+raft_server.c:    for (i = 0; i < me->num_nodes; i++)
+raft_server.c:        if (raft_get_nodeid(me_) == raft_node_get_id(me->nodes[i]))
+raft_server.c:            raft_node_set_active(me->nodes[i], 0);
+raft_server.c:    me->nodes[0] = me->nodes[my_node_by_idx];
+raft_server.c:    me->num_nodes = 1;
+raft_server.c:        me->snapshot_last_idx,
+raft_server.c:        me->snapshot_last_term,
+raft_server.c:    for (i = 0; i < me->num_nodes; i++)
+raft_server.c:        raft_node_t* node = me->nodes[i];
+raft_server_properties.c:    me->election_timeout = millisec;
+raft_server_properties.c:    me->request_timeout = millisec;
+raft_server_properties.c:    if (!me->node)
+raft_server_properties.c:        printf("%s %s %d !me->node\n",__FILE__,__FUNCTION__,__LINE__);
+raft_server_properties.c:    return raft_node_get_id (me->node);
+raft_server_properties.c:    for (i = 0; i < me->num_nodes; i++)
+raft_server_properties.c:        if (raft_node_is_active (me->nodes[i])
+raft_server_properties.c:                && raft_node_is_voting (me->nodes[i]))
+raft_server_properties.c:    return log_count (me->log);
+raft_server_properties.c:    return me->voted_for;
+raft_server_properties.c:    if (me->current_term < term)
+raft_server_properties.c:        if (me->cb.persist_term)
+raft_server_properties.c:            int e = me->cb.persist_term (me_, me->udata, term, voted_for);
+raft_server_properties.c:        me->current_term = term;
+raft_server_properties.c:        me->voted_for = voted_for;
+raft_server_properties.c:    return log_get_current_idx (me->log);
+raft_server_properties.c:    assert(me->commit_idx <= idx);
+raft_server_properties.c:    me->commit_idx = idx;
+raft_server_properties.c:    me->last_applied_idx = idx;
+raft_server_properties.c:        me->current_leader = me->node;
+raft_server_properties.c:    me->state = state;
+raft_server_properties.c:    for (i = 0; i < me->num_nodes; i++)
+raft_server_properties.c:        if (nodeid == raft_node_get_id (me->nodes[i]))
+raft_server_properties.c:            return me->nodes[i];
+raft_server_properties.c:    printf("%s %s %dme->num_nodes is %d\n",__FILE__,__FUNCTION__,__LINE__,me->num_nodes);
+raft_server_properties.c:    for (i = 0; i < me->num_nodes; i++)
+raft_server_properties.c:        b= raft_node_get_id (me->nodes[i]);
+raft_server_properties.c:            return me->nodes[i];
+raft_server_properties.c:    return me->nodes[idx];
+raft_server_properties.c:    if (me->current_leader)
+raft_server_properties.c:        return raft_node_get_id (me->current_leader);
+raft_server_properties.c:    return me->current_leader;
+raft_server_properties.c:    return log_get_at_idx (me->log, raft_get_last_applied_idx (me_));
+raft_server_properties.c:    me->saved_snapshot_last_term = me->snapshot_last_term;
+raft_server_properties.c:    me->saved_snapshot_last_idx = me->snapshot_last_idx;
+raft_server_properties.c:    me->snapshot_last_term = term;
+raft_server_properties.c:    me->snapshot_last_idx = idx;

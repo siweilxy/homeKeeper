@@ -45,14 +45,14 @@ typedef struct {
     int state;
 
     /* amount of time left till timeout */
-    int timeout_elapsed;
+    int timeout_elapsed;//距离超时还有多久
 
     raft_node_t* nodes;
     int num_nodes;
 
-    int election_timeout;
+    int election_timeout;//选举超时时间
     int election_timeout_rand;
-    int request_timeout;
+    int request_timeout;//请求超时时间
 
     /* what this node thinks is the node ID of the current leader, or NULL if
      * there isn't a known current leader. */

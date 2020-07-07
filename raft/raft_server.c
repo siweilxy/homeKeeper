@@ -32,7 +32,7 @@ void *(*__raft_malloc)(size_t) = malloc;
 void *(*__raft_calloc)(size_t, size_t) = calloc;
 void *(*__raft_realloc)(void *, size_t) = realloc;
 void (*__raft_free)(void *) = free;
-
+//设置堆内存函数
 void raft_set_heap_functions(void *(*_malloc)(size_t),
                              void *(*_calloc)(size_t, size_t),
                              void *(*_realloc)(void *, size_t),
@@ -57,6 +57,7 @@ static void __log(raft_server_t *me_, raft_node_t* node, const char *fmt, ...)
     me->cb.log(me_, node, me->udata, buf);
 }
 
+//生成随机超时时间
 void raft_randomize_election_timeout(raft_server_t* me_)
 {
     raft_server_private_t* me = (raft_server_private_t*)me_;
@@ -66,25 +67,26 @@ void raft_randomize_election_timeout(raft_server_t* me_)
     __log(me_, NULL, "randomize election timeout to %d", me->election_timeout_rand);
 }
 
+//raftserver初始化
 raft_server_t* raft_new(void)
 {
     raft_server_private_t* me =
-        (raft_server_private_t*)__raft_calloc(1, sizeof(raft_server_private_t));
+        (raft_server_private_t*)__raft_calloc(1, sizeof(raft_server_private_t));//申请内存
     if (!me)
-        return NULL;
+        return NULL;//为0则返回空
     me->current_term = 0;
     me->voted_for = -1;
     me->timeout_elapsed = 0;
     me->request_timeout = 200;
     me->election_timeout = 1000;
-    raft_randomize_election_timeout((raft_server_t*)me);
-    me->log = log_new();
+    raft_randomize_election_timeout((raft_server_t*)me);//生成随机超时时间
+    me->log = log_new();//自己的日志初始化
     if (!me->log) {
         __raft_free(me);
         return NULL;
     }
     me->voting_cfg_change_log_idx = -1;
-    raft_set_state((raft_server_t*)me, RAFT_STATE_FOLLOWER);
+    raft_set_state((raft_server_t*)me, RAFT_STATE_FOLLOWER);//把自己设置成随从
     me->current_leader = NULL;
 
     me->snapshot_in_progress = 0;
@@ -92,7 +94,7 @@ raft_server_t* raft_new(void)
 
     return (raft_server_t*)me;
 }
-
+//设置函数
 void raft_set_callbacks(raft_server_t* me_, raft_cbs_t* funcs, void* udata)
 {
     raft_server_private_t* me = (raft_server_private_t*)me_;
@@ -101,7 +103,7 @@ void raft_set_callbacks(raft_server_t* me_, raft_cbs_t* funcs, void* udata)
     me->udata = udata;
     log_set_callbacks(me->log, &me->cb, me_);
 }
-
+//资源释放
 void raft_free(raft_server_t* me_)
 {
     raft_server_private_t* me = (raft_server_private_t*)me_;
@@ -111,7 +113,7 @@ void raft_free(raft_server_t* me_)
         __raft_free(me->nodes);
     __raft_free(me_);
 }
-
+//raft重置
 void raft_clear(raft_server_t* me_)
 {
     raft_server_private_t* me = (raft_server_private_t*)me_;
@@ -142,7 +144,7 @@ int raft_delete_entry_from_idx(raft_server_t* me_, raft_index_t idx)
 
     return log_delete(me->log, idx);
 }
-
+//开始选举
 int raft_election_start(raft_server_t* me_)
 {
     raft_server_private_t* me = (raft_server_private_t*)me_;
@@ -153,7 +155,7 @@ int raft_election_start(raft_server_t* me_)
 
     return raft_become_candidate(me_);
 }
-
+//成为leader
 void raft_become_leader(raft_server_t* me_)
 {
     raft_server_private_t* me = (raft_server_private_t*)me_;
@@ -176,6 +178,7 @@ void raft_become_leader(raft_server_t* me_)
     }
 }
 
+//成为候选者
 int raft_become_candidate(raft_server_t* me_)
 {
     raft_server_private_t* me = (raft_server_private_t*)me_;
@@ -208,7 +211,7 @@ int raft_become_candidate(raft_server_t* me_)
     }
     return 0;
 }
-
+//成为跟随者
 void raft_become_follower(raft_server_t* me_)
 {
     raft_server_private_t* me = (raft_server_private_t*)me_;
@@ -219,6 +222,7 @@ void raft_become_follower(raft_server_t* me_)
     me->timeout_elapsed = 0;
 }
 
+//raft周期函数
 int raft_periodic(raft_server_t* me_, int msec_since_last_period)
 {
     raft_server_private_t* me = (raft_server_private_t*)me_;
@@ -261,6 +265,7 @@ int raft_periodic(raft_server_t* me_, int msec_since_last_period)
     return 0;
 }
 
+//从idx中获取entry
 raft_entry_t* raft_get_entry_from_idx(raft_server_t* me_, raft_index_t etyidx)
 {
     raft_server_private_t* me = (raft_server_private_t*)me_;
@@ -963,6 +968,7 @@ raft_node_t* raft_add_node_internal(raft_server_t* me_, raft_entry_t *ety, void*
     raft_node_t* node = raft_get_node(me_, id);
     if (node)
     {
+        printf("%s %s %d node is null\n",__FILE__,__FUNCTION__,__LINE__);
         if (!raft_node_is_voting(node))
         {
             raft_node_set_voting(node, 1);
@@ -972,7 +978,7 @@ raft_node_t* raft_add_node_internal(raft_server_t* me_, raft_entry_t *ety, void*
             /* we shouldn't add a node twice */
             return NULL;
     }
-
+    printf("%s %s %d raft_node_new\n",__FILE__,__FUNCTION__,__LINE__);
     node = raft_node_new(udata, id);
     if (!node)
         return NULL;

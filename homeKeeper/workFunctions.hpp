@@ -58,7 +58,7 @@ void* getIp (void *para)
             if (infos.empty () || infos[0].ip != resNew)
             {
                 ipInfo.insertToDb (resNew);
-                LOG(WARNING) << "ip insert:" << resNew << "!";
+                LOG(ERROR) << "ip insert:" << resNew << "!";
             }
         }
     }

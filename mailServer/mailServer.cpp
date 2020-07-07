@@ -26,7 +26,6 @@
 
 int main ()
 {
-    log::getInstance ().init (0);
     int ret = 0;
     std::string resOld = "old";
     std::string resNew = "new";
@@ -44,9 +43,6 @@ int main ()
     while (1)
     {
         sleep (3);
-
-
-
             tblEmailInfo emailInfo;
             ret = emailInfo.init ();
             if(ret != SUCCESS)

@@ -19,6 +19,16 @@ typedef struct field_s
     std::string length;
 }field_t;
 
+typedef struct type_s
+{
+    std::string type;
+    std::string tyepInSql;
+}type_t;
+
+typedef long long LONGLONG;
+
+std::vector<type_t> types;
+
 int getTypeAndLength(std::string res,field_t&field)
 {
     auto iter = res.find("(");
@@ -34,15 +44,22 @@ int getTypeAndLength(std::string res,field_t&field)
         field.length = res.substr(iter +1,res.length() - iter - 2);
     }
 
-
     std::cout<<"res is "<<res<<std::endl;
+    return 0;
+}
+
+int genTypes()
+{
+
     return 0;
 }
 
 int main (int argc, char **argv)
 {
+    std::string cfgPath;
     std::string ip, port, dbUser, passwd, dbName, tableName, sql,fileCode,genSql,structName;
     int ret = 0;
+
     std::vector<field_t>fieldInfo;
 
     MYSQL *conn = nullptr;
@@ -50,18 +67,21 @@ int main (int argc, char **argv)
     MYSQL_FIELD *field; /*字段结构指针*/
     MYSQL_ROW result_row; /*按行返回的查询信息*/
     int row, column; /*查询返回的行数和列数*/
-    if (argc < 8)
+    if (argc < 2)
     {
-        printf ("argv error sqlGen ip port dbUser passwd dbName tableName structName\n");
+        printf ("argv error sqlGen cfgfile\n");
         return 0;
     }
-    ip = argv[1];
-    port = argv[2];
-    dbUser = argv[3];
-    passwd = argv[4];
-    dbName = argv[5];
-    tableName = argv[6];
-    structName = argv[7];
+
+    cfgPath = argv[1];
+
+//    ip = argv[1];
+//    port = argv[2];
+//    dbUser = argv[3];
+//    passwd = argv[4];
+//    dbName = argv[5];
+//    tableName = argv[6];
+//    structName = argv[7];
     sql = "desc " + tableName;
     printf ("ip:%s, port:%s,dbUser:%s,passwd:%s,dbName:%s,tableName:%s,structName:%s\n", ip.c_str (),
             port.c_str (), dbUser.c_str (), passwd.c_str (), dbName.c_str (),tableName.c_str(),structName.c_str());
