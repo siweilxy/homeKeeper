@@ -47,6 +47,7 @@ std::string curlUtil (std::string url)
         if (res != 0)
         {
             curl_easy_cleanup (curl);
+            return "failed";
         }
     }
     int position = 0;

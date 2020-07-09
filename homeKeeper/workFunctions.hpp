@@ -47,6 +47,11 @@ void* getIp (void *para)
         {
             sleep (2);
             resNew = curlUtil ("icanhazip.com");
+            if(resNew == "failed")
+            {
+                LOG(ERROR) << "curlUtil failed";
+                continue;
+            }
             infos.clear ();
             auto ret = ipInfo.getRes (infos);
             if (ret != SUCCESS)
