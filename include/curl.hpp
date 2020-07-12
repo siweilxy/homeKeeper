@@ -49,6 +49,7 @@ std::string curlUtil (std::string url)
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str ());
         curl_easy_setopt(curl, CURLOPT_NOSIGNAL, true);
         curl_easy_setopt(curl, CURLOPT_TIMEOUT,10);
+        curl_easy_setopt(curl, CURLOPT_FORBID_REUSE, 1);
         //curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, copy_data);
         res = curl_easy_perform (curl);   // 执行
