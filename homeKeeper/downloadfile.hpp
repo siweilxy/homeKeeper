@@ -92,7 +92,7 @@ private:
 public:
     int updateToDb(std::string fileName_update)
     {
-        snprintf(fileNameUpdate,sizeof(fileNameUpdate),"%s",fileName_update);
+        snprintf(fileNameUpdate,sizeof(fileNameUpdate),"%s",fileName_update.c_str());
         auto ret = mysql_stmt_execute(getStmt()[update].stmt);
         if(ret != SUCCESS)
         {

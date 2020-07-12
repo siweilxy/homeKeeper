@@ -178,7 +178,7 @@ void* sendFile (void *para)
 
             for (auto dlFile : downloadFiles)
             {
-                LOG(WARNING) << "get " << dlFile.fileName << std::endl;
+                LOG(WARNING) << "get " << dlFile    .fileName << std::endl;
             }
 
             bool result = true;
