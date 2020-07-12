@@ -98,7 +98,7 @@ void* sendEmail (void *para)
             sleep (5);
             infos.clear ();
             auto ret = ipInfo.getRes (infos);
-            if(ret == FAILED)
+            if (ret == FAILED)
             {
                 LOG(ERROR) << "ipInfo.getRes failed";
                 continue;
@@ -170,10 +170,15 @@ void* sendFile (void *para)
             sleep (5);
 
             auto ret = dlfile.getRes (downloadFiles);
-            if(ret == FAILED)
+            if (ret == FAILED)
             {
                 LOG(ERROR) << "dlfile.getRes () failed";
                 continue;
+            }
+
+            for (auto dlFile : downloadFiles)
+            {
+                LOG(WARNING) << "get " << dlFile.fileName << std::endl;
             }
 
             bool result = true;
@@ -187,7 +192,7 @@ void* sendFile (void *para)
                 sendMail.SetSendMail (iter.mailFrom);
                 sendMail.AddRecvMail (iter.recipient);
                 sendMail.SetSubject (downloadFiles[0].fileName);
-                sendMail.AddAttachment(downloadFiles[0].path);
+                sendMail.AddAttachment (downloadFiles[0].path);
                 result = sendMail.SendMail () & result;
             }
 
@@ -202,12 +207,13 @@ void* sendFile (void *para)
                 break;
             }
         }
-        sleep(3600*24);
+        sleep (3600 * 24);
     }
     return nullptr;
 }
 
-std::map<std::string, std::function<void* (void*)>> funcMap = {
-        { "getIp", getIp }, { "sendEmail", sendEmail } ,{"sendFile",sendFile}};
+std::map<std::string, std::function<void* (void*)>> funcMap =
+        { { "getIp", getIp }, { "sendEmail", sendEmail },
+                { "sendFile", sendFile } };
 
 #endif /* HOMEKEEPER_WORKFUNCTIONS_HPP_ */
