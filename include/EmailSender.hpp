@@ -262,8 +262,7 @@ private:
             FILE *pt = NULL;
             if ((pt = fopen (m_vAttachMent[i].c_str (), "rb")) == NULL)
             {
-
-                std::cout << "打开文件失败: " << m_vAttachMent[i] << std::endl;
+                LOG(ERROR) << "打开文件失败: " << m_vAttachMent[i];
                 continue;
             }
             fseek (pt, 0, SEEK_END);

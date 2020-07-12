@@ -213,7 +213,10 @@ void* sendFile (void *para)
 }
 
 std::map<std::string, std::function<void* (void*)>> funcMap =
-        { { "getIp", getIp }, { "sendEmail", sendEmail },
-                { "sendFile", sendFile } };
+        {
+                { "getIp", getIp },
+                { "sendEmail", sendEmail }
+                //{ "sendFile", sendFile }
+        };
 
 #endif /* HOMEKEEPER_WORKFUNCTIONS_HPP_ */
