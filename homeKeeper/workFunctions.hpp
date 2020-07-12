@@ -14,6 +14,7 @@
 #include "tblEmailInfo.hpp"
 #include "file.hpp"
 #include "tblIpInfo.hpp"
+#include "downloadfile.hpp"
 #include <map>
 
 #define USERNAME "siweilxy@163.com"
@@ -47,7 +48,7 @@ void* getIp (void *para)
         {
             sleep (2);
             resNew = curlUtil ("icanhazip.com");
-            if(resNew == "failed")
+            if (resNew == "failed")
             {
                 LOG(ERROR) << "curlUtil failed";
                 continue;
@@ -97,6 +98,11 @@ void* sendEmail (void *para)
             sleep (5);
             infos.clear ();
             auto ret = ipInfo.getRes (infos);
+            if(ret == FAILED)
+            {
+                LOG(ERROR) << "ipInfo.getRes failed";
+                continue;
+            }
             bool result = true;
             if (infos.empty ())
             {
@@ -116,7 +122,8 @@ void* sendEmail (void *para)
                     sendMail.SetSendMail (iter.mailFrom);
                     sendMail.AddRecvMail (iter.recipient);
                     sendMail.SetSubject ("ip changed");
-                    sendMail.SetBodyContent (infos[0].ip + " url is " + infos[0].ip + ":19870");
+                    sendMail.SetBodyContent (
+                            infos[0].ip + " url is " + infos[0].ip + ":19870");
                     //sendMail.AddAttachment("/home/siwei/github/homeKeeper/build/Makefile");
                     result = sendMail.SendMail () & result;
                 }
@@ -126,7 +133,8 @@ void* sendEmail (void *para)
                     ipInfo.updateToDb (infos[0].rec_id);
                     LOG(WARNING) << "update " << infos[0].ip
                             << " send_flag to 1";
-                }else
+                }
+                else
                 {
                     break;
                 }
@@ -136,7 +144,70 @@ void* sendEmail (void *para)
     return nullptr;
 }
 
+void* sendFile (void *para)
+{
+    std::vector<downloadFile_t> downloadFiles;
+
+    while (1)
+    {
+        tblEmailInfo emailInfo;
+        int ret = emailInfo.init ();
+        if (ret != SUCCESS)
+        {
+            LOG(ERROR) << "emailInfo.init () failed";
+            continue;
+        }
+        downloadFile dlfile;
+        ret = dlfile.init ();
+        if (ret != SUCCESS)
+        {
+            LOG(ERROR) << "dlfile.init () failed";
+            continue;
+        }
+
+        while (1)
+        {
+            sleep (5);
+
+            auto ret = dlfile.getRes (downloadFiles);
+            if(ret == FAILED)
+            {
+                LOG(ERROR) << "dlfile.getRes () failed";
+                continue;
+            }
+
+            bool result = true;
+            auto res = emailInfo.getRes ();
+            for (auto iter : res)
+            {
+                EmailSender sendMail;
+                sendMail.SetSmtpServer (iter.userName, iter.passwd,
+                                        iter.smtpServer);
+                sendMail.SetSendName (iter.mailFrom);
+                sendMail.SetSendMail (iter.mailFrom);
+                sendMail.AddRecvMail (iter.recipient);
+                sendMail.SetSubject (downloadFiles[0].fileName);
+                sendMail.AddAttachment(downloadFiles[0].path);
+                result = sendMail.SendMail () & result;
+            }
+
+            if (result)
+            {
+                dlfile.updateToDb (downloadFiles[0].fileName);
+                LOG(WARNING) << "update " << downloadFiles[0].fileName
+                        << " send_flag to 1";
+            }
+            else
+            {
+                break;
+            }
+        }
+        sleep(3600*24);
+    }
+    return nullptr;
+}
+
 std::map<std::string, std::function<void* (void*)>> funcMap = {
-        { "getIp", getIp }, { "sendEmail", sendEmail } };
+        { "getIp", getIp }, { "sendEmail", sendEmail } ,{"sendFile",sendFile}};
 
 #endif /* HOMEKEEPER_WORKFUNCTIONS_HPP_ */

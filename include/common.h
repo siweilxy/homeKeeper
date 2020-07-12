@@ -48,6 +48,15 @@ typedef struct ipInfo_s
     std::string send_flag;
 } ipInfo_t;
 
+typedef struct downloadFile_s
+{
+    std::string fileName;
+    std::string path;
+    std::string crt_ts;
+    std::string upd_ts;
+    int send_flag;
+} downloadFile_t;
+
 typedef struct fd_s
 {
     int fd;
