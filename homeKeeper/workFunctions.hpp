@@ -126,6 +126,9 @@ void* sendEmail (void *para)
                     ipInfo.updateToDb (infos[0].rec_id);
                     LOG(WARNING) << "update " << infos[0].ip
                             << " send_flag to 1";
+                }else
+                {
+                    break;
                 }
             }
         }

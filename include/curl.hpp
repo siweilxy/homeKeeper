@@ -46,6 +46,7 @@ std::string curlUtil (std::string url)
         res = curl_easy_perform (curl);   // 执行
         if (res != 0)
         {
+            LOG(ERROR) << "error code is "<<res;
             curl_easy_cleanup (curl);
             return "failed";
         }
