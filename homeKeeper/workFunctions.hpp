@@ -116,7 +116,7 @@ void* sendEmail (void *para)
                     sendMail.SetSendMail (iter.mailFrom);
                     sendMail.AddRecvMail (iter.recipient);
                     sendMail.SetSubject ("ip changed");
-                    sendMail.SetBodyContent (infos[0].ip);
+                    sendMail.SetBodyContent (infos[0].ip + " url is " + infos[0].ip + ":19870");
                     //sendMail.AddAttachment("/home/siwei/github/homeKeeper/build/Makefile");
                     result = sendMail.SendMail () & result;
                 }
