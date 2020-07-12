@@ -16,6 +16,8 @@ std::string result;
 char *res_buf = NULL;
 int shift = 0;
 
+int curl_init_flag =0;
+
 size_t copy_data (void *ptr, size_t size, size_t nmemb, void *stream)
 {
     int res_size;
@@ -32,6 +34,12 @@ size_t copy_data (void *ptr, size_t size, size_t nmemb, void *stream)
 
 std::string curlUtil (std::string url)
 {
+    if(curl_init_flag == 0)
+    {
+        curl_global_init(CURL_GLOBAL_ALL);
+        curl_init_flag=1;
+    }
+
     CURL *curl;
     CURLcode res;
     curl = curl_easy_init ();    // 初始化
