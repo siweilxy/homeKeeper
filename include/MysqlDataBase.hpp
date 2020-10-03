@@ -139,7 +139,7 @@ public:
         ENTER
         char *configPath = getenv ("CONFIG_FILE");
         int ret = 0;
-        if (configPath == nullptr)
+        if (configPath == nullptr||strlen(configPath) == 0)
         {
             LOG(ERROR) << "getenv failed";
             return FAILED;
