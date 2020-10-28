@@ -40,12 +40,20 @@ public:
 		printf("hmLog 结束\n");
 		//INFO("hmLog 结束\n");
 
-		lock();
-		while(!logs.empty())
+
+		while(1)
 		{
-			sleep(1);
+			lock();
+			if(logs.empty() == false)
+			{
+				sleep(1);
+				unlock();
+			}else
+			{
+				unlock();
+				break;
+			}
 		}
-		unlock();
 		pthread_cancel(printThread);
 		pthread_join(printThread,nullptr);
 	}
