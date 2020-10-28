@@ -10,9 +10,8 @@
 
 int main()
 {
-	printf("1\n");
 	INFO("test");
-	printf("2\n");
+	INFO("%s","a");
 	return 0;
 }
 
