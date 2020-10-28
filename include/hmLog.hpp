@@ -17,7 +17,20 @@
 #include <unistd.h>
 #include <stdarg.h>
 #include <cstring>
-#define INFO(...) hmLog::getInstance().insertLog(getpid(),pthread_self(),__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
+
+typedef enum log_level {
+	debug_level = 0,
+	info_level,
+	warn_level,
+	error_level,
+	fatal_level
+} ;
+
+#define DEBUG(...) hmLog::getInstance().insertLog(debug_level,getpid(),pthread_self(),__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
+#define INFO(...) hmLog::getInstance().insertLog(info_level,getpid(),pthread_self(),__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
+#define WARN(...) hmLog::getInstance().insertLog(warn_level,getpid(),pthread_self(),__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
+#define ERROR(...) hmLog::getInstance().insertLog(error_level,getpid(),pthread_self(),__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
+#define FATAL(...) hmLog::getInstance().insertLog(fatal_level,getpid(),pthread_self(),__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
 
 void* printLog(void *para);
 typedef struct log_def {
@@ -31,6 +44,16 @@ public:
 	static hmLog& getInstance() {
 		static hmLog instance;
 		return instance;
+	}
+
+	void init(int level)
+	{
+		current_log_level = level;
+	}
+
+	int getLevel()
+	{
+		return current_log_level;
 	}
 
 	~hmLog() {
@@ -65,7 +88,7 @@ public:
 		pthread_cond_wait(&logCond, &logsMutex);
 	}
 
-	void insertLog(long pid,long tid,const char *fileName, const char *funcName, int line,
+	void insertLog(int level,long pid,long tid,const char *fileName, const char *funcName, int line,
 			const char *pstr, ...) {
 		log_t logIn;
 
@@ -97,6 +120,7 @@ public:
 
 		vsnprintf(pbuf_out, count_write, pstr, ap);
 
+		logIn.level = level;
 		snprintf(logIn.msg, sizeof(logIn.msg), "%ld:%ld:%s:%s:%d:%s",pid,tid, fileName,
 				funcName, line, pbuf_out);
 		snprintf(logIn.time, sizeof(logIn.time), "%d-%d-%d %d:%d:%d",
@@ -116,6 +140,7 @@ public:
 	}
 
 private:
+	int current_log_level = info_level;
 	hmLog() {
 		pthread_create(&printThread, nullptr, printLog, nullptr);
 		printf("hmLog 启动完成\n");
