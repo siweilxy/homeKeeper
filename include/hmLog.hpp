@@ -14,7 +14,7 @@
 #include <memory>
 #include <time.h>
 
-#define INFO(...) hmLog::getInstance().insertLog(__FILE__,__LINE__,##__VA_ARGS__)
+#define INFO(...) hmLog::getInstance().insertLog(__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
 
 void* printLog(void* para);
 typedef struct log_def
@@ -58,14 +58,14 @@ public:
 		pthread_cond_wait(&logCond,&logsMutex);
 	}
 
-	void insertLog(std::string fileName,int line,std::string msg,...)
+	void insertLog(const std::string fileName,const std::string funcName,int line,std::string msg,...)
 	{
 		log_t logIn;
 
         time(&now);
         tm_now = localtime(&now);
 
-		snprintf(logIn.msg,sizeof(logIn.msg),":%s:%d:%s",fileName.c_str(),line,msg.c_str());
+		snprintf(logIn.msg,sizeof(logIn.msg),":%s:%s:%d:%s",fileName.c_str(),funcName.c_str(),line,msg.c_str());
 		snprintf(logIn.time,sizeof(logIn.time),"%d-%d-%d %d:%d:%d",
 				tm_now->tm_year+1900,tm_now->tm_mon+1, tm_now->tm_mday,
 				tm_now->tm_hour, tm_now->tm_min, tm_now->tm_sec);
