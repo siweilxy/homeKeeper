@@ -33,12 +33,13 @@ public:
 
 	~hmLog()
 	{
+		printf("hmLog 结束\n");
 		insertLog("hmLog 结束\n");
 		pthread_join(printThread,nullptr);
-		printf("hmLog 结束\n");
 	}
 
 	std::vector<log_t> logs;
+	int flag = 0;
 
 	void lock()
 	{
