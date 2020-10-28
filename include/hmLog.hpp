@@ -79,7 +79,7 @@ private:
         time(&now);
         tm_now = localtime(&now);
 
-		snprintf(logIn.msg,sizeof(logIn.msg),":%s:%s:%d:%s",fileName,line,msg);
+		snprintf(logIn.msg,sizeof(logIn.msg),":%s:%d:%s",fileName,line,msg);
 		snprintf(logIn.time,sizeof(logIn.time),"%d-%d-%d %d:%d:%d",
 				tm_now->tm_year+1900,tm_now->tm_mon+1, tm_now->tm_mday,
 				tm_now->tm_hour, tm_now->tm_min, tm_now->tm_sec);
