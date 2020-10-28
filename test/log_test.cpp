@@ -10,7 +10,7 @@
 
 int main()
 {
-	hmLog::getInstance();
+	INFO("test");
 	return 0;
 }
 
