@@ -17,7 +17,7 @@
 #include <unistd.h>
 #include <stdarg.h>
 #include <cstring>
-#define INFO(...) hmLog::getInstance().insertLog(pthread_self(),__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
+#define INFO(...) hmLog::getInstance().insertLog(getpid(),pthread_self(),__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
 
 void* printLog(void *para);
 typedef struct log_def {
@@ -65,7 +65,7 @@ public:
 		pthread_cond_wait(&logCond, &logsMutex);
 	}
 
-	void insertLog(long pid,const char *fileName, const char *funcName, int line,
+	void insertLog(long pid,long tid,const char *fileName, const char *funcName, int line,
 			const char *pstr, ...) {
 		log_t logIn;
 
@@ -97,7 +97,7 @@ public:
 
 		vsnprintf(pbuf_out, count_write, pstr, ap);
 
-		snprintf(logIn.msg, sizeof(logIn.msg), "%ld:%s:%s:%d:%s",pid, fileName,
+		snprintf(logIn.msg, sizeof(logIn.msg), "%ld:%ld:%s:%s:%d:%s",pid,tid, fileName,
 				funcName, line, pbuf_out);
 		snprintf(logIn.time, sizeof(logIn.time), "%d-%d-%d %d:%d:%d",
 				tm_now->tm_year + 1900, tm_now->tm_mon + 1, tm_now->tm_mday,
