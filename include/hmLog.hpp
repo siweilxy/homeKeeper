@@ -48,7 +48,7 @@ private:
 	hmLog()
 	{
 		printf("hmLog 启动\n");
-		printThread =  new std::thread(printLog);
+		printThread = std::make_shared<std::thread>(printLog);
 		insertLog("hmLog 启动\n");
 	}
 
@@ -62,7 +62,7 @@ private:
 	}
 
 	std::mutex logsMutex;
-	std::unique_ptr<std::thread> printThread;
+	std::shared_ptr<std::thread> printThread;
 };
 
 static void printLog()
