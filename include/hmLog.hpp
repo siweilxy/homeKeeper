@@ -67,6 +67,9 @@ public:
 
 		log_t logIn;
 
+	    time_t now ;
+	    struct tm *tm_now;
+
         time(&now);
         tm_now = localtime(&now);
 
@@ -108,8 +111,6 @@ private:
 	pthread_mutex_t logsMutex = PTHREAD_MUTEX_INITIALIZER;
 	pthread_cond_t logCond = PTHREAD_COND_INITIALIZER;
 	pthread_t printThread;
-    time_t now ;
-    struct tm *tm_now;
 };
 
 void* printLog(void* para)
