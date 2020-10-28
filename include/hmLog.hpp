@@ -40,15 +40,6 @@ public:
 
 	std::vector<log_t> logs;
 
-private:
-	hmLog()
-	{
-		pthread_create(&printThread,nullptr,printLog,nullptr);
-		insertLog("hmLog 启动\n");
-		printf("hmLog 启动\n");
-
-	}
-
 	void lock()
 	{
 		pthread_mutex_lock(&logsMutex);
@@ -59,6 +50,15 @@ private:
 	{
 		log_signal();
 		pthread_mutex_unlock(&logsMutex);
+	}
+
+private:
+	hmLog()
+	{
+		pthread_create(&printThread,nullptr,printLog,nullptr);
+		insertLog("hmLog 启动\n");
+		printf("hmLog 启动\n");
+
 	}
 
 	void log_signal()
