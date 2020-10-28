@@ -11,7 +11,7 @@
 int main()
 {
 	INFO("test");
-	INFO("%s","a");
+	INFO("%s %c %d ","a",'c',1);
 	return 0;
 }
 
