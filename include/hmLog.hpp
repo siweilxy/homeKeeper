@@ -15,7 +15,7 @@
 #include <mutex>
 #include <time.h>
 
-static void printLog();
+void* printLog(void* para);
 typedef struct log_def
 {
 	int level;
@@ -35,7 +35,7 @@ public:
 	~hmLog()
 	{
 		insertLog("hmLog 结束\n");
-		pthread_join(&printThread,nullptr);
+		pthread_join(printThread,nullptr);
 		printf("hmLog 结束\n");
 	}
 
