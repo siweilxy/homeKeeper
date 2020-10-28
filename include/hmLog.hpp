@@ -90,7 +90,7 @@ public:
     	int d;
     	char *s;
     	char c;
-    	char buf[40960] = {0};
+    	char buf[4096] = {0};
     	char buffer[10];
     	va_list ap;
     	va_start(ap,fmt);
