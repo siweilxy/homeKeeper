@@ -13,6 +13,8 @@
 #include <pthread.h>
 #include <memory>
 #include <time.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 #define INFO(...) hmLog::getInstance().insertLog(__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
 
@@ -37,6 +39,13 @@ public:
 	{
 		printf("hmLog 结束\n");
 		INFO("hmLog 结束\n");
+
+		lock();
+		while(!logs.empty())
+		{
+			sleep(1);
+		}
+		unlock();
 		pthread_cancel(printThread);
 		pthread_join(printThread,nullptr);
 	}
