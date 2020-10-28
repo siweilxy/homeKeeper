@@ -24,7 +24,7 @@ typedef struct log_def
 {
 	int level;
 	char time[255];
-	char msg[1024];
+	char msg[10240];
 }log_t;
 
 class hmLog
