@@ -27,9 +27,9 @@ public:
 
 	~hmLog()
 	{
+		insertLog("hmLog 结束\n");
 		printThread->join();
 		printf("hmLog 结束\n");
-		insertLog("hmLog 结束\n");
 	}
 
 	void lock()
