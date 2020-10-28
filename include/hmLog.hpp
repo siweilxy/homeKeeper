@@ -44,7 +44,7 @@ public:
 			lock();
 			if(logs.empty() == false)
 			{
-				printf("logs:%d\n",logs.size());
+				printf("logs:%ld\n",logs.size());
 				log_signal();
 				unlock();
 			}else
