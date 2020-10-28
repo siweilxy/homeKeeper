@@ -17,17 +17,17 @@ public:
         static hmLog instance;
         return instance;
     }
-private:
-	hmLog()
-	{
-		printf("hmLog 启动\n");
-	}
 
 	~hmLog()
 	{
 		printf("hmLog 结束");
 	}
 
+private:
+	hmLog()
+	{
+		printf("hmLog 启动\n");
+	}
 };
 
 
