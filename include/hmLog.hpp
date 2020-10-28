@@ -43,7 +43,6 @@ public:
 		lock();
 		while(!logs.empty())
 		{
-			INFO("%d logs",logs.size());
 			sleep(1);
 		}
 		unlock();
