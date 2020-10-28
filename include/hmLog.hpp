@@ -37,6 +37,7 @@ public:
 	{
 		printf("hmLog 结束\n");
 		INFO("hmLog 结束\n");
+		pthread_cancel(printThread);
 		pthread_join(printThread,nullptr);
 	}
 
@@ -94,7 +95,6 @@ private:
 
 	void log_signal()
 	{
-		printf("signal\n");
 		pthread_cond_signal(&logCond);
 	}
 
@@ -107,13 +107,14 @@ void* printLog(void* para)
 {
 	while(1)
 	{
+		pthread_testcancel();
 		hmLog::getInstance().lock();
 		hmLog::getInstance().log_wait();
 		auto logsTemp = std::move(hmLog::getInstance().logs);
 
 		for(auto log :logsTemp)
 		{
-			printf("%s:%s",log.time,log.msg);
+			printf("%s:%s\n",log.time,log.msg);
 		}
 
 		hmLog::getInstance().unlock();
