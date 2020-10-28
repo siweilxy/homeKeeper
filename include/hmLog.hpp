@@ -45,16 +45,19 @@ public:
 
 	void lock()
 	{
+		printf("lock\n");
 		pthread_mutex_lock(&logsMutex);
 	}
 
 	void unlock()
 	{
+		printf("unlock\n");
 		pthread_mutex_unlock(&logsMutex);
 	}
 
 	void log_wait()
 	{
+		printf("wait\n");
 		pthread_cond_wait(&logCond,&logsMutex);
 	}
 
@@ -87,6 +90,7 @@ private:
 
 	void log_signal()
 	{
+		printf("signal\n");
 		pthread_cond_signal(&logCond);
 	}
 
