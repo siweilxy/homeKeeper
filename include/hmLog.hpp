@@ -14,6 +14,8 @@
 #include <memory>
 #include <mutex>
 
+static void printLog();
+
 class hmLog
 {
 public:
@@ -30,26 +32,24 @@ public:
 		insertLog("hmLog 结束\n");
 	}
 
+	void lock()
+	{
+		logsMutex.lock();
+	}
+
+	void unlock()
+	{
+		logsMutex.unlock();
+	}
+
+	std::vector<std::string> logs;
+
 private:
 	hmLog()
 	{
 		printf("hmLog 启动\n");
 		printThread =  new std::thread(printLog);
 		insertLog("hmLog 启动\n");
-	}
-
-	static void printLog()
-	{
-		logsMutex.lock();
-
-		auto logsTemp = std::move(logs);
-
-		for(auto log :logsTemp)
-		{
-			printf("%s",log.c_str());
-		}
-
-		logsMutex.unlock();
 	}
 
 	void insertLog(std::string log)
@@ -61,10 +61,22 @@ private:
 		logsMutex.unlock();
 	}
 
-	std::vector<std::string> logs;
 	std::mutex logsMutex;
 	std::unique_ptr<std::thread> printThread;
 };
 
+static void printLog()
+{
+	hmLog::getInstance().lock();
+
+	auto logsTemp = std::move(hmLog::getInstance().logs);
+
+	for(auto log :logsTemp)
+	{
+		printf("%s",log.c_str());
+	}
+
+	hmLog::getInstance().unlock();
+}
 
 #endif /* INCLUDE_HMLOG_HPP_ */
