@@ -18,7 +18,7 @@
 #include <stdarg.h>
 #include <cstring>
 
-typedef enum log_level {
+enum log_level {
 	debug_level = 0,
 	info_level,
 	warn_level,
