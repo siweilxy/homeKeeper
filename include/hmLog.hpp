@@ -41,12 +41,16 @@ public:
 
 		while(1)
 		{
+			sleep(1);
+			lock();
 			if(logs.empty() == false)
 			{
 				printf("logs:%d\n",logs.size());
-				sleep(1);
+				log_signal();
+				unlock();
 			}else
 			{
+				unlock();
 				break;
 			}
 		}
