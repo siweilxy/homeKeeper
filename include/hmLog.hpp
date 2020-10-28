@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdarg.h>
-
+#include <cstring>
 #define INFO(...) hmLog::getInstance().insertLog(__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
 
 void* printLog(void* para);
