@@ -11,7 +11,7 @@
 void* test(void* para)
 {
 	hmLog::getInstance().setLevel(4);
-	INFO("test");
+	FATAL("test");
 	INFO("%s %c %d ","a",'c',1);
 	return nullptr;
 }
