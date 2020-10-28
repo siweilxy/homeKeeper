@@ -58,7 +58,7 @@ public:
 		pthread_cond_wait(&logCond,&logsMutex);
 	}
 
-	void insertLog(const std::string fileName,const std::string funcName,int line,std::string msg,...)
+	void insertLog(const std::string& fileName,const std::string& funcName,int line,std::string msg,...)
 	{
 		log_t logIn;
 
