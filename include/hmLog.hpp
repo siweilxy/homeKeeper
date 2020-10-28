@@ -47,9 +47,10 @@ public:
 private:
 	hmLog()
 	{
-		printf("hmLog 启动\n");
 		printThread = std::make_shared<std::thread>(printLog);
 		insertLog("hmLog 启动\n");
+		printf("hmLog 启动\n");
+
 	}
 
 	void insertLog(std::string log)
@@ -73,7 +74,7 @@ static void printLog()
 
 	for(auto log :logsTemp)
 	{
-		printf("%s",log.c_str());
+		printf("%s:%s:%d:%s",__FILE__,__FUNCTION__,__LINE__,log.c_str());
 	}
 
 	hmLog::getInstance().unlock();
