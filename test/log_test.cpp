@@ -8,10 +8,20 @@
 #include <hmLog.hpp>
 
 
+void* test(void* para)
+{
+	INFO("test");
+	INFO("%s %c %d ","a",'c',1);
+	return nullptr;
+}
+
 int main()
 {
 	INFO("test");
 	INFO("%s %c %d ","a",'c',1);
+	pthread_t p;
+	pthread_create(&p,nullptr,test,nullptr);
+	pthread_join(p,nullptr);
 	return 0;
 }
 
