@@ -12,7 +12,6 @@
 #include <vector>
 #include <pthread.h>
 #include <memory>
-#include <mutex>
 #include <time.h>
 
 void* printLog(void* para);
@@ -39,16 +38,6 @@ public:
 		printf("hmLog 结束\n");
 	}
 
-	void lock()
-	{
-		logsMutex.lock();
-	}
-
-	void unlock()
-	{
-		logsMutex.unlock();
-	}
-
 	std::vector<log_t> logs;
 
 private:
@@ -58,6 +47,28 @@ private:
 		insertLog("hmLog 启动\n");
 		printf("hmLog 启动\n");
 
+	}
+
+	void lock()
+	{
+		pthread_mutex_lock(&logsMutex);
+		log_wait();
+	}
+
+	void unlock()
+	{
+		log_signal();
+		pthread_mutex_unlock(&logsMutex);
+	}
+
+	void log_signal()
+	{
+		pthread_cond_signal(&logCond);
+	}
+
+	void log_wait()
+	{
+		pthread_cond_wait(&logCond,&logsMutex);
 	}
 
 	void insertLog(std::string log)
@@ -72,13 +83,14 @@ private:
 				tm_now->tm_year+1900,tm_now->tm_mon+1, tm_now->tm_mday,
 				tm_now->tm_hour, tm_now->tm_min, tm_now->tm_sec);
 
-		logsMutex.lock();
+		lock();
 		logs.push_back(logIn);
+		unlock();
 
-		logsMutex.unlock();
 	}
 
-	std::mutex logsMutex;
+	pthread_mutex_t logsMutex = PTHREAD_MUTEX_INITIALIZER;
+	pthread_cond_t logCond = PTHREAD_COND_INITIALIZER;
 	pthread_t printThread;
     time_t now ;
     struct tm *tm_now;
