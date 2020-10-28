@@ -45,26 +45,21 @@ public:
 
 	void lock()
 	{
-		printf("lock\n");
 		pthread_mutex_lock(&logsMutex);
 	}
 
 	void unlock()
 	{
-		printf("unlock\n");
 		pthread_mutex_unlock(&logsMutex);
 	}
 
 	void log_wait()
 	{
-		printf("wait\n");
 		pthread_cond_wait(&logCond,&logsMutex);
 	}
 
 	void insertLog(const char* fileName,const char* funcName,int line,const char* msg,...)
 	{
-		printf("%d\n",__LINE__);
-
 		log_t logIn;
 
 	    time_t now ;
@@ -77,19 +72,14 @@ public:
 		snprintf(logIn.time,sizeof(logIn.time),"%d-%d-%d %d:%d:%d",
 				tm_now->tm_year+1900,tm_now->tm_mon+1, tm_now->tm_mday,
 				tm_now->tm_hour, tm_now->tm_min, tm_now->tm_sec);
-		printf("%d\n",__LINE__);
 
 		lock();
-		printf("%d\n",__LINE__);
 
 		logs.push_back(logIn);
-		printf("%d\n",__LINE__);
 
 		log_signal();
-		printf("%d\n",__LINE__);
 
 		unlock();
-		printf("%d\n",__LINE__);
 
 	}
 
