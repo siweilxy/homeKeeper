@@ -75,7 +75,7 @@ public:
 		pthread_cond_wait(&logCond,&logsMutex);
 	}
 
-	void insertLog(const char* fileName,const char* funcName,int line,const char* msg,...)
+	void insertLog(const char* fileName,const char* funcName,int line,const char* fmt,...)
 	{
 		log_t logIn;
 
@@ -85,7 +85,45 @@ public:
         time(&now);
         tm_now = localtime(&now);
 
-		snprintf(logIn.msg,sizeof(logIn.msg),":%s:%s:%d:%s",fileName,funcName,line,msg);
+
+    	int d;
+    	char *s;
+    	char c;
+    	char buf[40960] = {0};
+    	char buffer[10];
+    	va_list ap;
+    	va_start(ap,fmt);
+
+    	while(*fmt != '\0')
+    	{
+    		if(*fmt == '%')
+    		{
+    			fmt++;
+    			if(*fmt == 's')
+    			{
+    				s = va_arg(ap,char *);
+    				strcat(buf,s);
+    			}
+    			else if(*fmt == 'd')
+    			{
+    				d = va_arg(ap,int);
+    				memset(buffer,0,10);
+    				sprintf(buffer,"%d",d);
+    				strcat(buf,buffer);
+    			}
+    		}
+    		else
+    		{
+    			memset(buffer,0,10);
+    			sprintf(buffer,"%c",*fmt);
+    			strcat(buf,buffer);
+    		}
+    		fmt++;
+    	}//end while
+
+    	va_end(ap);
+
+		snprintf(logIn.msg,sizeof(logIn.msg),":%s:%s:%d:%s",fileName,funcName,line,buf);
 		snprintf(logIn.time,sizeof(logIn.time),"%d-%d-%d %d:%d:%d",
 				tm_now->tm_year+1900,tm_now->tm_mon+1, tm_now->tm_mday,
 				tm_now->tm_hour, tm_now->tm_min, tm_now->tm_sec);
