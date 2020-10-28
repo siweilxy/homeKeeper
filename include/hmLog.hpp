@@ -58,14 +58,14 @@ public:
 		pthread_cond_wait(&logCond,&logsMutex);
 	}
 
-	void insertLog(const std::string& fileName,const std::string& funcName,int line,std::string msg,...)
+	void insertLog(const char* fileName,const char* funcName,int line,std::string msg,...)
 	{
 		log_t logIn;
 
         time(&now);
         tm_now = localtime(&now);
 
-		snprintf(logIn.msg,sizeof(logIn.msg),":%s:%s:%d:%s",fileName.c_str(),funcName.c_str(),line,msg.c_str());
+		snprintf(logIn.msg,sizeof(logIn.msg),":%s:%s:%d:%s",fileName,funcName,line,msg.c_str());
 		snprintf(logIn.time,sizeof(logIn.time),"%d-%d-%d %d:%d:%d",
 				tm_now->tm_year+1900,tm_now->tm_mon+1, tm_now->tm_mday,
 				tm_now->tm_hour, tm_now->tm_min, tm_now->tm_sec);
