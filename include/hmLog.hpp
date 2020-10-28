@@ -85,7 +85,7 @@ private:
 		pthread_create(&printThread,nullptr,printLog,nullptr);
 		printf("hmLog 启动\n");
 		INFO("hmLog 启动\n");
-
+		printf("hmLog 启动完成\n");
 	}
 
 	void log_signal()
