@@ -41,7 +41,6 @@ public:
 
 		while(1)
 		{
-			sleep(1);
 			lock();
 			if(logs.empty() == false)
 			{
