@@ -14,7 +14,7 @@
 #include <memory>
 #include <time.h>
 
-#define INFO(...) hmLog::getInstance().insertLog(__FILE__,__FUNCTION__,__LINE_,##__VA_ARGS__)
+#define INFO(...) hmLog::getInstance().insertLog(__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
 
 void* printLog(void* para);
 typedef struct log_def
