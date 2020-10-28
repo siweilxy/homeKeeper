@@ -38,7 +38,7 @@ private:
 		insertLog("hmLog 启动\n");
 	}
 
-	void printLog()
+	static void printLog()
 	{
 		logsMutex.lock();
 
