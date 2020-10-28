@@ -43,13 +43,16 @@ public:
 	void lock()
 	{
 		pthread_mutex_lock(&logsMutex);
-		log_wait();
 	}
 
 	void unlock()
 	{
-		log_signal();
 		pthread_mutex_unlock(&logsMutex);
+	}
+
+	void log_wait()
+	{
+		pthread_cond_wait(&logCond,&logsMutex);
 	}
 
 private:
@@ -66,11 +69,6 @@ private:
 		pthread_cond_signal(&logCond);
 	}
 
-	void log_wait()
-	{
-		pthread_cond_wait(&logCond,&logsMutex);
-	}
-
 	void insertLog(char* log)
 	{
 		log_t logIn;
@@ -85,6 +83,7 @@ private:
 
 		lock();
 		logs.push_back(logIn);
+		log_signal();
 		unlock();
 
 	}
@@ -101,7 +100,7 @@ void* printLog(void* para)
 	while(1)
 	{
 		hmLog::getInstance().lock();
-
+		hmLog::getInstance().log_wait();
 		auto logsTemp = std::move(hmLog::getInstance().logs);
 
 		for(auto log :logsTemp)
