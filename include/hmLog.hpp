@@ -74,7 +74,7 @@ static void printLog()
 
 	for(auto log :logsTemp)
 	{
-		printf("%s:%s:%d:%s",__FILE__,__FUNCTION__,__LINE__,log.c_str());
+		printf("%s:%s:%s:%s:%d:%s",__DATE__,__TIME__,__FILE__,__FUNCTION__,__LINE__,log.c_str());
 	}
 
 	hmLog::getInstance().unlock();
