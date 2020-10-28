@@ -10,7 +10,7 @@
 
 int main()
 {
-	hmLog hmlog;
+	auto log = hmLog::getInstance();
 	return 0;
 }
 

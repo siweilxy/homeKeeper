@@ -12,10 +12,22 @@
 class hmLog
 {
 public:
+    static hmLog& getInstance()
+    {
+        static hmLog instance;
+        return instance;
+    }
+private:
 	hmLog()
 	{
 		printf("hmLog 启动\n");
 	}
+
+	~hmLog()
+	{
+		printf("hmLog 结束");
+	}
+
 };
 
 
