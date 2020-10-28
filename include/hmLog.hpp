@@ -80,8 +80,8 @@ private:
 	hmLog()
 	{
 		pthread_create(&printThread,nullptr,printLog,nullptr);
-		INFO("hmLog 启动\n");
 		printf("hmLog 启动\n");
+		INFO("hmLog 启动\n");
 
 	}
 
