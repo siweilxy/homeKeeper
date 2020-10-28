@@ -46,6 +46,7 @@ public:
 			{
 				printf("logs:%d\n",logs.size());
 				sleep(1);
+				log_signal();
 				unlock();
 			}else
 			{
