@@ -27,7 +27,7 @@ enum log_level {
 	fatal_level
 } ;
 
-std::map<int,char*> log_str {{0,"debug"},{1,"info"},{2,"warn"},{3,"error"},{4,"fatal"}};
+std::map<int,const char*> log_str {{0,"debug"},{1,"info"},{2,"warn"},{3,"error"},{4,"fatal"}};
 
 #define DEBUG(...) hmLog::getInstance().insertLog(debug_level,getpid(),pthread_self(),__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
 #define INFO(...) hmLog::getInstance().insertLog(info_level,getpid(),pthread_self(),__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
@@ -50,6 +50,11 @@ public:
 	}
 
 	void init(int level)
+	{
+		current_log_level = level;
+	}
+
+	void setLevel(int level)
 	{
 		current_log_level = level;
 	}
