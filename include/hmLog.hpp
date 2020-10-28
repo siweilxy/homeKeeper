@@ -63,6 +63,8 @@ public:
 
 	void insertLog(const char* fileName,const char* funcName,int line,const char* msg,...)
 	{
+		printf("%d\n",__LINE__);
+
 		log_t logIn;
 
         time(&now);
@@ -72,11 +74,20 @@ public:
 		snprintf(logIn.time,sizeof(logIn.time),"%d-%d-%d %d:%d:%d",
 				tm_now->tm_year+1900,tm_now->tm_mon+1, tm_now->tm_mday,
 				tm_now->tm_hour, tm_now->tm_min, tm_now->tm_sec);
+		printf("%d\n",__LINE__);
 
 		lock();
+		printf("%d\n",__LINE__);
+
 		logs.push_back(logIn);
+		printf("%d\n",__LINE__);
+
 		log_signal();
+		printf("%d\n",__LINE__);
+
 		unlock();
+		printf("%d\n",__LINE__);
+
 	}
 
 private:
