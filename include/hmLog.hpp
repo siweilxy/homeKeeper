@@ -41,16 +41,12 @@ public:
 
 		while(1)
 		{
-			lock();
 			if(logs.empty() == false)
 			{
 				printf("logs:%d\n",logs.size());
 				sleep(1);
-				log_signal();
-				unlock();
 			}else
 			{
-				unlock();
 				break;
 			}
 		}
@@ -120,6 +116,7 @@ private:
 
 void* printLog(void* para)
 {
+	printf("print thread start\n");
 	while(1)
 	{
 		pthread_testcancel();
