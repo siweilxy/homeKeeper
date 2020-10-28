@@ -36,7 +36,7 @@ include_directories($ENV{HOME}/work/github/homeKeeper/3rdparty/include/)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 add_executable(log_test log_test.cpp)
 
-target_link_libraries(log_test)
+target_link_libraries(log_test pthread)
 
 
 
