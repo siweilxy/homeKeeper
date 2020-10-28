@@ -15,6 +15,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdarg.h>
 
 #define INFO(...) hmLog::getInstance().insertLog(__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
 
