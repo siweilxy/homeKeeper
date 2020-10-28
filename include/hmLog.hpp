@@ -14,7 +14,7 @@
 #include <memory>
 #include <time.h>
 
-#define INFO(...) hmLog::getInstance().insertLog(__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
+#define INFO(...) hmLog::getInstance().insertLog(__FILE__,__LINE__,##__VA_ARGS__)
 
 void* printLog(void* para);
 typedef struct log_def
@@ -72,14 +72,14 @@ private:
 		pthread_cond_signal(&logCond);
 	}
 
-	void insertLog(char* fileName,char* funcName,int line,char* msg,...)
+	void insertLog(char* fileName,int line,char* msg,...)
 	{
 		log_t logIn;
 
         time(&now);
         tm_now = localtime(&now);
 
-		snprintf(logIn.msg,sizeof(logIn.msg),":%s:%s:%d:%s",fileName,funcName,line,msg);
+		snprintf(logIn.msg,sizeof(logIn.msg),":%s:%s:%d:%s",fileName,line,msg);
 		snprintf(logIn.time,sizeof(logIn.time),"%d-%d-%d %d:%d:%d",
 				tm_now->tm_year+1900,tm_now->tm_mon+1, tm_now->tm_mday,
 				tm_now->tm_hour, tm_now->tm_min, tm_now->tm_sec);
