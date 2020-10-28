@@ -11,6 +11,7 @@
 #include <stdio.h>
 class hmLog
 {
+public:
 	hmLog()
 	{
 		printf("hmLog 启动");
