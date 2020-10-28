@@ -12,6 +12,7 @@
 #include <vector>
 #include <thread>
 #include <memory>
+#include <mutex>
 
 class hmLog
 {
