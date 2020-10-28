@@ -13,8 +13,15 @@
 #include <thread>
 #include <memory>
 #include <mutex>
+#include <time.h>
 
 static void printLog();
+typedef struct log_def
+{
+	int level;
+	char time[255];
+	char msg[1024];
+}log_t;
 
 class hmLog
 {
@@ -42,7 +49,7 @@ public:
 		logsMutex.unlock();
 	}
 
-	std::vector<std::string> logs;
+	std::vector<log_t> logs;
 
 private:
 	hmLog()
@@ -55,15 +62,26 @@ private:
 
 	void insertLog(std::string log)
 	{
-		logsMutex.lock();
+		log_t logIn;
 
-		logs.push_back(log);
+        time(&now);
+        tm_now = localtime(&now);
+
+		snprintf(logIn.msg,sizeof(logIn.msg),"%s",log.c_str());
+		snprintf(logIn.time,sizeof(logIn.time),"%d-%d-%d %d:%d:%d",
+				tm_now->tm_year+1900,tm_now->tm_mon+1, tm_now->tm_mday,
+				tm_now->tm_hour, tm_now->tm_min, tm_now->tm_sec);
+
+		logsMutex.lock();
+		logs.push_back(logIn);
 
 		logsMutex.unlock();
 	}
 
 	std::mutex logsMutex;
 	std::shared_ptr<std::thread> printThread;
+    time_t now ;
+    struct tm *tm_now;
 };
 
 static void printLog()
@@ -74,7 +92,7 @@ static void printLog()
 
 	for(auto log :logsTemp)
 	{
-		printf("%s:%s:%s:%s:%d:%s",__DATE__,__TIME__,__FILE__,__FUNCTION__,__LINE__,log.c_str());
+		printf("%s:%s:%s:%d:%s",log.time,__FILE__,__FUNCTION__,__LINE__,log.msg);
 	}
 
 	hmLog::getInstance().unlock();
