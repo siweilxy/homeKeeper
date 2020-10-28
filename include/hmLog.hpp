@@ -58,20 +58,6 @@ public:
 		pthread_cond_wait(&logCond,&logsMutex);
 	}
 
-private:
-	hmLog()
-	{
-		pthread_create(&printThread,nullptr,printLog,nullptr);
-		INFO("hmLog 启动\n");
-		printf("hmLog 启动\n");
-
-	}
-
-	void log_signal()
-	{
-		pthread_cond_signal(&logCond);
-	}
-
 	void insertLog(char* fileName,int line,char* msg,...)
 	{
 		log_t logIn;
@@ -88,6 +74,20 @@ private:
 		logs.push_back(logIn);
 		log_signal();
 		unlock();
+	}
+
+private:
+	hmLog()
+	{
+		pthread_create(&printThread,nullptr,printLog,nullptr);
+		INFO("hmLog 启动\n");
+		printf("hmLog 启动\n");
+
+	}
+
+	void log_signal()
+	{
+		pthread_cond_signal(&logCond);
 	}
 
 	pthread_mutex_t logsMutex = PTHREAD_MUTEX_INITIALIZER;
