@@ -10,7 +10,7 @@
 
 #include <stdio.h>
 #include <vector>
-#include <thread>
+#include <pthread.h>
 #include <memory>
 #include <mutex>
 #include <time.h>
@@ -35,7 +35,7 @@ public:
 	~hmLog()
 	{
 		insertLog("hmLog 结束\n");
-		printThread->join();
+		pthread_join(&printThread,nullptr);
 		printf("hmLog 结束\n");
 	}
 
@@ -54,7 +54,7 @@ public:
 private:
 	hmLog()
 	{
-		printThread = std::make_shared<std::thread>(printLog);
+		pthread_create(&printThread,nullptr,printLog,nullptr);
 		insertLog("hmLog 启动\n");
 		printf("hmLog 启动\n");
 
@@ -79,23 +79,27 @@ private:
 	}
 
 	std::mutex logsMutex;
-	std::shared_ptr<std::thread> printThread;
+	pthread_t printThread;
     time_t now ;
     struct tm *tm_now;
 };
 
-static void printLog()
+void* printLog(void* para)
 {
-	hmLog::getInstance().lock();
-
-	auto logsTemp = std::move(hmLog::getInstance().logs);
-
-	for(auto log :logsTemp)
+	while(1)
 	{
-		printf("%s:%s:%s:%d:%s",log.time,__FILE__,__FUNCTION__,__LINE__,log.msg);
+		hmLog::getInstance().lock();
+
+		auto logsTemp = std::move(hmLog::getInstance().logs);
+
+		for(auto log :logsTemp)
+		{
+			printf("%s:%s:%s:%d:%s",log.time,__FILE__,__FUNCTION__,__LINE__,log.msg);
+		}
+
+		hmLog::getInstance().unlock();
 	}
 
-	hmLog::getInstance().unlock();
 }
 
 #endif /* INCLUDE_HMLOG_HPP_ */
