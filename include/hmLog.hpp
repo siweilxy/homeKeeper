@@ -72,7 +72,7 @@ private:
 		pthread_cond_signal(&logCond);
 	}
 
-	void insertLog(char* fileName,char* funcName,int line,const char* msg)
+	void insertLog(char* fileName,char* funcName,int line,char* msg,...)
 	{
 		log_t logIn;
 
