@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(test)
+project(log_test)
 
 SET(EXECUTABLE_OUTPUT_PATH $ENV{HOME}/work/github/homeKeeper/bin)
 SET(LIBRARY_OUTPUT_PATH $ENV{HOME}/work/github/homeKeeper/lib)
@@ -34,9 +34,9 @@ include_directories($ENV{HOME}/work/github/homeKeeper/include/)
 #include_directories($ENV{HOME}/work/github/homeKeeper/include/)
 include_directories($ENV{HOME}/work/github/homeKeeper/3rdparty/include/)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
-add_executable(test ${all_files})
+add_executable(log_test log_test.cpp)
 
-target_link_libraries(test)
+target_link_libraries(log_test)
 
 
 

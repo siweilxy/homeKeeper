@@ -14,7 +14,7 @@ class hmLog
 public:
 	hmLog()
 	{
-		printf("hmLog 启动");
+		printf("hmLog 启动\n");
 	}
 };
 
