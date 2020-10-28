@@ -164,7 +164,10 @@ void* printLog(void *para) {
 		auto logsTemp = std::move(hmLog::getInstance().logs);
 
 		for (auto log : logsTemp) {
-			printf("%s:%s\n", log.time, log.msg);
+			if(log.level <= hmLog::getInstance().getLevel())
+			{
+				printf("%s:%s\n", log.time, log.msg);
+			}
 		}
 
 		hmLog::getInstance().unlock();

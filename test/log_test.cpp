@@ -10,6 +10,7 @@
 
 void* test(void* para)
 {
+	hmLog::getInstance().init(4);
 	INFO("test");
 	INFO("%s %c %d ","a",'c',1);
 	return nullptr;
