@@ -17,6 +17,7 @@
 #include <unistd.h>
 #include <stdarg.h>
 #include <cstring>
+#include <map>
 
 enum log_level {
 	debug_level = 0,
@@ -25,6 +26,8 @@ enum log_level {
 	error_level,
 	fatal_level
 } ;
+
+std::map<int,char*> log_str {{0,"debug"},{1,"info"},{2,"warn"},{3,"error"},{4,"fatal"}};
 
 #define DEBUG(...) hmLog::getInstance().insertLog(debug_level,getpid(),pthread_self(),__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
 #define INFO(...) hmLog::getInstance().insertLog(info_level,getpid(),pthread_self(),__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
@@ -164,9 +167,9 @@ void* printLog(void *para) {
 		auto logsTemp = std::move(hmLog::getInstance().logs);
 
 		for (auto log : logsTemp) {
-			if(log.level <= hmLog::getInstance().getLevel())
+			if(log.level >= hmLog::getInstance().getLevel())
 			{
-				printf("%s:%s\n", log.time, log.msg);
+				printf("%s:%s:%s\n", log_str[log.level],log.time, log.msg);
 			}
 		}
 
