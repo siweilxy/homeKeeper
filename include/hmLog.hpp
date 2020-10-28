@@ -20,7 +20,7 @@ public:
 
 	~hmLog()
 	{
-		printf("hmLog 结束");
+		printf("hmLog 结束\n");
 	}
 
 private:
