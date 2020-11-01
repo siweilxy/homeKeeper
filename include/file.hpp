@@ -10,6 +10,7 @@
 
 #include <string>
 #include <stdio.h>
+#include "json.hpp"
 
 using json = nlohmann::json;
 
