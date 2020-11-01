@@ -10,7 +10,7 @@
 
 void* test(void* para)
 {
-	hmLog::getInstance().setLevel(4);
+	hmLog::getInstance().init(4);
 	FATAL("test");
 	INFO("%s %c %d ","a",'c',1);
 	return nullptr;
@@ -18,7 +18,7 @@ void* test(void* para)
 
 int main()
 {
-	hmLog::getInstance().setLevel(0);
+	hmLog::getInstance().init(0);
 	INFO("test");
 	INFO("%s %c %d ","a",'c',1);
 	sleep(2);
