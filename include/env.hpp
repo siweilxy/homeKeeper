@@ -21,6 +21,7 @@ public:
 		if(tmp == nullptr)
 		{
 			printf("env has no %s\n",str.c_str());
+			return "";
 		}
 		return tmp;
 	}
