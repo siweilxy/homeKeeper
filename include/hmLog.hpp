@@ -60,7 +60,7 @@ public:
 		current_log_level = level;
 		env env;
 		cfgPath = env.getValue("CFG_PATH");
-		printf("cfgPah:[%s]\n",cfgPath);
+		printf("cfgPah:[%s]\n",cfgPath.c_str());
 
 		return SUCCESS;
 	}
