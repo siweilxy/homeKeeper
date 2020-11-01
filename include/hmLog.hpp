@@ -50,7 +50,7 @@ class hmLog {
 public:
 	std::vector<log_t> logs;
 	int flag = 0;
-	std::shared_ptr<file> logfile;
+	static std::shared_ptr<file> logfile;
 
 	static hmLog& getInstance() {
 		static hmLog instance;
