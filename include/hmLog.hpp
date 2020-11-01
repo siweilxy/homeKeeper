@@ -195,7 +195,7 @@ void* printLog(void *para) {
 				char temBuf[11240]={0};
 				snprintf(temBuf,sizeof(temBuf),"%s:%s:%s\n", log_str[log.level],log.time, log.msg);
 				printf("%s",temBuf);
-				hmLog::getInstance().logfile->write(temBuf);
+				hmLog::getInstance().logfile->write(temBuf,sizeof(temBuf));
 			}
 		}
 
