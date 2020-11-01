@@ -11,6 +11,8 @@
 #include <string>
 #include <stdio.h>
 
+using json = nlohmann::json;
+
 class file
 {
 private:

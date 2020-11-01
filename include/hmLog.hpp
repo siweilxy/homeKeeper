@@ -23,8 +23,6 @@
 
 #include "common.h"
 
-using json = nlohmann::json;
-
 enum log_level {
 	debug_level = 0,
 	info_level,
