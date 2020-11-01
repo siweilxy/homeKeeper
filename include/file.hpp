@@ -87,7 +87,7 @@ public:
         	}else
         	{
             	printf("error[%d][%s]\n",errno,strerror(errno));
-        		return ret;
+        		return "";
         	}
         }
         resBuf = buf;
@@ -122,7 +122,7 @@ public:
         	fp = fopen(path.c_str(),type.c_str());
         	if(fp == nullptr)
         	{
-        		printf("error [%d][%s]\n",strerror(errno));
+        		printf("error [%d][%s]\n",errno,strerror(errno));
         		openCount++;
         	}else
         	{
