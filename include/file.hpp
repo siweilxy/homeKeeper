@@ -54,6 +54,13 @@ public:
         return res;
     }
 
+    std::string getJsonString(const std::string& key)
+    {
+    	std::string jsonStr = getRes();
+        auto js = json::parse (jsonStr);
+        return js[key];
+    }
+
     ~file()
     {
         fflush(fp);

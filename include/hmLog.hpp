@@ -19,6 +19,7 @@
 #include <cstring>
 #include <map>
 #include "env.hpp"
+#include "file.hpp"
 
 #include "common.h"
 
@@ -61,6 +62,10 @@ public:
 		env env;
 		cfgPath = env.getValue("cfg_path");
 		printf("cfgPah:[%s]\n",cfgPath.c_str());
+
+		file file(cfgPath);
+		logPath = file.getJsonString("log_path");
+		printf("logPath is %s\n",logPath);
 
 		return SUCCESS;
 	}
@@ -158,6 +163,7 @@ public:
 private:
 	int current_log_level = info_level;
 	std::string cfgPath;
+	std::string logPath;
 	hmLog() {
 		pthread_create(&printThread, nullptr, printLog, nullptr);
 		printf("hmLog 启动完成\n");
