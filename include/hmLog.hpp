@@ -192,7 +192,7 @@ void* printLog(void *para) {
 		for (auto log : logsTemp) {
 			if(log.level >= hmLog::getInstance().getLevel())
 			{
-				char temBuf[512]={0};
+				char temBuf[11240]={0};
 				snprintf(temBuf,sizeof(temBuf),"%s:%s:%s\n", log_str[log.level],log.time, log.msg);
 				printf("%s",temBuf);
 				hmLog::getInstance().logfile->write(temBuf);
