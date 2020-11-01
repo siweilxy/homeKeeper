@@ -44,7 +44,7 @@ public:
         fp = fopen(path.c_str(),type.c_str());
     }
 
-    int write(std::string fileInfo)
+    int write(const std::string& fileInfo)
     {
         int ret = 0;
         //std::cout<<"fileInfo is "<<fileInfo<<std::endl;
@@ -70,6 +70,33 @@ public:
         }
         return ret;
     }
+
+    int write(const char* fileInfo,int length)
+        {
+            int ret = 0;
+            //std::cout<<"fileInfo is "<<fileInfo<<std::endl;
+            ret = fwrite(fileInfo,length,1,fp);
+            if(ret < 0)
+            {
+            	printf("error[%d][%s]\n",errno,strerror(errno));
+            	ret = reOpen();
+            	if(ret == SUCCESS)
+            	{
+            		fwrite(fileInfo,length,1,fp);
+            	}else
+            	{
+                	printf("error[%d][%s]\n",errno,strerror(errno));
+            		return ret;
+            	}
+            }
+
+            ret = fflush(fp);
+            if(ret  < 0)
+            {
+            	printf("error[%d][%s]\n",errno,strerror(errno));
+            }
+            return ret;
+        }
 
     std::string getRes()
     {
