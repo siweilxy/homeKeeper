@@ -65,7 +65,7 @@ public:
 
 		file file(cfgPath);
 		logPath = file.getJsonString("log_path");
-		printf("logPath is %s\n",logPath);
+		printf("logPath is %s\n",logPath.c_str());
 
 		return SUCCESS;
 	}
