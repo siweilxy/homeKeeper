@@ -11,6 +11,7 @@
 #include <string>
 #include <stdio.h>
 #include "json.hpp"
+#include "common.h"
 
 using json = nlohmann::json;
 
@@ -20,6 +21,7 @@ private:
     std::string path;
     std::string res;
     std::string type;
+    int reTryTime =5;
     FILE* fp;
     char buf[1024]={0};
 public:
@@ -47,19 +49,59 @@ public:
         int ret = 0;
         //std::cout<<"fileInfo is "<<fileInfo<<std::endl;
         ret = fwrite(fileInfo.c_str(),fileInfo.length(),1,fp);
+        if(ret < 0)
+        {
+        	printf("error[%d][%s]\n",errno,strerror(errno));
+        	ret = reOpen();
+        	if(ret == SUCCESS)
+        	{
+        		fwrite(fileInfo.c_str(),fileInfo.length(),1,fp);
+        	}else
+        	{
+            	printf("error[%d][%s]\n",errno,strerror(errno));
+        		return ret;
+        	}
+        }
+
+        ret = fflush(fp);
+        if(ret  < 0)
+        {
+        	printf("error[%d][%s]\n",errno,strerror(errno));
+        }
         return ret;
     }
 
     std::string getRes()
     {
-        fread(buf,1024,1024,fp);
-        res = buf;
-        return res;
+    	std::string resBuf="";
+    	int ret = 0;
+    	memset(buf,0,sizeof(buf));
+        ret = fread(buf,1024,1024,fp);
+        if(ret < 0)
+        {
+        	printf("error[%d][%s]\n",errno,strerror(errno));
+        	ret = reOpen();
+        	if(ret == SUCCESS)
+        	{
+                ret = fread(buf,1024,1024,fp);
+        	}else
+        	{
+            	printf("error[%d][%s]\n",errno,strerror(errno));
+        		return ret;
+        	}
+        }
+        resBuf = buf;
+        return resBuf;
     }
 
     std::string getJsonString(const std::string& key)
     {
     	std::string jsonStr = getRes();
+    	if(jsonStr.empty())
+    	{
+    		return "";
+    	}
+
         auto js = json::parse (jsonStr);
         return js[key];
     }
@@ -68,6 +110,30 @@ public:
     {
         fflush(fp);
         fclose(fp);
+    }
+
+    int reOpen()
+    {
+    	int openCount = 0;
+    	fclose(fp);
+    	fp = nullptr;
+        while(openCount<reTryTime)
+        {
+        	fp = fopen(path.c_str(),type.c_str());
+        	if(fp == nullptr)
+        	{
+        		printf("error [%d][%s]\n",strerror(errno));
+        		openCount++;
+        	}else
+        	{
+        		break;
+        	}
+        }
+       if(openCount >= reTryTime)
+       {
+    	   return FAILED;
+       }
+       return SUCCESS;
     }
 };
 

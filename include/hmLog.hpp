@@ -50,6 +50,7 @@ class hmLog {
 public:
 	std::vector<log_t> logs;
 	int flag = 0;
+	std::shared_ptr<file> logfile;
 
 	static hmLog& getInstance() {
 		static hmLog instance;
@@ -63,9 +64,11 @@ public:
 		cfgPath = env.getValue("cfg_path");
 		printf("cfgPah:[%s]\n",cfgPath.c_str());
 
-		file file(cfgPath);
-		logPath = file.getJsonString("log_path");
+		file cfgFile(cfgPath);
+		logPath = cfgFile.getJsonString("log_path");
 		printf("logPath is %s\n",logPath.c_str());
+		logfile= std::make_shared<file>(logPath);
+
 
 		return SUCCESS;
 	}
@@ -189,7 +192,10 @@ void* printLog(void *para) {
 		for (auto log : logsTemp) {
 			if(log.level >= hmLog::getInstance().getLevel())
 			{
-				printf("%s:%s:%s\n", log_str[log.level],log.time, log.msg);
+				char temBuf[512]={0};
+				snprintf(temBuf,sizeof(temBuf),"%s:%s:%s\n", log_str[log.level],log.time, log.msg);
+				printf("%s",temBuf);
+				hmLog::getInstance().logfile->write(temBuf);
 			}
 		}
 
