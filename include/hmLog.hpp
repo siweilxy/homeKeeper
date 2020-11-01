@@ -18,6 +18,9 @@
 #include <stdarg.h>
 #include <cstring>
 #include <map>
+#include "env.hpp"
+
+#include "common.h"
 
 enum log_level {
 	debug_level = 0,
@@ -44,14 +47,22 @@ typedef struct log_def {
 
 class hmLog {
 public:
+	std::vector<log_t> logs;
+	int flag = 0;
+
 	static hmLog& getInstance() {
 		static hmLog instance;
 		return instance;
 	}
 
-	void init(int level)
+	int init(int level)
 	{
 		current_log_level = level;
+		env env;
+		cfgPath = env.getValue("CFG_PATH");
+		printf("cfgPah:[%s]\n",cfgPath);
+
+		return SUCCESS;
 	}
 
 	void setLevel(int level)
@@ -80,9 +91,6 @@ public:
 		pthread_cancel(printThread);
 		pthread_join(printThread, nullptr);
 	}
-
-	std::vector<log_t> logs;
-	int flag = 0;
 
 	void lock() {
 		pthread_mutex_lock(&logsMutex);
@@ -149,6 +157,7 @@ public:
 
 private:
 	int current_log_level = info_level;
+	std::string cfgPath;
 	hmLog() {
 		pthread_create(&printThread, nullptr, printLog, nullptr);
 		printf("hmLog 启动完成\n");
