@@ -53,14 +53,16 @@ public:
     {
         int ret = 0;
         //std::cout<<"fileInfo is "<<fileInfo<<std::endl;
-        ret = fwrite(fileInfo.c_str(),fileInfo.length(),1,fp);
+        ret = fprintf(fp,fileInfo.c_str());
+//        ret = fwrite(fileInfo.c_str(),fileInfo.length(),1,fp);
         if(ret < 0)
         {
         	printf("error[%d][%s]\n",errno,strerror(errno));
         	ret = reOpen();
         	if(ret == SUCCESS)
         	{
-        		fwrite(fileInfo.c_str(),fileInfo.length(),1,fp);
+                ret = fprintf(fp,fileInfo.c_str());
+        		//fwrite(fileInfo.c_str(),fileInfo.length(),1,fp);
         	}else
         	{
             	printf("error[%d][%s]\n",errno,strerror(errno));
@@ -80,14 +82,16 @@ public:
         {
             int ret = 0;
             //std::cout<<"fileInfo is "<<fileInfo<<std::endl;
-            ret = fwrite(fileInfo,length,1,fp);
+            ret = fprintf(fp,fileInfo);
+            //ret = fwrite(fileInfo,length,1,fp);
             if(ret < 0)
             {
             	printf("error[%d][%s]\n",errno,strerror(errno));
             	ret = reOpen();
             	if(ret == SUCCESS)
             	{
-            		fwrite(fileInfo,length,1,fp);
+                    ret = fprintf(fp,fileInfo);
+//            		fwrite(fileInfo,length,1,fp);
             	}else
             	{
                 	printf("error[%d][%s]\n",errno,strerror(errno));
