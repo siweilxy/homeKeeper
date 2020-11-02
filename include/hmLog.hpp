@@ -50,7 +50,7 @@ class hmLog {
 public:
 	std::vector<log_t> logs;
 	int flag = 0;
-	static std::shared_ptr<file> logfile;
+	std::shared_ptr<file> logfile;
 
 	static hmLog& getInstance() {
 		static hmLog instance;
@@ -59,16 +59,19 @@ public:
 
 	int init(int level)
 	{
-		current_log_level = level;
-		env env;
-		cfgPath = env.getValue("cfg_path");
-		printf("cfgPah:[%s]\n",cfgPath.c_str());
+		if(initFlag == 0)
+		{
+			current_log_level = level;
+			env env;
+			cfgPath = env.getValue("cfg_path");
+			printf("cfgPah:[%s]\n",cfgPath.c_str());
 
-		file cfgFile(cfgPath);
-		logPath = cfgFile.getJsonString("log_path");
-		printf("logPath is %s\n",logPath.c_str());
-		logfile= std::make_shared<file>(logPath);
-
+			file cfgFile(cfgPath);
+			logPath = cfgFile.getJsonString("log_path");
+			printf("logPath is %s\n",logPath.c_str());
+			logfile= std::make_shared<file>(logPath);
+			initFlag = 1;
+		}
 
 		return SUCCESS;
 	}
@@ -167,6 +170,8 @@ private:
 	int current_log_level = info_level;
 	std::string cfgPath;
 	std::string logPath;
+	int initFlag = 0;
+
 	hmLog() {
 		pthread_create(&printThread, nullptr, printLog, nullptr);
 		printf("hmLog 启动完成\n");
