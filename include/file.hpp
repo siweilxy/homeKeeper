@@ -41,6 +41,7 @@ public:
      * */
     file (std::string path,std::string type="at+"):path(path),type(type)
     {
+    	printf("file path[%s]\n",path.c_str());
         fp = fopen(path.c_str(),type.c_str());
         if(fp == nullptr)
         {
