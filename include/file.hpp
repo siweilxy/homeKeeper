@@ -44,7 +44,7 @@ public:
         fp = fopen(path.c_str(),type.c_str());
         if(fp == nullptr)
         {
-        	printf("fp is nullptr\n");
+        	printf("fp is nullptr,path is %s\n",path.c_str());
         }
     }
 
