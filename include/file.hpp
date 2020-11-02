@@ -42,6 +42,10 @@ public:
     file (std::string path,std::string type="at+"):path(path),type(type)
     {
         fp = fopen(path.c_str(),type.c_str());
+        if(fp == nullptr)
+        {
+        	printf("fp is nullptr\n");
+        }
     }
 
     int write(const std::string& fileInfo)
