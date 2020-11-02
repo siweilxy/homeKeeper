@@ -126,6 +126,7 @@ public:
     	std::string jsonStr = getRes();
     	if(jsonStr.empty())
     	{
+    		printf("json is empty\n");
     		return "";
     	}
 
