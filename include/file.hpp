@@ -61,7 +61,7 @@ public:
         	ret = reOpen();
         	if(ret == SUCCESS)
         	{
-                ret = fprintf(fp,fileInfo.c_str());
+                ret = fprintf(fp,"%s",fileInfo.c_str());
         		//fwrite(fileInfo.c_str(),fileInfo.length(),1,fp);
         	}else
         	{
@@ -82,7 +82,7 @@ public:
         {
             int ret = 0;
             //std::cout<<"fileInfo is "<<fileInfo<<std::endl;
-            ret = fprintf(fp,fileInfo);
+            ret = fprintf(fp,"%s",fileInfo);
             //ret = fwrite(fileInfo,length,1,fp);
             if(ret < 0)
             {
