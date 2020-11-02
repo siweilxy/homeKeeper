@@ -68,6 +68,20 @@ public:
 
 			file cfgFile(cfgPath);
 			logPath = cfgFile.getJsonString("log_path");
+
+			time_t now;
+			struct tm *tm_now;
+
+			time(&now);
+			tm_now = localtime(&now);
+
+			char time[100]={0};
+
+			snprintf(time, sizeof(time), "%d-%d-%d",
+					tm_now->tm_year + 1900, tm_now->tm_mon + 1, tm_now->tm_mday);
+
+			logPath = logPath+"/"+time+'.log';
+
 			printf("logPath is %s\n",logPath.c_str());
 			logfile= std::make_shared<file>(logPath);
 			initFlag = 1;
