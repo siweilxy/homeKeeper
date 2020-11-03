@@ -203,11 +203,17 @@ private:
 	pthread_t printThread;
 };
 
+void cleanup(void *arg)
+{
+	hmLog::getInstance().unlock();
+}
+
 void* printLog(void *para) {
 	printf("print thread start\n");
 
 	 pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
 	 pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
+	 pthread_cleanup_push(cleanup,NULL);
 
 	while (1) {
 		pthread_testcancel();
@@ -227,7 +233,7 @@ void* printLog(void *para) {
 
 		hmLog::getInstance().unlock();
 	}
-
+	pthread_cleanup_pop(0);
 }
 
 #endif /* INCLUDE_HMLOG_HPP_ */
