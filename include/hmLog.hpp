@@ -109,6 +109,7 @@ public:
 				log_signal();
 				unlock();
 			} else {
+				printf("等待线程结束\n");
 				pthread_cancel(printThread);
 				pthread_join(printThread, nullptr);
 				unlock();
