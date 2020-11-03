@@ -109,12 +109,14 @@ public:
 				log_signal();
 				unlock();
 			} else {
+				pthread_cancel(printThread);
+				pthread_join(printThread, nullptr);
 				unlock();
 				break;
 			}
 		}
-		pthread_cancel(printThread);
-		pthread_join(printThread, nullptr);
+//		pthread_cancel(printThread);
+//		pthread_join(printThread, nullptr);
 	}
 
 	void lock() {
