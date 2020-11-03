@@ -205,6 +205,10 @@ private:
 
 void* printLog(void *para) {
 	printf("print thread start\n");
+
+	 pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
+	 pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
+
 	while (1) {
 		pthread_testcancel();
 		hmLog::getInstance().lock();
