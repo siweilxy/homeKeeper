@@ -33,6 +33,9 @@ enum log_level {
 
 std::map<int,const char*> log_str {{debug_level,"debug"},{info_level,"info"},{warn_level,"warn"},{error_level,"error"},{fatal_level,"fatal"}};
 
+#define ENTER INFO("进入函数:%s",__FUNCTION__);
+#define EXIT INFO("离开函数:%s",__FUNCTION__);
+
 #define DEBUG(...) hmLog::getInstance().insertLog(debug_level,getpid(),pthread_self(),__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
 #define INFO(...) hmLog::getInstance().insertLog(info_level,getpid(),pthread_self(),__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
 #define WARN(...) hmLog::getInstance().insertLog(warn_level,getpid(),pthread_self(),__FILE__,__FUNCTION__,__LINE__,##__VA_ARGS__)
