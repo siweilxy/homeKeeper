@@ -262,7 +262,7 @@ private:
             FILE *pt = NULL;
             if ((pt = fopen (m_vAttachMent[i].c_str (), "rb")) == NULL)
             {
-                LOG(ERROR) << "打开文件失败: " << m_vAttachMent[i];
+                ERROR("打开文件失败: [%s]" , m_vAttachMent[i].c_str());
                 continue;
             }
             fseek (pt, 0, SEEK_END);
