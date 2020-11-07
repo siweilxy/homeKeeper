@@ -40,7 +40,7 @@ private:
         conn = mysql_init (NULL);
         if(conn == nullptr)
         {
-            LOG(ERROR) << "mysql_init ERROR:" <<" errno is "<<mysql_errno( conn )<< " sql error: "<<mysql_error (conn);
+            ERROR("mysql_init ERROR:" <<" errno is "<<mysql_errno( conn )<< " sql error: "<<mysql_error (conn));
             return FAILED;
         }
 
@@ -48,19 +48,19 @@ private:
                                 passwd.c_str (), dateBase.c_str (), atoi(port.c_str()), NULL,
                                 0) == nullptr)
         {
-            LOG(ERROR) << "mysql_real_connect ERROR:" << mysql_error (conn);
+            ERROR("mysql_real_connect ERROR:[%s]", mysql_error (conn));
             return FAILED;
         }
 
         if(setAllSql() != SUCCESS)
         {
-            LOG(ERROR) << "setAllSql error";
+            ERROR("setAllSql error");
             return FAILED;
         }
 
         if(sqlBind() != SUCCESS)
         {
-            LOG(ERROR) << "sqlBInd error";
+            ERROR("sqlBInd error");
             return FAILED;
         }
         EXIT
@@ -141,27 +141,26 @@ public:
         int ret = 0;
         if (configPath == nullptr||strlen(configPath) == 0)
         {
-            LOG(ERROR) << "getenv failed";
+            ERROR("getenv failed");
             return FAILED;
         }
 
         file file (configPath);
         configFile = file.getRes ();
-        LOG(INFO)<<"configFIle is "<<configFile;
+        INFO("configFIle is [%s]",configFile.c_str());
         auto js = json::parse (configFile);
         ip = js["ip"];
         port = js["port"];
         dateBase = js["dateBase"];
         user = js["user"];
         passwd = js["passwd"];
-        LOG(INFO) << "ip is " << ip << " port is " << port
-                << " dateBase is " << dateBase << " user is " << user
-                << " passwd is " << passwd;
+        INFO("ip is [%s],port is [%s] dateBase is [%s] user is [%s] passwd id [%s]" , ip.c_str(),port.c_str(),
+        		dateBase.c_str(),user.c_str(),passwd.c_str());
 
         ret = initDb ();
         if (ret != SUCCESS)
         {
-            LOG(ERROR) << "initDb failed";
+            ERROR("initDb failed");
             return FAILED;
         }
 
