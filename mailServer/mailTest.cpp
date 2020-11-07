@@ -19,7 +19,7 @@
 #include <vector>
 
 #include "file.hpp"
-#include "log.h"
+#include "hmLog.hpp"
 #include "EmailSender.hpp"
 #include "curl.hpp"
 #include "tblEmailInfo.hpp"
@@ -33,7 +33,6 @@
 
 int main ()
 {
-    log::getInstance ().init (0);
     int ret = 0;
     std::string resOld = "old";
     std::string resNew = "new";
@@ -42,7 +41,7 @@ int main ()
     std::string smtpServer = SMTPSERVER;
     std::string recipient = RECIPIENT;
     std::string mailFrom = MAILFROM;
-    ret = log::getInstance ().init (0);
+	ret = hmLog::getInstance().init(0);
     if (ret != 0)
     {
         printf ("log init error");
