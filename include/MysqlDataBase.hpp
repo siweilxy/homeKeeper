@@ -40,7 +40,7 @@ private:
         conn = mysql_init (NULL);
         if(conn == nullptr)
         {
-            ERROR("mysql_init ERROR:" <<" errno is "<<mysql_errno( conn )<< " sql error: "<<mysql_error (conn));
+            ERROR("mysql_init ERROR:[%d]",mysql_errno( conn ));
             return FAILED;
         }
 
