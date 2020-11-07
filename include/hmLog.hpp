@@ -112,12 +112,11 @@ public:
 				printf("等待线程结束\n");
 				pthread_cancel(printThread);
 				printf("after cancel\n");
-
+				unlock();
+				printf("after unlock\n");
 				pthread_join(printThread, nullptr);
 				printf("after join\n");
 
-				unlock();
-				printf("after unlock\n");
 
 				break;
 			}
