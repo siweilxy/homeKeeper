@@ -15,6 +15,7 @@
 #include <sstream>
 #include "base64.hpp"
 #include <mimetic/mimetic.h>
+#include "hmLog.hpp"
 class EmailSender
 {
 public:
