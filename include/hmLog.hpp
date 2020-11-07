@@ -106,6 +106,7 @@ public:
 			lock();
 			if (logs.empty() == false) {
 				printf("logs:%ld\n", logs.size());
+				sleep(1);
 				log_signal();
 				unlock();
 			} else {
