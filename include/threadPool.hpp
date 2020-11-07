@@ -11,11 +11,10 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <vector>
-#include "log.h"
 #include <functional>
 #include <map>
 #include <sys/prctl.h>
-
+#include "hmLog.hpp"
 static void* startFunc (void *para);
 static std::map<std::string,std::function<void* (void*)>> funcs;
 
