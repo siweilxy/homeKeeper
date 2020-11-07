@@ -12,7 +12,7 @@
 #include "logging.h"
 
 #define ENTER LOG(INFO)<<"进入函数:%s"<<__FUNCTION__;
-#define EXIT LOF(INFO)<<"离开函数:%s"<<__FUNCTION__;
+#define EXIT LOG(INFO)<<"离开函数:%s"<<__FUNCTION__;
 class log
 {
 public:
