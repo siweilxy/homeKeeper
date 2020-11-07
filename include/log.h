@@ -11,8 +11,8 @@
 #include<stdio.h>
 #include "logging.h"
 
-#define ENTER INFO("进入函数:%s",__FUNCTION__);
-#define EXIT INFO("离开函数:%s",__FUNCTION__);
+#define ENTER LOG(INFO)<<"进入函数:%s"<<__FUNCTION__;
+#define EXIT LOF(INFO)<<"离开函数:%s"<<__FUNCTION__;
 class log
 {
 public:
