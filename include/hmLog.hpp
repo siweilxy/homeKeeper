@@ -106,9 +106,9 @@ public:
 			lock();
 			if (logs.empty() == false) {
 				printf("logs:%ld\n", logs.size());
-				sleep(1);
 				log_signal();
 				unlock();
+				sleep(1);
 			} else {
 				printf("等待线程结束\n");
 				pthread_cancel(printThread);
