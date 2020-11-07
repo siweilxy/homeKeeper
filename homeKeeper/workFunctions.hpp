@@ -41,7 +41,7 @@ void* getIp (void *para)
         ret = ipInfo.init ();
         if (ret != SUCCESS)
         {
-            LOG(ERROR) << "init failed";
+            ERROR("init failed");
             continue;
         }
         while (1)
@@ -50,21 +50,21 @@ void* getIp (void *para)
             resNew = curlUtil ("icanhazip.com");
             if (resNew == "failed")
             {
-                LOG(ERROR) << "curlUtil failed";
+                ERROR("curlUtil failed");
                 continue;
             }
             infos.clear ();
             auto ret = ipInfo.getRes (infos);
             if (ret != SUCCESS)
             {
-                LOG(ERROR) << "ipInfo.getRes failed";
+                ERROR("ipInfo.getRes failed");
                 continue;
             }
 
             if (infos.empty () || infos[0].ip != resNew)
             {
                 ipInfo.insertToDb (resNew);
-                LOG(ERROR) << "ip insert:" << resNew << "!";
+                ERROR("ip insert:%s", resNew.c_str());
             }
         }
     }
@@ -81,7 +81,7 @@ void* sendEmail (void *para)
         int ret = emailInfo.init ();
         if (ret != SUCCESS)
         {
-            LOG(ERROR) << "emailInfo.init () failed";
+            ERROR("emailInfo.init () failed");
             continue;
         }
 
@@ -89,7 +89,7 @@ void* sendEmail (void *para)
         ret = ipInfo.init ();
         if (ret != SUCCESS)
         {
-            LOG(ERROR) << "ipInfo.init () failed";
+            ERROR("ipInfo.init () failed");
             continue;
         }
 
@@ -100,7 +100,7 @@ void* sendEmail (void *para)
             auto ret = ipInfo.getRes (infos);
             if (ret == FAILED)
             {
-                LOG(ERROR) << "ipInfo.getRes failed";
+                ERROR("ipInfo.getRes failed");
                 continue;
             }
             bool result = true;
@@ -110,7 +110,7 @@ void* sendEmail (void *para)
             }
             else if (infos[0].send_flag == "0")
             {
-                LOG(INFO) << "ip is " << infos[0].ip;
+                INFO("ip is [%s]", infos[0].ip.c_str());
 
                 auto res = emailInfo.getRes ();
                 for (auto iter : res)
@@ -131,8 +131,7 @@ void* sendEmail (void *para)
                 if (result)
                 {
                     ipInfo.updateToDb (infos[0].rec_id);
-                    LOG(WARNING) << "update " << infos[0].ip
-                            << " send_flag to 1";
+                    WARNING ( "update  [%s] send_flag to 1" << infos[0].ip.c_str());
                 }
                 else
                 {
@@ -154,14 +153,14 @@ void* sendFile (void *para)
         int ret = emailInfo.init ();
         if (ret != SUCCESS)
         {
-            LOG(ERROR) << "emailInfo.init () failed";
+            ERROR("emailInfo.init () failed");
             continue;
         }
         downloadFile dlfile;
         ret = dlfile.init ();
         if (ret != SUCCESS)
         {
-            LOG(ERROR) << "dlfile.init () failed";
+            ERROR("dlfile.init () failed");
             continue;
         }
 
@@ -172,13 +171,13 @@ void* sendFile (void *para)
             auto ret = dlfile.getRes (downloadFiles);
             if (ret == FAILED)
             {
-                LOG(ERROR) << "dlfile.getRes () failed";
+                ERROR( "dlfile.getRes () failed");
                 continue;
             }
 
             for (auto dlFile : downloadFiles)
             {
-                LOG(WARNING) << "get " << dlFile    .fileName << std::endl;
+                WARN ( "get [%s]" , dlFile.fileName.c_str());
             }
 
             bool result = true;
@@ -199,8 +198,7 @@ void* sendFile (void *para)
             if (result)
             {
                 dlfile.updateToDb (downloadFiles[0].fileName);
-                LOG(WARNING) << "update " << downloadFiles[0].fileName
-                        << " send_flag to 1";
+                WARN ( "update [%s] send_flag to 1" , downloadFiles[0].fileName.c_str());
             }
             else
             {

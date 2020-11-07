@@ -50,7 +50,7 @@ private:
             ret = mysql_stmt_prepare (iter.second.stmt, iter.second.sql.c_str (), strlen (iter.second.sql.c_str ()));
             if (ret != SUCCESS)
             {
-                LOG(ERROR) << "mysql_stmt_prepare error  " << mysql_stmt_error (iter.second.stmt);
+                ERROR("mysql_stmt_prepare error:%s" ,mysql_stmt_error (iter.second.stmt));
                 iter.second.flag = 1;
                 return FAILED;
             }
@@ -74,14 +74,14 @@ private:
         ret = mysql_stmt_bind_result (selectStmt, params_select); //用于将结果集中的列与数据缓冲和长度缓冲关联（绑定）起来
         if(ret != SUCCESS)
         {
-            LOG(ERROR)<<"mysql_stmt_bind_result error: "<<mysql_stmt_error(selectStmt);
+            ERROR("mysql_stmt_bind_result error:%s ",mysql_stmt_error(selectStmt));
             return FAILED;
         }
 
         ret = mysql_stmt_bind_param(updateStmt, params_update);
         if(ret != SUCCESS)
         {
-            LOG(ERROR)<<"mysql_stmt_bind_param error: "<<mysql_stmt_error(updateStmt);
+            ERROR("mysql_stmt_bind_param error: %s",mysql_stmt_error(updateStmt));
             return FAILED;
         }
 
@@ -96,13 +96,13 @@ public:
         auto ret = mysql_stmt_execute(getStmt()[update].stmt);
         if(ret != SUCCESS)
         {
-            LOG(ERROR)<<"mysql_stmt_execute error: "<<mysql_stmt_error(getStmt()[update].stmt);
+            ERROR("mysql_stmt_execute error: %s",mysql_stmt_error(getStmt()[update].stmt));
             return FAILED;
         }
         ret = mysql_commit(getConn());
         if(ret != SUCCESS)
         {
-            LOG(ERROR)<<"mysql_commit error: "<<mysql_stmt_error(getStmt()[update].stmt);
+            ERROR("mysql_commit error: %s",mysql_stmt_error(getStmt()[update].stmt));
             return FAILED;
         }
 
@@ -117,14 +117,14 @@ public:
         ret = mysql_stmt_execute (stmt);           //执行与语句句柄相关的预处理
         if(ret != SUCCESS)
         {
-            LOG(ERROR)<<"mysql_stmt_execute error: "<<ret;
+            ERROR("mysql_stmt_execute error: %d",ret);
             return FAILED;
         }
 
         ret = mysql_stmt_store_result (stmt);      //以便后续的mysql_stmt_fetch()调用能返回缓冲数据
         if(ret != SUCCESS)
         {
-            LOG(ERROR)<<"mysql_stmt_store_result error: "<<ret;
+            ERROR("mysql_stmt_store_result error: %d",ret);
             return FAILED;
         }
 
@@ -140,12 +140,12 @@ public:
             }
             else if (ret == 100)
             {
-                LOG(INFO) << "ret is 100,ended";
+                INFO("ret is 100,ended");
                 return SUCCESS;
             }
             else
             {
-                LOG(ERROR) << "FETCH ERROR " << mysql_stmt_error (stmt);
+                ERROR("FETCH ERROR %s",mysql_stmt_error (stmt));
                 return FAILED;
             }
 
@@ -160,7 +160,7 @@ public:
         int ret = getResFromDb();
         if(ret != SUCCESS)
         {
-            LOG(ERROR)<<"getResFromDb ERROR: "<<ret;
+            ERROR("getResFromDb ERROR: %d",ret);
             return FAILED;
         }
         EXIT

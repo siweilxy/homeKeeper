@@ -14,7 +14,7 @@
 int keeper::start()
 {
     int ret = 0;
-    ret = log::getInstance().init();
+	ret = hmLog::getInstance().init(0);
     if(ret != 0)
     {
         printf("log init error");
@@ -22,7 +22,7 @@ int keeper::start()
     }
     threadPool pool;
 
-    LOG(INFO) << "funcMap.size() is " << funcMap.size();
+    INFO( "funcMap.size() is [%d]",funcMap.size());
 
 
     for(auto iter:funcMap)

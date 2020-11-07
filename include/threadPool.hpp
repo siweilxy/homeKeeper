@@ -29,7 +29,7 @@ public:
     threadPool ()
     {
         threadNo = sysconf (_SC_NPROCESSORS_ONLN);
-        LOG(INFO) << "threadNO is " << threadNo;
+        INFO("threadNo is %d",threadNo);
     }
 
     static void setFunction (std::string name,std::function<void* (void*)> func)
@@ -50,7 +50,7 @@ public:
     {
         if (threadPool::getFunNo () == 0)
         {
-            LOG(WARNING) << "funNo is " << threadPool::getFunNo ();
+            WARN("funNo is %d",threadPool::getFunNo ());
             return;
         }
 
@@ -61,7 +61,7 @@ public:
             pthread_t *t = (pthread_t*)malloc(sizeof(pthread_t));
             pthread_create (t, NULL, startFunc, (void*) p);
             threads.push_back(t);
-            LOG(WARNING) << "pthread_create end name is "<<p->name;
+            WARN("pthread_create end name is %s",p->name.c_str());
         }
         for(auto p:threads)
         {
@@ -86,11 +86,11 @@ static void* startFunc (void *para)
 {
     std::string name = ((para_t*)para)->name;
     prctl(PR_SET_NAME, name.c_str());
-    LOG(ERROR) << "prctl name is "<<name;
+    ERROR("prctl name is %s",name.c_str());
     delete (para_t*)para;
     auto func = threadPool::getFun (name);
     func(nullptr);
-    LOG(WARNING) << "index fun ended";
+    WARN("index fun ended");
     return nullptr;
 }
 
