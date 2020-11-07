@@ -45,12 +45,12 @@ private:
             }
             else if (ret == 100)
             {
-                LOG(INFO) << "ret is 100,ended";
+                INFO("ret is 100,ended");
                 return SUCCESS;
             }
             else
             {
-                LOG(ERROR) << "FETCH ERROR " << mysql_error (getConn());
+                ERROR("FETCH ERROR [%s]" , mysql_error (getConn()));
                 return FAILED;
             }
         }
@@ -71,7 +71,7 @@ public:
             ret = mysql_stmt_prepare (iter.second.stmt, iter.second.sql.c_str (), strlen (iter.second.sql.c_str ()));
             if (ret != SUCCESS)
             {
-                LOG(ERROR) << "mysql_stmt_prepare error  " << mysql_stmt_error (iter.second.stmt);
+                ERROR("mysql_stmt_prepare error[%s]", mysql_stmt_error (iter.second.stmt));
                 iter.second.flag = 1;
                 return FAILED;
             }
@@ -102,7 +102,7 @@ public:
         if(ret != SUCCESS)
         {
             sql_stmt[select].flag = 1;
-            LOG(ERROR)<<"mysql_stmt_bind_result error: "<<mysql_stmt_error(sql_stmt[select].stmt)<<" id is "<<this->select;
+            ERROR("mysql_stmt_bind_result error: [%s],id is [%s]",mysql_stmt_error(sql_stmt[select].stmt),this->select.c_str());
             return FAILED;
         }
 
@@ -110,7 +110,7 @@ public:
         if(ret != SUCCESS)
         {
             sql_stmt[select].flag = 1;
-            LOG(ERROR)<<"mysql_stmt_execute error: "<<ret;
+            ERROR("mysql_stmt_execute error: [%d]",ret);
             return FAILED;
         }
 
@@ -118,7 +118,7 @@ public:
         if(ret != SUCCESS)
         {
             sql_stmt[select].flag = 1;
-            LOG(ERROR)<<"mysql_stmt_store_result error: "<<ret;
+            ERROR("mysql_stmt_store_result error: [%d]",ret);
             return FAILED;
         }
 
@@ -132,7 +132,7 @@ public:
         int ret = getResFromDb();
         if(ret != SUCCESS)
         {
-            LOG(ERROR)<<"getResFromDb ERROR: "<<ret;
+            ERROR("getResFromDb ERROR: [%d]",ret);
         }
         EXIT
         return emailInfos;
