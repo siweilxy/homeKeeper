@@ -111,8 +111,14 @@ public:
 			} else {
 				printf("等待线程结束\n");
 				pthread_cancel(printThread);
+				printf("after cancel\n");
+
 				pthread_join(printThread, nullptr);
+				printf("after join\n");
+
 				unlock();
+				printf("after unlock\n");
+
 				break;
 			}
 		}
@@ -209,8 +215,7 @@ void cleanup(void *arg)
 }
 
 void* printLog(void *para) {
-	printf("print thread start\n");
-
+	 printf("print thread start\n");
 	 pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
 	 pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
 	 pthread_cleanup_push(cleanup,NULL);
