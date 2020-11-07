@@ -131,7 +131,7 @@ void* sendEmail (void *para)
                 if (result)
                 {
                     ipInfo.updateToDb (infos[0].rec_id);
-                    WARNING ( "update  [%s] send_flag to 1" << infos[0].ip.c_str());
+                    WARN( "update  [%s] send_flag to 1" , infos[0].ip.c_str());
                 }
                 else
                 {
