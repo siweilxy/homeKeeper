@@ -8,7 +8,6 @@
 #ifndef HOMEKEEPER_WORKFUNCTIONS_HPP_
 #define HOMEKEEPER_WORKFUNCTIONS_HPP_
 
-#include "log.h"
 #include "curl.hpp"
 #include "EmailSender.hpp"
 #include "tblEmailInfo.hpp"
@@ -16,6 +15,7 @@
 #include "tblIpInfo.hpp"
 #include "downloadfile.hpp"
 #include <map>
+#include "hmLog.hpp"
 
 #define USERNAME "siweilxy@163.com"
 #define PASSWORD "HGIENKTKTIOBXVCV"

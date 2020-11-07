@@ -6,10 +6,10 @@
  */
 
 #include "keeper.h"
-#include "log.h"
 #include <stdio.h>
 #include "threadPool.hpp"
 #include "workFunctions.hpp"
+#include "hmLog.hpp"
 
 int keeper::start()
 {

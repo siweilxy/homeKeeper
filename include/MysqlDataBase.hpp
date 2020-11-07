@@ -14,7 +14,7 @@
 
 #include "json.hpp"
 #include "common.h"
-#include "log.h"
+#include "hmLog.hpp"
 #include "file.hpp"
 #include <iconv.h>
 
