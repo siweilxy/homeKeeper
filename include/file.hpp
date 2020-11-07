@@ -53,6 +53,11 @@ public:
     {
         int ret = 0;
         //std::cout<<"fileInfo is "<<fileInfo<<std::endl;
+        if(fp == nullptr)
+        {
+        	printf("fp is nullptr\n");
+        	return FAILED;
+        }
         ret = fprintf(fp,"%s",fileInfo.c_str());
 //        ret = fwrite(fileInfo.c_str(),fileInfo.length(),1,fp);
         if(ret < 0)
