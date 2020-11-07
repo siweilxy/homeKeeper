@@ -217,7 +217,7 @@ void cleanup(void *arg)
 void* printLog(void *para) {
 	 printf("print thread start\n");
 	 pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
-	 pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,NULL);
+	 pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,NULL);
 	 pthread_cleanup_push(cleanup,NULL);
 
 	while (1) {
