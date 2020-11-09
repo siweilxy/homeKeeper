@@ -87,6 +87,19 @@ public:
         {
             int ret = 0;
             //std::cout<<"fileInfo is "<<fileInfo<<std::endl;
+            if(fp == nullptr)
+            {
+            	printf("fp == nullptr\n");
+            	ret = reOpen();
+            	if(ret == SUCCESS)
+            	{
+            		printf("reOpen [%s] success\n",path.c_str());
+            	}else
+            	{
+                	printf("error[%d][%s]\n",errno,strerror(errno));
+            		return ret;
+            	}
+            }
             ret = fprintf(fp,"%s",fileInfo);
             //ret = fwrite(fileInfo,length,1,fp);
             if(ret < 0)
