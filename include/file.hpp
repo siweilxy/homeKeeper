@@ -171,8 +171,12 @@ public:
     int reOpen()
     {
     	int openCount = 0;
-    	fclose(fp);
-    	fp = nullptr;
+    	if(fp != nullptr)
+    	{
+        	fclose(fp);
+        	fp = nullptr;
+    	}
+
         while(openCount<reTryTime)
         {
         	fp = fopen(path.c_str(),type.c_str());
