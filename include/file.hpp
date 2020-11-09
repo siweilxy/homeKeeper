@@ -150,6 +150,7 @@ public:
 
     ~file()
     {
+    	printf("文件[%s]释放\n",path.c_str());
         fflush(fp);
         fclose(fp);
     }
