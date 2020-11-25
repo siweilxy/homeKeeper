@@ -53,6 +53,9 @@ void* getIp (void *para)
                 ERROR("curlUtil failed");
                 continue;
             }
+
+            DEBUG("ip[%s]",resNew.c_str());
+
             infos.clear ();
             auto ret = ipInfo.getRes (infos);
             if (ret != SUCCESS)
