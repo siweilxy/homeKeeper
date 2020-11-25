@@ -22,7 +22,6 @@ private:
     std::string res;
     std::string type;
     int reTryTime =5;
-    FILE* fp;
     char buf[1024]={0};
 public:
     /*
@@ -42,28 +41,24 @@ public:
     file (std::string path,std::string type="at+"):path(path),type(type)
     {
     	printf("file path[%s]\n",path.c_str());
-        fp = fopen(path.c_str(),type.c_str());
-        if(fp == nullptr)
-        {
-        	printf("fp is nullptr,path is %s error [%s]\n",path.c_str(),strerror(errno));
-        }
     }
 
     int write(const std::string& fileInfo)
     {
         int ret = 0;
-        //std::cout<<"fileInfo is "<<fileInfo<<std::endl;
+        FILE* fp;
+        fp = fopen(path.c_str(),type.c_str());
         if(fp == nullptr)
         {
-        	printf("fp is nullptr\n");
+        	printf("fp is nullptr,path is %s error [%s]\n",path.c_str(),strerror(errno));
         	return FAILED;
         }
+
         ret = fprintf(fp,"%s",fileInfo.c_str());
-//        ret = fwrite(fileInfo.c_str(),fileInfo.length(),1,fp);
         if(ret < 0)
         {
         	printf("error[%d][%s]\n",errno,strerror(errno));
-        	ret = reOpen();
+        	ret = reOpen(fp);
         	if(ret == SUCCESS)
         	{
                 ret = fprintf(fp,"%s",fileInfo.c_str());
@@ -80,17 +75,32 @@ public:
         {
         	printf("error[%d][%s]\n",errno,strerror(errno));
         }
+
+        ret = fclose(fp);
+        if(ret  < 0)
+        {
+        	printf("error[%d][%s]\n",errno,strerror(errno));
+        }
+
         return ret;
     }
 
     int write(const char* fileInfo,int length)
         {
             int ret = 0;
-            //std::cout<<"fileInfo is "<<fileInfo<<std::endl;
+
+            FILE* fp;
+            fp = fopen(path.c_str(),type.c_str());
+            if(fp == nullptr)
+            {
+            	printf("fp is nullptr,path is %s error [%s]\n",path.c_str(),strerror(errno));
+            	return FAILED;
+            }
+
             if(fp == nullptr)
             {
             	printf("fp == nullptr\n");
-            	ret = reOpen();
+            	ret = reOpen(fp);
             	if(ret == SUCCESS)
             	{
             		printf("reOpen [%s] success\n",path.c_str());
@@ -101,15 +111,13 @@ public:
             	}
             }
             ret = fprintf(fp,"%s",fileInfo);
-            //ret = fwrite(fileInfo,length,1,fp);
             if(ret < 0)
             {
             	printf("error[%d][%s]\n",errno,strerror(errno));
-            	ret = reOpen();
+            	ret = reOpen(fp);
             	if(ret == SUCCESS)
             	{
                     ret = fprintf(fp,"%s",fileInfo);
-//            		fwrite(fileInfo,length,1,fp);
             	}else
             	{
                 	printf("error[%d][%s]\n",errno,strerror(errno));
@@ -122,6 +130,13 @@ public:
             {
             	printf("error[%d][%s]\n",errno,strerror(errno));
             }
+
+            ret = fclose(fp);
+            if(ret  < 0)
+            {
+            	printf("error[%d][%s]\n",errno,strerror(errno));
+            }
+
             return ret;
         }
 
@@ -130,11 +145,20 @@ public:
     	std::string resBuf="";
     	int ret = 0;
     	memset(buf,0,sizeof(buf));
+
+        FILE* fp;
+        fp = fopen(path.c_str(),type.c_str());
+        if(fp == nullptr)
+        {
+        	printf("fp is nullptr,path is %s error [%s]\n",path.c_str(),strerror(errno));
+        	return FAILED;
+        }
+
         ret = fread(buf,1024,1024,fp);
         if(ret < 0)
         {
         	printf("error[%d][%s]\n",errno,strerror(errno));
-        	ret = reOpen();
+        	ret = reOpen(fp);
         	if(ret == SUCCESS)
         	{
                 ret = fread(buf,1024,1024,fp);
@@ -145,6 +169,9 @@ public:
         	}
         }
         resBuf = buf;
+
+        fclose(fp);
+
         return resBuf;
     }
 
@@ -164,11 +191,9 @@ public:
     ~file()
     {
     	printf("文件[%s]释放\n",path.c_str());
-        fflush(fp);
-        fclose(fp);
     }
 
-    int reOpen()
+    int reOpen(FILE* fp)
     {
     	int openCount = 0;
     	if(fp != nullptr)
