@@ -64,14 +64,14 @@ public:
 	{
 		if(initFlag == 0)
 		{
-			current_log_level = level;
 			env env;
 			cfgPath = env.getValue("cfg_path");
+			std::string level = env.getValue("LOG_LEVEL");
+			current_log_level = atoi(level.c_str());
 			printf("cfgPah:[%s]\n",cfgPath.c_str());
 
 			file cfgFile(cfgPath);
 			logPath = cfgFile.getJsonString("log_path");
-
 			time_t now;
 			struct tm *tm_now;
 
