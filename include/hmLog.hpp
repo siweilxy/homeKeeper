@@ -151,7 +151,7 @@ public:
 		va_list ap;
 		va_start(ap, pstr);
 
-		int count_write = snprintf(NULL, 0, pstr, ap);
+		int count_write = vsnprintf(NULL, 0, pstr, ap);
 		va_end(ap);
 
 		// 长度为空
