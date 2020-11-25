@@ -69,7 +69,6 @@ public:
 		}
 		char *strProcessName = strrchr(strProcessPath, '/');
 
-
 		if(initFlag == 0)
 		{
 			env env;
@@ -89,7 +88,7 @@ public:
 			char time[100]={0};
 
 			snprintf(time, sizeof(time), "%d-%d-%d-%s",
-					tm_now->tm_year + 1900, tm_now->tm_mon + 1, tm_now->tm_mday,strProcessName);
+					tm_now->tm_year + 1900, tm_now->tm_mon + 1, tm_now->tm_mday,strProcessName+1);
 
 			logPath = logPath+"/"+time+".log";
 
