@@ -151,7 +151,7 @@ public:
         if(fp == nullptr)
         {
         	printf("fp is nullptr,path is %s error [%s]\n",path.c_str(),strerror(errno));
-        	return FAILED;
+        	return "";
         }
 
         ret = fread(buf,1024,1024,fp);
