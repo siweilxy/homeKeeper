@@ -13,6 +13,7 @@ int main()
 {
 	hmLog::getInstance().init(0);
 	node node;
+	node.init();
 	INFO("node [%s]",node.getNodeName().c_str());
 	return 0;
 }
