@@ -73,8 +73,8 @@ public:
 
 		snprintf(time, sizeof(time), "%d-%d-%d-%s",
 				tm_now->tm_year + 1900, tm_now->tm_mon + 1, tm_now->tm_mday,processName);
-		logPath = logPath+"/"+time+".log";
-		logfile->setPath(logPath);
+		std::string logPathAndName = logPath+"/"+time+".log";
+		logfile->setPath(logPathAndName);
 	}
 
 	int init(int level)
@@ -108,10 +108,10 @@ public:
 			snprintf(time, sizeof(time), "%d-%d-%d-%s",
 					tm_now->tm_year + 1900, tm_now->tm_mon + 1, tm_now->tm_mday,processName);
 
-			logPath = logPath+"/"+time+".log";
+			std::string logPathAndName = logPath+"/"+time+".log";
 
-			printf("logPath is %s\n",logPath.c_str());
-			logfile= std::make_shared<file>(logPath);
+			printf("logPathAndName is %s\n",logPathAndName.c_str());
+			logfile= std::make_shared<file>(logPathAndName);
 			initFlag = 1;
 		}
 
