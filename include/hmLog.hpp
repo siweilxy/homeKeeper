@@ -54,10 +54,27 @@ public:
 	std::vector<log_t> logs;
 	int flag = 0;
 	std::shared_ptr<file> logfile;
+	std::string processName;
 
 	static hmLog& getInstance() {
 		static hmLog instance;
 		return instance;
+	}
+
+	void setLogPath()
+	{
+		time_t now;
+		struct tm *tm_now;
+
+		time(&now);
+		tm_now = localtime(&now);
+
+		char time[100]={0};
+
+		snprintf(time, sizeof(time), "%d-%d-%d-%s",
+				tm_now->tm_year + 1900, tm_now->tm_mon + 1, tm_now->tm_mday,processName);
+		logPath = logPath+"/"+time+".log";
+		logfile->setPath(logPath);
 	}
 
 	int init(int level)
@@ -68,6 +85,7 @@ public:
 				return -1;
 		}
 		char *strProcessName = strrchr(strProcessPath, '/');
+		processName = strProcessName + 1;
 
 		if(initFlag == 0)
 		{
@@ -88,7 +106,7 @@ public:
 			char time[100]={0};
 
 			snprintf(time, sizeof(time), "%d-%d-%d-%s",
-					tm_now->tm_year + 1900, tm_now->tm_mon + 1, tm_now->tm_mday,strProcessName+1);
+					tm_now->tm_year + 1900, tm_now->tm_mon + 1, tm_now->tm_mday,processName);
 
 			logPath = logPath+"/"+time+".log";
 
@@ -243,6 +261,7 @@ void* printLog(void *para) {
 					printf("%s",temBuf);
 				}
 
+				hmLog::getInstance().setLogPath();
 				hmLog::getInstance().logfile->write(temBuf,sizeof(temBuf));
 			}
 		}

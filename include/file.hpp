@@ -43,6 +43,11 @@ public:
     	printf("file path[%s]\n",path.c_str());
     }
 
+    void setPath(const std::string& path)
+    {
+    	this->path = path;
+    }
+
     int write(const std::string& fileInfo)
     {
         int ret = 0;
