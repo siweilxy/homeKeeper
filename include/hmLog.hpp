@@ -72,7 +72,7 @@ public:
 		char time[100]={0};
 
 		snprintf(time, sizeof(time), "%d-%d-%d-%s",
-				tm_now->tm_year + 1900, tm_now->tm_mon + 1, tm_now->tm_mday,processName);
+				tm_now->tm_year + 1900, tm_now->tm_mon + 1, tm_now->tm_mday,processName.c_str());
 		std::string logPathAndName = logPath+"/"+time+".log";
 		logfile->setPath(logPathAndName);
 	}
@@ -106,7 +106,7 @@ public:
 			char time[100]={0};
 
 			snprintf(time, sizeof(time), "%d-%d-%d-%s",
-					tm_now->tm_year + 1900, tm_now->tm_mon + 1, tm_now->tm_mday,processName);
+					tm_now->tm_year + 1900, tm_now->tm_mon + 1, tm_now->tm_mday,processName.c_str());
 
 			std::string logPathAndName = logPath+"/"+time+".log";
 
