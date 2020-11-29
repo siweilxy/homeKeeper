@@ -1,4 +1,5 @@
 {
+        "log_path":"/root/work/github/homeKeeper/log",
         "workerNo":2,
 	"worker": 
         [{
