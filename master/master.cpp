@@ -30,7 +30,7 @@ int main()
     auto workerNo =  f.getJsonInt("workerNo");
     auto jsonStr = f.getRes();
     auto js = json::parse (jsonStr);
-    auto worker = js["worker"][0];
+    auto worker = js["worker"][0]["file"];
     INFO("workerNo[%d] worker[%s]",workerNo,worker.c_str());
 
 }
