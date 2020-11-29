@@ -8,6 +8,8 @@
 #include "hmLog.hpp"
 #include "env.hpp"
 #include "file.hpp"
+#include "json.hpp"
+
 int main()
 {
     int ret = 0;
@@ -26,7 +28,7 @@ int main()
 
     file f(path.c_str());
     auto workerNo =  f.getJsonInt("workerNo");
-    auto worker = f.getJsonString("worker");
+    auto worker = f.getRes()["woker"][0];
     INFO("workerNo[%d] worker[%s]",workerNo,worker.c_str());
 
 }
