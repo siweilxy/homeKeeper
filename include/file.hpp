@@ -199,7 +199,7 @@ public:
     	if(jsonStr.empty())
     	{
     		printf("json is empty\n");
-    		return "";
+    		return -1;
     	}
 
         auto js = json::parse (jsonStr);
