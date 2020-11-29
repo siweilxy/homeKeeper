@@ -4,6 +4,7 @@ project(homeKeeper)
 SET(EXECUTABLE_OUTPUT_PATH $ENV{HOME}/work/github/homeKeeper/bin)
 SET(LIBRARY_OUTPUT_PATH $ENV{HOME}/work/github/homeKeeper/lib)
 
+add_subdirectory(master)
 add_subdirectory(homeKeeper)
 add_subdirectory(common)
 add_subdirectory(frame)
