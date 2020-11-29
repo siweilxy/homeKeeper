@@ -124,6 +124,7 @@ void* sendEmail (void *para)
                     sendMail.SetSendName (iter.mailFrom);
                     sendMail.SetSendMail (iter.mailFrom);
                     sendMail.AddRecvMail (iter.recipient);
+                    ERROR("[%s] sended", iter.recipient.c_str());
                     sendMail.SetSubject ("ip changed");
                     sendMail.SetBodyContent (
                             infos[0].ip + " url is " + infos[0].ip + ":19870");

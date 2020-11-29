@@ -30,10 +30,16 @@ int main()
     auto workerNo =  f.getJsonInt("workerNo");
     auto jsStr = f.getRes();
     INFO("json[%s]",jsStr.c_str());
-    //auto jsonStr = f.getRes();
-    //auto js = json::parse (jsonStr);
+    auto jsonStr = f.getRes();
+    auto js = json::parse (jsonStr);
 
-    //auto worker = js["worker"];
+    auto worker = js["worker"];
+    for(int i = 0;i<workerNo;i++)
+    {
+    	std::string process = worker[i]["file"];
+    	ERROR("process [%s]",process.c_str());
+    }
+
     INFO("workerNo[%d]",workerNo);
 
 }
