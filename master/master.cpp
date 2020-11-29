@@ -34,6 +34,6 @@ int main()
     //auto js = json::parse (jsonStr);
 
     //auto worker = js["worker"];
-    INFO("workerNo[%d] worker[%s]",workerNo);
+    INFO("workerNo[%d]",workerNo);
 
 }
