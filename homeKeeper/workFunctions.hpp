@@ -113,7 +113,7 @@ void* sendEmail (void *para)
             }
             else if (infos[0].send_flag == "0")
             {
-                INFO("ip is [%s]", infos[0].ip.c_str());
+                ERROR("ip is [%s]", infos[0].ip.c_str());
 
                 auto res = emailInfo.getRes ();
                 for (auto iter : res)
