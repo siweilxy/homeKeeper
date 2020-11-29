@@ -6,7 +6,8 @@
  */
 
 #include "hmLog.hpp"
-
+#include "env.hpp"
+#include "file.hpp"
 int main()
 {
     int ret = 0;
@@ -18,4 +19,14 @@ int main()
     }
 
     ERROR("master started");
+
+    env e;
+    std::string path =e.getValue("cfg_path");
+    INFO("path [%s]",path.c_str());
+
+    file f(path.c_str());
+    auto workerNo =  f.getJsonString("workerNo");
+    auto worker = f.getJsonString("worker");
+    INFO("workerNo[%s] worker[%s]",workerNo.c_str(),worker.c_str());
+
 }
