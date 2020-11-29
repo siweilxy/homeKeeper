@@ -28,7 +28,9 @@ int main()
 
     file f(path.c_str());
     auto workerNo =  f.getJsonInt("workerNo");
-    auto worker = f.getRes()["woker"][0];
+    auto jsonStr = f.getRes();
+    auto js = json::parse (jsonStr);
+    auto worker = js["worker"][0];
     INFO("workerNo[%d] worker[%s]",workerNo,worker.c_str());
 
 }
