@@ -25,8 +25,8 @@ int main()
     INFO("path [%s]",path.c_str());
 
     file f(path.c_str());
-    auto workerNo =  f.getJsonString("workerNo");
+    auto workerNo =  f.getJsonInt("workerNo");
     auto worker = f.getJsonString("worker");
-    INFO("workerNo[%s] worker[%s]",workerNo.c_str(),worker.c_str());
+    INFO("workerNo[%d] worker[%s]",workerNo,worker.c_str());
 
 }

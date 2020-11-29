@@ -193,6 +193,19 @@ public:
         return js[key];
     }
 
+    int getJsonInt(const std::string& key)
+    {
+    	std::string jsonStr = getRes();
+    	if(jsonStr.empty())
+    	{
+    		printf("json is empty\n");
+    		return "";
+    	}
+
+        auto js = json::parse (jsonStr);
+        return js[key];
+    }
+
     ~file()
     {
     	printf("文件[%s]释放\n",path.c_str());
