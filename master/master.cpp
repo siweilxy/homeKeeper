@@ -82,9 +82,12 @@ int main()
 
         	if(pid == 0)
         	{
-            	std::string execPath = bin_path + "/" + process;
-            	ERROR("process [%s]",execPath.c_str());
-            	system(execPath.c_str());
+        		for(int i = 0;i<workerNo;i++)
+        		{
+                	std::string execPath = bin_path + "/" + process;
+                	ERROR("重启进程[%s]",execPath.c_str());
+                	system(execPath.c_str());
+        		}
         	}
     	}
     }
