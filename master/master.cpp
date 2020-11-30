@@ -86,7 +86,7 @@ int main()
         	{
         		for(int i = 0;i < processNo;i++)
         		{
-                	std::string execPath = bin_path + "/" + process;
+                	std::string execPath = bin_path + "/" + process + " &";
                 	ERROR("重启进程[%d][%s]",i,execPath.c_str());
                 	system(execPath.c_str());
         		}
