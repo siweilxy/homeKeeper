@@ -59,6 +59,8 @@ int main()
     		char cmd[200]="ps -aux |grep -v grep|grep %s";
         	char result[200]={0};
     		std::string process = worker[i]["file"];
+    		std::string processNoStr = worker[i]["number"];
+    		int processNo = atoi(processNoStr.c_str());
         	snprintf(cmd,sizeof(cmd),process.c_str());
         	FILE* pidreader = popen(cmd,"r");
         	res = fgets(result,sizeof(result) - 1,pidreader);
@@ -82,7 +84,7 @@ int main()
 
         	if(pid == 0)
         	{
-        		for(int i = 0;i<workerNo;i++)
+        		for(int i = 0;i < processNo;i++)
         		{
                 	std::string execPath = bin_path + "/" + process;
                 	ERROR("重启进程[%s]",execPath.c_str());
