@@ -9,6 +9,10 @@
 #include "env.hpp"
 #include "file.hpp"
 #include "json.hpp"
+#include <vector>
+#include <string>
+
+std::vector<std::string> processes;
 
 int main()
 {
@@ -24,7 +28,10 @@ int main()
 
     env e;
     std::string path =e.getValue("cfg_path");
-    INFO("path [%s]",path.c_str());
+    ERROR("path [%s]",path.c_str());
+
+    std::string bin_path =e.getValue("BIN_PATH");
+    ERROR("BIN_PATH [%s]",bin_path.c_str());
 
     file f(path.c_str());
     auto workerNo =  f.getJsonInt("workerNo");
@@ -37,9 +44,49 @@ int main()
     for(int i = 0;i<workerNo;i++)
     {
     	std::string process = worker[i]["file"];
-    	ERROR("process [%s]",process.c_str());
+    	std::string execPath = bin_path + "/" + process;
+    	ERROR("process [%s]",execPath.c_str());
+    	system(execPath.c_str());
     }
 
-    INFO("workerNo[%d]",workerNo);
+    while(1)
+    {
+        int pid = 0;
+    	sleep(1);
+    	char* res= nullptr;
+    	for(int i = 0;i<workerNo;i++)
+    	{
+    		char cmd[200]="ps -aux |grep -v grep|grep %s";
+        	char result[200]={0};
+    		std::string process = worker[i]["file"];
+        	snprintf(cmd,sizeof(cmd),process.c_str());
+        	FILE* pidreader = popen(cmd,"r");
+        	res = fgets(result,sizeof(result) - 1,pidreader);
+        	pclose(pidreader);
+
+        	char * saveptr1;
+        	if(strlen(result)>0)
+        	{
+        		INFO("ps result[%s]",result);
+        		res = strtok_r(NULL," ",&saveptr1);
+        		if(res != nullptr)
+        		{
+        			res = strtok_r(NULL," ",&saveptr1);
+        			if(res != nullptr)
+        			{
+        				pid = atoi(res);
+        				INFO("pid[%d]",pid);
+        			}
+        		}
+        	}
+
+        	if(pid == 0)
+        	{
+            	std::string execPath = bin_path + "/" + process;
+            	ERROR("process [%s]",execPath.c_str());
+            	system(execPath.c_str());
+        	}
+    	}
+    }
 
 }
