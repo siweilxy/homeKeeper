@@ -18,6 +18,6 @@ add_subdirectory(proxyServer)
 add_subdirectory(sqlGenerate)
 add_subdirectory(raft)
 add_subdirectory(test)
-
+add_subdirectory(node)
 
 
