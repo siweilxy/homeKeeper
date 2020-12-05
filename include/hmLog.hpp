@@ -17,6 +17,7 @@
 #include <unistd.h>
 #include <stdarg.h>
 #include <cstring>
+#include <signal.h>
 #include <map>
 #include "env.hpp"
 #include "file.hpp"

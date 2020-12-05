@@ -15,6 +15,7 @@
 #include <map>
 #include <sys/prctl.h>
 #include "hmLog.hpp"
+#include <signal.h>
 static void* startFunc (void *para);
 static std::map<std::string,std::function<void* (void*)>> funcs;
 

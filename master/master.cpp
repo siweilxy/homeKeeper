@@ -11,6 +11,7 @@
 #include "json.hpp"
 #include <vector>
 #include <string>
+#include <signal.h>
 
 std::vector<std::string> processes;
 
