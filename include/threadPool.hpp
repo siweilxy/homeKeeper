@@ -86,6 +86,10 @@ static void* startFunc (void *para)
 {
     std::string name = ((para_t*)para)->name;
     prctl(PR_SET_NAME, name.c_str());
+
+    //忽略信号
+    signal(SIGHUP, SIG_IGN);
+
     ERROR("prctl name is %s",name.c_str());
     delete (para_t*)para;
     auto func = threadPool::getFun (name);

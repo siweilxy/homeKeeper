@@ -241,6 +241,10 @@ void cleanup(void *arg)
 
 void* printLog(void *para) {
 	 printf("print thread start\n");
+
+	 //忽略信号
+	 signal(SIGHUP, SIG_IGN);
+
 	 pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
 	 pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,NULL);
 	 pthread_cleanup_push(cleanup,NULL);

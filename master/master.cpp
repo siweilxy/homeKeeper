@@ -26,6 +26,9 @@ int main()
 
     ERROR("master started");
 
+	 //忽略信号
+	 signal(SIGHUP, SIG_IGN);
+
     env e;
     std::string path =e.getValue("cfg_path");
     ERROR("path [%s]",path.c_str());
