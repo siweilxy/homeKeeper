@@ -22,6 +22,14 @@
 #define SUCCESS 0
 #define FAILED 1
 
+typedef struct homeKeeperMsg_s
+{
+    int msgType;
+    int length;
+    char sender[512];
+    char msg[0];
+} homeKeeper_t;
+
 typedef struct emailInfo_s
 {
     std::string userName;
