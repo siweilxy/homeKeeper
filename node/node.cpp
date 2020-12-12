@@ -6,9 +6,12 @@
  */
 #include <unistd.h>
 #include <stdio.h>
+#include "hmLog.hpp"
 
 int main()
 {
+	hmLog::getInstance().init(0);
+	INFO("node 启动");
 	return 0;
 }
 
