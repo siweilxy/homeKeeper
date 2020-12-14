@@ -51,11 +51,12 @@ private:
 		std::string buf = "test";
 
 		int sock = *(int*)(para);
+		int sockfd;
 
 		struct sockaddr_in broadcastaddr;
 		socklen_t addrlen = sizeof(broadcastaddr);
 
-		if((sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
+		if((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 		{
 			ERROR("fail to socket error:[%s]",strerror(errno));
 			return nullptr;
@@ -65,7 +66,7 @@ private:
 		broadcastaddr.sin_addr.s_addr = inet_addr("192.168.31.255");
 		broadcastaddr.sin_port = htons(sock);
 		int on = 1;
-		if(setsockopt(sock, SOL_SOCKET,SO_BROADCAST, &on, sizeof(on)) < 0)
+		if(setsockopt(sockfd, SOL_SOCKET,SO_BROADCAST, &on, sizeof(on)) < 0)
 		{
 			ERROR("fail to setsockopt");
 		}
@@ -73,7 +74,7 @@ private:
 		while(1)
 		{
 			sleep(1);
-			if(sendto(sock, buf.c_str(), buf.size(), 0,(struct sockaddr *)&broadcastaddr, addrlen) < 0)
+			if(sendto(sockfd, buf.c_str(), buf.size(), 0,(struct sockaddr *)&broadcastaddr, addrlen) < 0)
 			{
 				ERROR("fail to sendto error:[%s]",strerror(errno));
 			}else
@@ -81,7 +82,7 @@ private:
 				INFO("SEND SUCCESS");
 			}
 		}
-		close(sock);
+		close(sockfd);
 		return nullptr;
 
 		return 0;
