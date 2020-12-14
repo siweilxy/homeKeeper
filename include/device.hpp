@@ -116,7 +116,10 @@ private:
 			ERROR("fail to bind");
 		}
 
+		INFO("bind succss");
+
 		ssize_t bytes;
+
 		while(1)
 		{
 			if((bytes = recvfrom(sockfd, buff, 10240, 0,(struct sockaddr *)&addr, &addrlen)) < 0)
@@ -132,8 +135,6 @@ private:
 
 		close(sockfd);
 		return nullptr;
-
-		return 0;
 	}
 
     int type;
