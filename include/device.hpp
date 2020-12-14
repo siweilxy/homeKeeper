@@ -131,7 +131,7 @@ private:
 		return 0;
 	}
 
-	int type;
+	static int type;
 	static int sock;
 public:
 	device (int type,int socket):type(type),sock(socket)
