@@ -12,6 +12,7 @@
 #include <map>
 #include <functional>
 #include <arpa/inet.h>
+#include "threadPool.hpp"
 
 enum deviceType
 {
@@ -22,14 +23,31 @@ enum deviceType
 	UDP_CLIENT
 };
 
-
-
 class device
 {
 private:
-
-	static void* broadCast(void* para)
+	static void* tcpServer(void* para)
 	{
+		INFO("tcp server");
+		return 0;
+	}
+
+	static void* tcpClient(void* para)
+	{
+		INFO("tcp client");
+		return 0;
+	}
+
+	static void* udpServer(void* para)
+	{
+		INFO("udp server");
+		return 0;
+	}
+
+	static void* udpServerBroadcast(void* para)
+	{
+		INFO("udp Server broadcast");
+
 		std::string buf = "test";
 
 		struct sockaddr_in broadcastaddr;
@@ -60,10 +78,14 @@ private:
 		}
 		close(sock);
 		return nullptr;
+
+		return 0;
 	}
 
-	static void* udpClientFunc(void* para)
+	static void* udpClient(void* para)
 	{
+		INFO("udp client");
+
 		int sockfd;
 		struct sockaddr_in broadcastaddr, addr;
 		socklen_t addrlen = sizeof(broadcastaddr);
@@ -105,46 +127,10 @@ private:
 
 		close(sockfd);
 		return nullptr;
-	}
 
-	static int tcpServer(void* para)
-	{
-		INFO("tcp server");
 		return 0;
 	}
 
-	static int tcpClient(void* para)
-	{
-		INFO("tcp client");
-		return 0;
-	}
-
-	static int udpServer(void* para)
-	{
-		INFO("udp server");
-		return 0;
-	}
-
-	static int udpServerBroadcast(void* para)
-	{
-		INFO("udp Server broadcast");
-
-		pthread_t bt;
-		pthread_create(&bt,nullptr,broadCast,nullptr);
-		return 0;
-	}
-
-	static int udpClient(void* para)
-	{
-		INFO("udp client");
-
-		pthread_create(&ct,nullptr,udpClientFunc,&sock);
-		return 0;
-	}
-
-	std::map<int ,std::function<int(void*)>> funcs;
-	pthread_t bt;
-	pthread_t ct;
 	int type;
 	static int sock;
 public:
@@ -154,25 +140,39 @@ public:
 
 	~device()
 	{
-			pthread_join(bt,nullptr);
-			pthread_join(ct,nullptr);
 	}
 
 	int init()
 	{
-		funcs[TCP_SERVER] = this->tcpServer;
-		funcs[TCP_CLIENT] = this->tcpClient;
-		funcs[UDP_SERVER] = this->udpServer;
-		funcs[UDP_SERVER_BROADCAST] = this->udpServerBroadcast;
-		funcs[UDP_CLIENT] = this->udpClient;
+	    threadPool pool;
 
-		if(type >= funcs.size())
-		{
-			ERROR("TYPE ERROR");
-			return -1;
-		}
+	    if(type == TCP_SERVER)
+	    {
+			threadPool::setFunction("TCP_SERVER", this->tcpServer);
+	    }
 
-		return funcs[type](nullptr);;
+	    if(type == TCP_CLIENT)
+	    {
+			threadPool::setFunction("TCP_CLIENT", this->tcpClient);
+	    }
+
+	    if(type == UDP_SERVER)
+	    {
+			threadPool::setFunction("UDP_SERVER", this->udpServer);
+	    }
+
+	    if(type == UDP_SERVER_BROADCAST)
+	    {
+			threadPool::setFunction("UDP_SERVER_BROADCAST", this->udpServerBroadcast);
+	    }
+
+	    if(type == UDP_CLIENT)
+	    {
+			threadPool::setFunction("UDP_CLIENT", this->udpClient);
+	    }
+
+		pool.start();
+		return 0;
 	}
 };
 
