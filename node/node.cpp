@@ -20,11 +20,18 @@ int main()
     }
 
 	INFO("node 启动");
-	device d(UDP_SERVER_BROADCAST,0);
-	ret = d.init();
+	device d_s(UDP_SERVER_BROADCAST,57950);
+	ret = d_s.init();
 	if(ret != 0)
 	{
-		ERROR("d init failed");
+		ERROR("d_s init failed");
+	}
+
+	device d_c(UDP_CLIENT,57590);
+	ret = d_c.init();
+	if(ret != 0)
+	{
+		ERROR("d_c init failed");
 	}
 
 	return 0;
