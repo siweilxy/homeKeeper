@@ -50,6 +50,8 @@ private:
 
 		std::string buf = "test";
 
+		int sock = *(int*)(para);
+
 		struct sockaddr_in broadcastaddr;
 		socklen_t addrlen = sizeof(broadcastaddr);
 
@@ -85,7 +87,7 @@ private:
 	static void* udpClient(void* para)
 	{
 		INFO("udp client");
-
+		int sock = *(int*)(para);
 		int sockfd;
 		struct sockaddr_in broadcastaddr, addr;
 		socklen_t addrlen = sizeof(broadcastaddr);
@@ -131,8 +133,8 @@ private:
 		return 0;
 	}
 
-	static int type;
-	static int sock;
+    int type;
+    int sock;
 public:
 	device (int type,int socket):type(type),sock(socket)
 	{
@@ -148,27 +150,27 @@ public:
 
 	    if(type == TCP_SERVER)
 	    {
-			threadPool::setFunction("TCP_SERVER", this->tcpServer);
+			threadPool::setFunction("TCP_SERVER", this->tcpServer,(void*)&sock,sizeof(sock));
 	    }
 
 	    if(type == TCP_CLIENT)
 	    {
-			threadPool::setFunction("TCP_CLIENT", this->tcpClient);
+			threadPool::setFunction("TCP_CLIENT", this->tcpClient,(void*)&sock,sizeof(sock));
 	    }
 
 	    if(type == UDP_SERVER)
 	    {
-			threadPool::setFunction("UDP_SERVER", this->udpServer);
+			threadPool::setFunction("UDP_SERVER", this->udpServer,(void*)&sock,sizeof(sock));
 	    }
 
 	    if(type == UDP_SERVER_BROADCAST)
 	    {
-			threadPool::setFunction("UDP_SERVER_BROADCAST", this->udpServerBroadcast);
+			threadPool::setFunction("UDP_SERVER_BROADCAST", this->udpServerBroadcast,(void*)&sock,sizeof(sock));
 	    }
 
 	    if(type == UDP_CLIENT)
 	    {
-			threadPool::setFunction("UDP_CLIENT", this->udpClient);
+			threadPool::setFunction("UDP_CLIENT", this->udpClient,(void*)&sock,sizeof(sock));
 	    }
 
 		pool.start();

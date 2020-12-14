@@ -16,8 +16,15 @@
 #include <sys/prctl.h>
 #include "hmLog.hpp"
 #include <signal.h>
+
+typedef struct funcAndPara_s
+{
+	std::function<void* (void*)> func;
+	void* data;
+} funcAndPara_t;
+
 static void* startFunc (void *para);
-static std::map<std::string,std::function<void* (void*)>> funcs;
+static std::map<std::string,funcAndPara_t> funcs;
 
 typedef struct para_s
 {
@@ -33,12 +40,17 @@ public:
         INFO("threadNo is %d",threadNo);
     }
 
-    static void setFunction (std::string name,std::function<void* (void*)> func)
+    static void setFunction (std::string name,std::function<void* (void*)> func,void* para = nullptr,int paraLen = 0)
     {
-        funcs[name]=func;
+        funcs[name].func = func;
+        if(para != nullptr && paraLen != 0)
+        {
+            funcs[name].data = malloc(paraLen);
+        	memcpy(funcs[name].data,para,paraLen);
+        }
     }
 
-    static std::function<void* (void*)> getFun (std::string i)
+    static std::pair<std::string,funcAndPara_t>  getFun (std::string i)
     {
         return funcs[i];
     }
@@ -57,7 +69,7 @@ public:
 
         for (auto iter:funcs)
         {
-            para_t* p = new para_t;;
+            para_t* p = new para_t;
             p->name =iter.first ;
             pthread_t *t = (pthread_t*)malloc(sizeof(pthread_t));
             pthread_create (t, NULL, startFunc, (void*) p);
@@ -75,6 +87,11 @@ public:
         for(auto p:threads)
         {
             free(p);
+        }
+
+        for(auto fun:funcs)
+        {
+        	free(fun.second.data);
         }
     }
 
@@ -94,7 +111,7 @@ static void* startFunc (void *para)
     ERROR("prctl name is %s",name.c_str());
     delete (para_t*)para;
     auto func = threadPool::getFun (name);
-    func(nullptr);
+    func.second.func(func.second.data);
     WARN("index fun ended");
     return nullptr;
 }
