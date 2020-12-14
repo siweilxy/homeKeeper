@@ -104,7 +104,7 @@ private:
 		      //htons:将主机字节序转化为网络字节序
 		      //atoi:将数字型字符串转化为整型数据
 		broadcastaddr.sin_family = AF_INET;
-		broadcastaddr.sin_addr.s_addr = htonl (INADDR_ANY);
+		broadcastaddr.sin_addr.s_addr = htons (atoi("192.168.31.255"));
 		broadcastaddr.sin_port = htons(sock);
 
 		//第三步:将套接字与服务器网络信息结构体绑定
