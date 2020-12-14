@@ -37,7 +37,7 @@ private:
 		if((sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 		{
 			ERROR("fail to socket error:[%s]",strerror(errno));
-			return -1;
+			return nullptr;
 		}
 
 		broadcastaddr.sin_family = AF_INET;
@@ -145,7 +145,7 @@ private:
 	pthread_t bt;
 	pthread_t ct;
 	int type;
-	int sock;
+	static int sock;
 public:
 	device (int type,int socket):type(type),sock(socket)
 	{
