@@ -27,31 +27,31 @@ class device
 {
 private:
 
-	int tcpServer(void* para)
+	static int tcpServer(void* para)
 	{
 		INFO("tcp server");
 		return 0;
 	}
 
-	int tcpClient(void* para)
+	static int tcpClient(void* para)
 	{
 		INFO("tcp client");
 		return 0;
 	}
 
-	int udpServer(void* para)
+	static int udpServer(void* para)
 	{
 		INFO("udp server");
 		return 0;
 	}
 
-	int udpServerBroadcast(void* para)
+	static int udpServerBroadcast(void* para)
 	{
 		INFO("udp Server broadcast");
 		return 0;
 	}
 
-	int udpClient(void* para)
+	static int udpClient(void* para)
 	{
 		INFO("udp client");
 		return 0;
