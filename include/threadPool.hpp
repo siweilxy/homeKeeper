@@ -67,6 +67,8 @@ public:
             return;
         }
 
+        INFO("fun no [%d]",funcs.size());
+
         for (auto iter:funcs)
         {
             para_t* p = new para_t;
@@ -76,6 +78,7 @@ public:
             threads.push_back(t);
             WARN("pthread_create end name is %s",p->name.c_str());
         }
+
         for(auto p:threads)
         {
             pthread_join(*p,nullptr);
