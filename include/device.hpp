@@ -146,7 +146,6 @@ public:
 	~device()
 	{
 		INFO("~device");
-		delete pool;
 	}
 
 	int init()
