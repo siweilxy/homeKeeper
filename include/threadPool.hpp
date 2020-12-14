@@ -79,14 +79,19 @@ public:
             WARN("pthread_create end name is %s",p->name.c_str());
         }
 
-        for(auto p:threads)
-        {
-            pthread_join(*p,nullptr);
-        }
+//        for(auto p:threads)
+//        {
+//            pthread_join(*p,nullptr);
+//        }
     }
 
     ~threadPool ()
     {
+        for(auto p:threads)
+        {
+            pthread_join(*p,nullptr);
+        }
+
         for(auto p:threads)
         {
             free(p);
