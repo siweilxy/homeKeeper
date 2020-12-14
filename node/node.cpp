@@ -37,6 +37,9 @@ int main()
 	}
 	INFO("UDP_CLIENT SUCCESS");
 
+	delete d_s;
+	delete d_c;
+
 	return 0;
 }
 
