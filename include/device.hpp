@@ -73,7 +73,7 @@ private:
 		while(1)
 		{
 			sleep(1);
-			if(sendto(sock, buf.c_str(), 10240, 0,(struct sockaddr *)&broadcastaddr, addrlen) < 0)
+			if(sendto(sock, buf.c_str(), buf.size(), 0,(struct sockaddr *)&broadcastaddr, addrlen) < 0)
 			{
 				ERROR("fail to sendto error:[%s]",strerror(errno));
 			}
