@@ -150,20 +150,25 @@ public:
 
 	    if(type == TCP_SERVER)
 	    {
+	    	INFO("TCP_SERVER");
 			threadPool::setFunction("TCP_SERVER", this->tcpServer,(void*)&sock,sizeof(sock));
 	    }else if(type == TCP_CLIENT)
 	    {
+	    	INFO("TCP_CLIENT");
 			threadPool::setFunction("TCP_CLIENT", this->tcpClient,(void*)&sock,sizeof(sock));
 	    }else if(type == UDP_SERVER)
 	    {
+	    	INFO("UDP_SERVER");
 			threadPool::setFunction("UDP_SERVER", this->udpServer,(void*)&sock,sizeof(sock));
 	    }
 	    else if(type == UDP_SERVER_BROADCAST)
 	    {
+	    	INFO("UDP_SERVER_BROADCAST");
 			threadPool::setFunction("UDP_SERVER_BROADCAST", this->udpServerBroadcast,(void*)&sock,sizeof(sock));
 	    }
 	    else if(type == UDP_CLIENT)
 	    {
+	    	INFO("UDP_CLIENT");
 			threadPool::setFunction("UDP_CLIENT", this->udpClient,(void*)&sock,sizeof(sock));
 	    }else
 	    {
