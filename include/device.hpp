@@ -62,7 +62,7 @@ private:
 		}
 
 		broadcastaddr.sin_family = AF_INET;
-		broadcastaddr.sin_addr.s_addr = htonl (INADDR_BROADCAST);
+		broadcastaddr.sin_addr.s_addr = inet_addr("192.168.31.255");
 		broadcastaddr.sin_port = htons(sock);
 		int on = 1;
 		if(setsockopt(sock, SOL_SOCKET,SO_BROADCAST, &on, sizeof(on)) < 0)
@@ -104,7 +104,7 @@ private:
 		      //htons:将主机字节序转化为网络字节序
 		      //atoi:将数字型字符串转化为整型数据
 		broadcastaddr.sin_family = AF_INET;
-		broadcastaddr.sin_addr.s_addr = inet_addr("192.168.31.255");
+		broadcastaddr.sin_addr.s_addr = INADDR_ANY;
 		broadcastaddr.sin_port = htons(sock);
 
 		//第三步:将套接字与服务器网络信息结构体绑定
