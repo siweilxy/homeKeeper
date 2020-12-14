@@ -20,6 +20,7 @@ int main()
     }
 
 	INFO("node 启动");
+	threadPool pool;
 	device* d_s = new device(UDP_SERVER_BROADCAST,57950);
 	ret = d_s->init();
 	if(ret != 0)
@@ -37,8 +38,7 @@ int main()
 	}
 	INFO("UDP_CLIENT SUCCESS");
 
-	delete d_s;
-	delete d_c;
+	pool.start();
 
 	return 0;
 }

@@ -81,19 +81,14 @@ public:
 
         INFO("start end");
 
-//        for(auto p:threads)
-//        {
-//            pthread_join(*p,nullptr);
-//        }
-    }
-
-    ~threadPool ()
-    {
         for(auto p:threads)
         {
             pthread_join(*p,nullptr);
         }
+    }
 
+    ~threadPool ()
+    {
         for(auto p:threads)
         {
             free(p);
