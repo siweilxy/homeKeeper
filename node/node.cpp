@@ -30,7 +30,7 @@ int main()
 
 	INFO("UDP_SERVER_BROADCAST SUCCESS");
 
-	device* d_c = new device(UDP_CLIENT,57590);
+	device* d_c = new device(UDP_CLIENT,57950);
 	ret = d_c->init();
 	if(ret != 0)
 	{
