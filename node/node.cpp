@@ -27,12 +27,15 @@ int main()
 		ERROR("d_s init failed");
 	}
 
+	INFO("UDP_SERVER_BROADCAST SUCCESS");
+
 	device d_c(UDP_CLIENT,57590);
 	ret = d_c.init();
 	if(ret != 0)
 	{
 		ERROR("d_c init failed");
 	}
+	INFO("UDP_CLIENT SUCCESS");
 
 	return 0;
 }
