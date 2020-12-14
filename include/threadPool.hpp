@@ -50,7 +50,7 @@ public:
         }
     }
 
-    static std::pair<std::string,funcAndPara_t>  getFun (std::string i)
+    static funcAndPara_t  getFun (std::string i)
     {
         return funcs[i];
     }
@@ -111,7 +111,7 @@ static void* startFunc (void *para)
     ERROR("prctl name is %s",name.c_str());
     delete (para_t*)para;
     auto func = threadPool::getFun (name);
-    func.second.func(func.second.data);
+    func.func(func.data);
     WARN("index fun ended");
     return nullptr;
 }
