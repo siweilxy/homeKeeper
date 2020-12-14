@@ -135,6 +135,7 @@ private:
 
     int type;
     int sock;
+    threadPool *pool = nullptr;
 public:
 	device (int type,int socket):type(type),sock(socket)
 	{
@@ -142,11 +143,13 @@ public:
 
 	~device()
 	{
+		INFO("~device");
+		delete pool;
 	}
 
 	int init()
 	{
-	    threadPool pool;
+	    pool = new threadPool();;
 
 	    if(type == TCP_SERVER)
 	    {
@@ -175,7 +178,8 @@ public:
 	    	ERROR("TYPE ERROR [%d]",type);
 	    }
 
-		pool.start();
+		pool->start();
+		INFO("INIT END");
 		return 0;
 	}
 };
