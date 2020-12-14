@@ -11,6 +11,7 @@
 #include "hmLog.hpp"
 #include <map>
 #include <functional>
+#include <arpa/inet.h>
 
 enum deviceType
 {
