@@ -78,7 +78,7 @@ public:
 			return -1;
 		}
 
-		return funcs[type]();;
+		return funcs[type](nullptr);;
 	}
 };
 
