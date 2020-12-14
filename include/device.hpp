@@ -62,7 +62,7 @@ private:
 		}
 
 		broadcastaddr.sin_family = AF_INET;
-		broadcastaddr.sin_addr.s_addr = htonl (INADDR_ANY);
+		broadcastaddr.sin_addr.s_addr = htonl (INADDR_BROADCAST);
 		broadcastaddr.sin_port = htons(sock);
 		int on = 1;
 		if(setsockopt(sock, SOL_SOCKET,SO_BROADCAST, &on, sizeof(on)) < 0)
