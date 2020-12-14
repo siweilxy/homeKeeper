@@ -79,6 +79,8 @@ public:
             WARN("pthread_create end name is %s",p->name.c_str());
         }
 
+        INFO("start end");
+
 //        for(auto p:threads)
 //        {
 //            pthread_join(*p,nullptr);
