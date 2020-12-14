@@ -109,7 +109,7 @@ private:
 		      //htons:将主机字节序转化为网络字节序
 		      //atoi:将数字型字符串转化为整型数据
 		broadcastaddr.sin_family = AF_INET;
-		broadcastaddr.sin_addr.s_addr = INADDR_ANY;
+		broadcastaddr.sin_addr.s_addr = inet_addr("192.168.31.243");
 		broadcastaddr.sin_port = htons(sock);
 
 		INFO("RECV SOCK IS [%d]",sock);
