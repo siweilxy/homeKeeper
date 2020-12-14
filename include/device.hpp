@@ -76,6 +76,9 @@ private:
 			if(sendto(sock, buf.c_str(), buf.size(), 0,(struct sockaddr *)&broadcastaddr, addrlen) < 0)
 			{
 				ERROR("fail to sendto error:[%s]",strerror(errno));
+			}else
+			{
+				INFO("SEND SUCCESS");
 			}
 		}
 		close(sock);
