@@ -62,15 +62,16 @@ private:
 public:
 	device (int type,int socket):type(type)
 	{
-		funcs[TCP_SERVER] = tcpServer;
-		funcs[TCP_CLIENT] = tcpClient;
-		funcs[UDP_SERVER] = udpServer;
-		funcs[UDP_SERVER_BROADCAST] = udpServerBroadcast;
-		funcs[UDP_CLIENT] = udpClient;
 	}
 
 	int init()
 	{
+		funcs[TCP_SERVER] = this->tcpServer;
+		funcs[TCP_CLIENT] = this->tcpClient;
+		funcs[UDP_SERVER] = this->udpServer;
+		funcs[UDP_SERVER_BROADCAST] = this->udpServerBroadcast;
+		funcs[UDP_CLIENT] = this->udpClient;
+
 		if(type >= funcs.size())
 		{
 			ERROR("TYPE ERROR");
