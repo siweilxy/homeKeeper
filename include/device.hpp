@@ -20,7 +20,8 @@ enum deviceType
 	TCP_CLIENT,
 	UDP_SERVER,
 	UDP_SERVER_BROADCAST,
-	UDP_CLIENT
+	UDP_CLIENT,
+	UDP_CLIENT_BROADCAST
 };
 
 class device
@@ -102,6 +103,7 @@ private:
 		if((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 		{
 			ERROR("fail to socket");
+			return nullptr;
 		}
 
 		      //第二步:填充广播网络信息结构体
@@ -109,7 +111,7 @@ private:
 		      //htons:将主机字节序转化为网络字节序
 		      //atoi:将数字型字符串转化为整型数据
 		broadcastaddr.sin_family = AF_INET;
-		broadcastaddr.sin_addr.s_addr = inet_addr("192.168.31.243");
+		broadcastaddr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
 		broadcastaddr.sin_port = htons(sock);
 
 		INFO("RECV SOCK IS [%d]",sock);
@@ -117,7 +119,8 @@ private:
 		//第三步:将套接字与服务器网络信息结构体绑定
 		if(bind(sockfd, (struct sockaddr *)&broadcastaddr, addrlen) < 0)
 		{
-			ERROR("fail to bind");
+			ERROR("fail to bind [%s]",strerror(errno));
+            return nullptr;
 		}
 
 		INFO("bind succss");
@@ -141,10 +144,64 @@ private:
 		return nullptr;
 	}
 
+    static void* udpClientBroadcast(void* para)
+    {
+        INFO("udp client");
+        int sock = *(int*)(para);
+        int sockfd;
+        struct sockaddr_in broadcastaddr, addr;
+        socklen_t addrlen = sizeof(broadcastaddr);
+        char buff[10240]={0};
+        //第一步:创建套接字
+
+        if((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
+        {
+            ERROR("fail to socket");
+            return nullptr;
+        }
+
+              //第二步:填充广播网络信息结构体
+              //inet_addr:将点分十进制ip地址转化为网络字节序的整型数据
+              //htons:将主机字节序转化为网络字节序
+              //atoi:将数字型字符串转化为整型数据
+        broadcastaddr.sin_family = AF_INET;
+        broadcastaddr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
+        broadcastaddr.sin_port = htons(sock);
+
+        INFO("RECV SOCK IS [%d]",sock);
+
+        //第三步:将套接字与服务器网络信息结构体绑定
+        if(bind(sockfd, (struct sockaddr *)&broadcastaddr, addrlen) < 0)
+        {
+            ERROR("fail to bind [%s]",strerror(errno));
+            return nullptr;
+        }
+
+        INFO("bind succss");
+
+        ssize_t bytes;
+
+        while(1)
+        {
+            if((bytes = recvfrom(sockfd, buff, 10240, 0,(struct sockaddr *)&addr, &addrlen)) < 0)
+            {
+                ERROR("fail to recvfrom");
+            }
+            else
+            {
+                INFO("ip: %s, port: %d\n",inet_ntoa(addr.sin_addr),ntohs(addr.sin_port));
+                INFO("broadcast : %s\n", buff);
+            }
+        }
+
+        close(sockfd);
+        return nullptr;
+    }
+
     int type;
     int sock;
 public:
-	device (int type,int socket):type(type),sock(socket)
+	device (int type,int socket,std::string ip = ""):type(type),sock(socket)
 	{
 	}
 
@@ -177,7 +234,12 @@ public:
 	    {
 	    	INFO("UDP_CLIENT");
 			threadPool::setFunction("UDP_CLIENT", this->udpClient,(void*)&sock,sizeof(sock));
-	    }else
+	    }else if(type == UDP_CLIENT_BROADCAST)
+	    {
+            INFO("UDP_CLIENT_BROADCAST");
+            threadPool::setFunction("UDP_CLIENT_BROADCAST", this->udpClientBroadcast,(void*)&sock,sizeof(sock));
+	    }
+	    else
 	    {
 	    	ERROR("TYPE ERROR [%d]",type);
 	    }
