@@ -11,12 +11,13 @@
 #include <string>
 #include <mysql/mysql.h>
 #include <map>
-
+#include <mutex>
 #include "json.hpp"
 #include "common.h"
 #include "hmLog.hpp"
 #include "file.hpp"
 #include <iconv.h>
+#include "instance.hpp"
 
 using json = nlohmann::json;
 
@@ -37,7 +38,9 @@ private:
     {
         ENTER
         int ret = 0;
+        instance::getInstance().lock();
         conn = mysql_init (NULL);
+        instance::getInstance().unlock();
         if(conn == nullptr)
         {
             ERROR("mysql_init ERROR:[%d]",mysql_errno( conn ));
@@ -67,7 +70,6 @@ private:
         return SUCCESS;
     }
 public:
-
     int code_convert(char *from_charset,char *to_charset,char *inbuf,size_t inlen,char *outbuf,size_t outlen)
     {
         iconv_t cd;
