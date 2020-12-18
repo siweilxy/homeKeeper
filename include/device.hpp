@@ -13,6 +13,7 @@
 #include <functional>
 #include <arpa/inet.h>
 #include "threadPool.hpp"
+#include "common.h"
 
 enum deviceType
 {
@@ -27,6 +28,9 @@ enum deviceType
 class device
 {
 private:
+
+	std::vector<homeKeeper_t> msgs;
+
 	static void* tcpServer(void* para)
 	{
 		INFO("tcp server");
@@ -64,7 +68,7 @@ private:
 		}
 
 		broadcastaddr.sin_family = AF_INET;
-		broadcastaddr.sin_addr.s_addr = inet_addr("192.168.31.255");
+		broadcastaddr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
 		broadcastaddr.sin_port = htons(sock);
 		INFO("SEND SOCK IS [%d]",sock);
 		int on = 1;
