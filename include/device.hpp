@@ -25,6 +25,13 @@ enum deviceType
 	UDP_CLIENT_BROADCAST
 };
 
+typedef struct device_info_s
+{
+    int type;
+    int sock;
+    char ip[30];
+} device_info_t;
+
 class device
 {
 private:
@@ -45,21 +52,17 @@ private:
 
 	static void* udpServer(void* para)
 	{
-		INFO("udp server");
-		return 0;
-	}
-
-	static void* udpServerBroadcast(void* para)
-	{
 		INFO("udp Server broadcast");
 
 		std::string buf = "test";
 
-		int sock = *(int*)(para);
+		device_info_t* info = (device_info_t*)para;
+
+		int sock = info->sock;
 		int sockfd;
 
-		struct sockaddr_in broadcastaddr;
-		socklen_t addrlen = sizeof(broadcastaddr);
+		struct sockaddr_in remoteAddr;
+		socklen_t addrlen = sizeof(remoteAddr);
 
 		if((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
 		{
@@ -67,20 +70,28 @@ private:
 			return nullptr;
 		}
 
-		broadcastaddr.sin_family = AF_INET;
-		broadcastaddr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
-		broadcastaddr.sin_port = htons(sock);
+		remoteAddr.sin_family = AF_INET;
+		remoteAddr.sin_port = htons(sock);
 		INFO("SEND SOCK IS [%d]",sock);
 		int on = 1;
-		if(setsockopt(sockfd, SOL_SOCKET,SO_BROADCAST, &on, sizeof(on)) < 0)
+
+		if(info->type == UDP_SERVER_BROADCAST)
 		{
-			ERROR("fail to setsockopt");
+			remoteAddr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
+			INFO("开启广播模式");
+			if(setsockopt(sockfd, SOL_SOCKET,SO_BROADCAST, &on, sizeof(on)) < 0)
+			{
+				ERROR("fail to setsockopt");
+			}
+		}else
+		{
+			remoteAddr.sin_addr.s_addr = inet_addr(info->ip);
 		}
 
 		while(1)
 		{
 			sleep(1);
-			if(sendto(sockfd, buf.c_str(), buf.size(), 0,(struct sockaddr *)&broadcastaddr, addrlen) < 0)
+			if(sendto(sockfd, buf.c_str(), buf.size(), 0,(struct sockaddr *)&remoteAddr, addrlen) < 0)
 			{
 				ERROR("fail to sendto error:[%s]",strerror(errno));
 			}else
@@ -97,10 +108,11 @@ private:
 	static void* udpClient(void* para)
 	{
 		INFO("udp client");
-		int sock = *(int*)(para);
+		device_info_t* info = (device_info_t*)para;
+		int sock = info->sock;
 		int sockfd;
-		struct sockaddr_in broadcastaddr, addr;
-		socklen_t addrlen = sizeof(broadcastaddr);
+		struct sockaddr_in selfAddr, addr;
+		socklen_t addrlen = sizeof(selfAddr);
 		char buff[10240]={0};
 		//第一步:创建套接字
 
@@ -114,14 +126,20 @@ private:
 		      //inet_addr:将点分十进制ip地址转化为网络字节序的整型数据
 		      //htons:将主机字节序转化为网络字节序
 		      //atoi:将数字型字符串转化为整型数据
-		broadcastaddr.sin_family = AF_INET;
-		broadcastaddr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
-		broadcastaddr.sin_port = htons(sock);
+		selfAddr.sin_family = AF_INET;
+		if(info->type == UDP_CLIENT_BROADCAST)
+		{
+			selfAddr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
+		}else
+		{
+			selfAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+		}
+		selfAddr.sin_port = htons(sock);
 
 		INFO("RECV SOCK IS [%d]",sock);
 
 		//第三步:将套接字与服务器网络信息结构体绑定
-		if(bind(sockfd, (struct sockaddr *)&broadcastaddr, addrlen) < 0)
+		if(bind(sockfd, (struct sockaddr *)&selfAddr, addrlen) < 0)
 		{
 			ERROR("fail to bind [%s]",strerror(errno));
             return nullptr;
@@ -139,8 +157,7 @@ private:
 			}
 			else
 			{
-				INFO("ip: %s, port: %d\n",inet_ntoa(addr.sin_addr),ntohs(addr.sin_port));
-		        INFO("broadcast : %s\n", buff);
+				INFO("ip: %s, port: %d broadcast:%s",inet_ntoa(addr.sin_addr),ntohs(addr.sin_port),buff);
 			}
 		}
 
@@ -148,65 +165,16 @@ private:
 		return nullptr;
 	}
 
-    static void* udpClientBroadcast(void* para)
-    {
-        INFO("udp client");
-        int sock = *(int*)(para);
-        int sockfd;
-        struct sockaddr_in broadcastaddr, addr;
-        socklen_t addrlen = sizeof(broadcastaddr);
-        char buff[10240]={0};
-        //第一步:创建套接字
-
-        if((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
-        {
-            ERROR("fail to socket");
-            return nullptr;
-        }
-
-              //第二步:填充广播网络信息结构体
-              //inet_addr:将点分十进制ip地址转化为网络字节序的整型数据
-              //htons:将主机字节序转化为网络字节序
-              //atoi:将数字型字符串转化为整型数据
-        broadcastaddr.sin_family = AF_INET;
-        broadcastaddr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
-        broadcastaddr.sin_port = htons(sock);
-
-        INFO("RECV SOCK IS [%d]",sock);
-
-        //第三步:将套接字与服务器网络信息结构体绑定
-        if(bind(sockfd, (struct sockaddr *)&broadcastaddr, addrlen) < 0)
-        {
-            ERROR("fail to bind [%s]",strerror(errno));
-            return nullptr;
-        }
-
-        INFO("bind succss");
-
-        ssize_t bytes;
-
-        while(1)
-        {
-            if((bytes = recvfrom(sockfd, buff, 10240, 0,(struct sockaddr *)&addr, &addrlen)) < 0)
-            {
-                ERROR("fail to recvfrom");
-            }
-            else
-            {
-                INFO("ip: %s, port: %d\n",inet_ntoa(addr.sin_addr),ntohs(addr.sin_port));
-                INFO("broadcast : %s\n", buff);
-            }
-        }
-
-        close(sockfd);
-        return nullptr;
-    }
-
     int type;
     int sock;
+    std::string ip;
+	device_info_t info;
 public:
-	device (int type,int socket,std::string ip = ""):type(type),sock(socket)
+	device (int type,int socket,std::string ip = ""):type(type),sock(socket),ip(ip)
 	{
+		info.type = type;
+		info.sock = sock;
+		snprintf(info.ip,sizeof(info.ip),"%s",ip.c_str());
 	}
 
 	~device()
@@ -219,20 +187,20 @@ public:
 	    if(type == TCP_SERVER)
 	    {
 	    	INFO("TCP_SERVER");
-			threadPool::setFunction("TCP_SERVER", this->tcpServer,(void*)&sock,sizeof(sock));
+			threadPool::setFunction("TCP_SERVER", this->tcpServer,(void*)&info,sizeof(info));
 	    }else if(type == TCP_CLIENT)
 	    {
 	    	INFO("TCP_CLIENT");
-			threadPool::setFunction("TCP_CLIENT", this->tcpClient,(void*)&sock,sizeof(sock));
+			threadPool::setFunction("TCP_CLIENT", this->tcpClient,(void*)&sock,sizeof(info));
 	    }else if(type == UDP_SERVER)
 	    {
 	    	INFO("UDP_SERVER");
-			threadPool::setFunction("UDP_SERVER", this->udpServer,(void*)&sock,sizeof(sock));
+			threadPool::setFunction("UDP_SERVER", this->udpServer,(void*)&sock,sizeof(info));
 	    }
 	    else if(type == UDP_SERVER_BROADCAST)
 	    {
 	    	INFO("UDP_SERVER_BROADCAST");
-			threadPool::setFunction("UDP_SERVER_BROADCAST", this->udpServerBroadcast,(void*)&sock,sizeof(sock));
+			threadPool::setFunction("UDP_SERVER_BROADCAST", this->udpServer,(void*)&info,sizeof(info));
 	    }
 	    else if(type == UDP_CLIENT)
 	    {
@@ -241,7 +209,7 @@ public:
 	    }else if(type == UDP_CLIENT_BROADCAST)
 	    {
             INFO("UDP_CLIENT_BROADCAST");
-            threadPool::setFunction("UDP_CLIENT_BROADCAST", this->udpClientBroadcast,(void*)&sock,sizeof(sock));
+            threadPool::setFunction("UDP_CLIENT_BROADCAST", this->udpClient,(void*)&sock,sizeof(sock));
 	    }
 	    else
 	    {
