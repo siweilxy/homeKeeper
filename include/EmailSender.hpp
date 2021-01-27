@@ -189,8 +189,8 @@ public:
                          curl_easy_strerror (res));
                 ret = false;
 
-                /*              Sleep( 100 );
-                 res = curl_easy_perform(curl); */
+                sleep( 100 );
+                res = curl_easy_perform(curl);
             }
 
             /* Free the list of recipients */

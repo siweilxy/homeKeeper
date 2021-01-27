@@ -19,9 +19,12 @@ void* test(void* para)
 int main()
 {
 	hmLog::getInstance().init(0);
+while(1)
+{
 	INFO("test");
 	INFO("%s %c %d ","a",'c',1);
 	sleep(2);
+}
 	pthread_t p;
 	pthread_create(&p,nullptr,test,nullptr);
 	pthread_join(p,nullptr);
