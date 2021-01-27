@@ -161,7 +161,8 @@ public:
                              &EmailSender::payload_source);
             curl_easy_setopt(curl, CURLOPT_READDATA, (void* )&m_strMessage);
             curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
-
+            curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 10);
+            curl_easy_setopt(curl, CURLOPT_TIMEOUT, 100);
             /* Since the traffic will be encrypted, it is very useful to turn on debug
              * information within libcurl to see what is happening during the
              * transfer */
@@ -189,7 +190,7 @@ public:
                          curl_easy_strerror (res));
                 ret = false;
 
-                sleep( 100 );
+                sleep( 2 );
                 res = curl_easy_perform(curl);
             }
 
